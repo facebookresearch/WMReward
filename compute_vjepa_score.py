@@ -34,17 +34,16 @@ def apply_masks(x, masks, concat=True):
         return all_x
     return torch.cat(all_x, dim=0)
 
-def get_score(video,model,processor):
+def get_score(video,model,processor, n_timesteps=2):
     video = processor(video, return_tensors="pt").to(model.device)
     model.eval()
 
     device = model.device
     patch_size = 16
     frames_per_clip = 32
-    is_mae = False
+    is_mae = True
     num_videos = 1
     B = num_videos
-    n_timesteps = 2
     m, m_, full_m = get_time_masks(n_timesteps=n_timesteps, spatial_size=(patch_size, patch_size), temporal_dim=frames_per_clip, as_bool=is_mae)
 
     full_m = full_m.unsqueeze(0).to(device)

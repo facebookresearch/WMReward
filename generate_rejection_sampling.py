@@ -34,7 +34,7 @@ worst_frames = None
 for i in range(10):  # Try 10 times
     frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames).frames[0]
     export_to_video(frames, f"./temp/{tag}/wan-t2v{i}.mp4", fps=16)  # Export to video
-    score = get_score(f"./temp/{tag}/wan-t2v{i}.mp4", model, processor)  # Calculate the score
+    score = get_score(frames, model, processor)  # Calculate the score
     print(f"{i}, Score: {score}")
     
     if score < best_score:  # Update the best score and frames
