@@ -13,9 +13,13 @@ model_id = "Wan-AI/Wan2.1-T2V-1.3B-Diffusers"
 pipe = WanPipeline.from_pretrained(model_id, torch_dtype=torch.bfloat16)
 pipe.enable_model_cpu_offload()
 
-# prompt = "A cat and a dog baking a cake together in a kitchen. The cat is carefully measuring flour, while the dog is stirring the batter with a wooden spoon. The kitchen is cozy, with sunlight streaming through the window."
-prompt="a ball falls to the ground"
-tag='ball_drop'
+prompt = "A cat and a dog baking a cake together in a kitchen. The cat is carefully measuring flour, while the dog is stirring the batter with a wooden spoon. The kitchen is cozy, with sunlight streaming through the window."
+# prompt="a ball falls to the ground"
+# tag='ball_drop'
+tag="catdog_cw10"
+dir_path = f"./temp/{tag}"
+if not os.path.exists(dir_path):
+    os.makedirs(dir_path)
 negative_prompt = "Bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards"
 num_frames = 33
 
@@ -36,7 +40,7 @@ worst_frames = None
 for i in range(10):  # Try 10 times
     frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames).frames[0]
     
-    score = get_score(frames, model, processor)  # Calculate the score
+    score = get_score(frames, model, processor, n_timesteps=10)  # Calculate the score
     export_to_video(frames, f"./temp/{tag}/wan-t2v{i}_{score}.mp4", fps=16)  # Export to video
     print(f"{i}, Score: {score}")
     
@@ -49,7 +53,7 @@ for i in range(10):  # Try 10 times
         worst_frames = frames
 
 print(f"Best Score: {best_score}")
-export_to_video(best_frames, f"./temp/{tag}/bes_{score}.mp4", fps=16)  # Export the best frames to video
+export_to_video(best_frames, f"./temp/{tag}/best_{best_score}.mp4", fps=16)  # Export the best frames to video
 
 print(f"Worst Score: {worst_score}")
-export_to_video(worst_frames,f"./temp/{tag}/worst_{score}.mp4", fps=16)  # Export the worst frames to video
+export_to_video(worst_frames,f"./temp/{tag}/worst_{worst_score}.mp4", fps=16)  # Export the worst frames to video

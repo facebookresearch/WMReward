@@ -37,7 +37,7 @@ def init_vjepa2():
     return model, processor
 
 
-def rejection_sample(pipe, prompt, negative_prompt, num_frames, model, processor, num_attempts=10):
+def rejection_sample(pipe, args, prompt, negative_prompt, num_frames, model, processor, num_attempts=10):
     best_score = float('inf')
     best_frames = None
 
@@ -45,7 +45,7 @@ def rejection_sample(pipe, prompt, negative_prompt, num_frames, model, processor
         frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames).frames[0]
         # export_to_video(frames, f"./temp/wan-t2v{i}.mp4", fps=16)  # Export to video
         # score = get_score(f"./temp/wan-t2v{i}.mp4", model, processor)  # Calculate the score
-        score = get_score(frames, model, processor)
+        score = get_score(frames, model, processor, n_timesteps=args.context_length)  # Calculate the score
         # print(f"{i}, Score: {score}")
         if score < best_score:  # Update the best score and frames
             best_score = score
@@ -56,7 +56,7 @@ def rejection_sample(pipe, prompt, negative_prompt, num_frames, model, processor
 def generate_videos(pipe, args, prompts, negative_prompt, output_folder, model_id, prompt_name, num_frames=33, fps=16, vjepa=None, vjepa_processor=None):
     """Generate videos for each prompt and save them to the output folder."""
     # Extract the base names for model and prompt file
-    model_name = model_id
+    model_name = f"{model_id}_rej_cw{args.context_length}" if args.sampling_method == 'rejection' else model_id
 
     # Create the output directory structure
     model_output_folder = os.path.join(output_folder, model_name, prompt_name)
@@ -73,7 +73,7 @@ def generate_videos(pipe, args, prompts, negative_prompt, output_folder, model_i
         if args.sampling_method == 'vanilla':
             frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames).frames[0]
         elif args.sampling_method == 'rejection':
-            frames = rejection_sample(pipe=pipe, prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames, model=vjepa, processor=vjepa_processor)
+            frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames, model=vjepa, processor=vjepa_processor)
 
         # Export to video
         
@@ -95,6 +95,7 @@ def main():
     parser.add_argument('num_gpus', type=int, help='Total number of GPUs available.')
     parser.add_argument('gpu_idx', type=int, help='Index of the GPU to use for this process.')
     parser.add_argument('sampling_method',type=str, default='vanilla', help='Model ID to use for video generation.')
+    parser.add_argument('context_length', type=int, default=4, help='context_length')
 
     args = parser.parse_args()
 

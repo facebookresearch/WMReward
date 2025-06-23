@@ -1,11 +1,17 @@
 import os
 import csv
+import argparse
 
+args = argparse.ArgumentParser(description="Generate a CSV file for video paths and captions.")
+args.add_argument('--model', type=str, default='wan2.1-1.3b', help='Model name to use for video generation.')
+args = args.parse_args()
 # Directory containing the video files
-directory = '/home/yjianhao/project/video_guidance/generated_videos/wan2.1-1.3b/subject_consistency'
+# directory = '/home/yjianhao/project/video_guidance/generated_videos/wan2.1-1.3b/subject_consistency'
+directory = f'/home/yjianhao/project/video_guidance/generated_videos/{args.model}/subject_consistency'
 
 # Output CSV file
-output_csv = 'sapc_wan.csv'
+# output_csv = 'sapc_wan.csv'
+output_csv = f'/home/yjianhao/project/video_guidance/temp/{args.model}.csv'
 
 # List to store the rows for the CSV
 rows = []
