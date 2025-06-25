@@ -297,7 +297,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Results to LaTeX and Markdown Converter")
     parser.add_argument('--prompt', type=str, default='subject_consistency',
                       help='Evaluation prompt')
-    parser.add_argument('--models', nargs='+', default=["wan_vanilla", "wan_rej_cw2", "wan_rej_cw4", "wan_rej_cw8", "wan_rej_cw16"],
+    # parser.add_argument('--models', nargs='+', default=["wan_vanilla", "wan_rej_cw2", "wan_rej_cw4", "wan_rej_cw8", "wan_rej_cw16", "wan_rej_w4c2s2", "wan_rej_w8c4s4", "wan_rej_w8c6s2", "wan_rej_w16c10s6"],
+    #                   help='List of model names')
+    parser.add_argument('--models', nargs='+', default=["wan_vanilla", "wan_rej_w8c4s2", "wan_rej_w8c4s2_max"],
                       help='List of model names')
     parser.add_argument('--base_dir', type=str, 
                       default='/home/yjianhao/project/video_guidance',

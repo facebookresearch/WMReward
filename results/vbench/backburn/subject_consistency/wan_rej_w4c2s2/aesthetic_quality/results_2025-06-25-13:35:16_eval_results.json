@@ -1,0 +1,295 @@
+{
+    "aesthetic_quality": [
+        0.560389998058478,
+        [
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a dog enjoying a peaceful walk.mp4",
+                "video_results": 0.5847208499908447
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/an airplane landing smoothly on a runway.mp4",
+                "video_results": 0.551253616809845
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a truck anchored in a tranquil bay.mp4",
+                "video_results": 0.5985069274902344
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a horse running to join a herd of its kind.mp4",
+                "video_results": 0.5037658214569092
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a train speeding down the tracks.mp4",
+                "video_results": 0.5590468049049377
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a person walking in the snowstorm.mp4",
+                "video_results": 0.5730916857719421
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/an airplane accelerating to gain speed.mp4",
+                "video_results": 0.5143796801567078
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bear sniffing the air for scents of food.mp4",
+                "video_results": 0.58588707447052
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a giraffe bending down to drink water from a river.mp4",
+                "video_results": 0.6551452875137329
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a giraffe running to join a herd of its kind.mp4",
+                "video_results": 0.5420137047767639
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/an elephant taking a peaceful walk.mp4",
+                "video_results": 0.569031834602356
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a motorcycle gliding through a snowy field.mp4",
+                "video_results": 0.723254382610321
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bicycle slowing down to stop.mp4",
+                "video_results": 0.5108006000518799
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a car turning a corner.mp4",
+                "video_results": 0.4808168113231659
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bird soaring gracefully in the sky.mp4",
+                "video_results": 0.4352344274520874
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a car stuck in traffic during rush hour.mp4",
+                "video_results": 0.497327983379364
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a sheep bending down to drink water from a river.mp4",
+                "video_results": 0.5420847535133362
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a motorcycle accelerating to gain speed.mp4",
+                "video_results": 0.6273899674415588
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a horse galloping across an open field.mp4",
+                "video_results": 0.6387996077537537
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/an airplane soaring through a clear blue sky.mp4",
+                "video_results": 0.46621736884117126
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a boat slowing down to stop.mp4",
+                "video_results": 0.6439545750617981
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a person washing the dishes.mp4",
+                "video_results": 0.4482431709766388
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bear catching a salmon in its powerful jaws.mp4",
+                "video_results": 0.631087601184845
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a sheep running to join a herd of its kind.mp4",
+                "video_results": 0.5383464097976685
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a dog playing in park.mp4",
+                "video_results": 0.4604046046733856
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a cat grooming itself meticulously with its tongue.mp4",
+                "video_results": 0.47977781295776367
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bus turning a corner.mp4",
+                "video_results": 0.4871799647808075
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a horse taking a peaceful walk.mp4",
+                "video_results": 0.47129014134407043
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bicycle gliding through a snowy field.mp4",
+                "video_results": 0.6889727711677551
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a cow bending down to drink water from a river.mp4",
+                "video_results": 0.6573898196220398
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bicycle accelerating to gain speed.mp4",
+                "video_results": 0.5839961171150208
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a cat playing in park.mp4",
+                "video_results": 0.5127869844436646
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a boat accelerating to gain speed.mp4",
+                "video_results": 0.595865786075592
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a truck turning a corner.mp4",
+                "video_results": 0.4348543882369995
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a person playing guitar.mp4",
+                "video_results": 0.5284445881843567
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/an elephant running to join a herd of its kind.mp4",
+                "video_results": 0.544436514377594
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/an elephant spraying itself with water using its trunk to cool down.mp4",
+                "video_results": 0.5917069315910339
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a boat sailing smoothly on a calm lake.mp4",
+                "video_results": 0.5666124820709229
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a truck stuck in traffic during rush hour.mp4",
+                "video_results": 0.46786847710609436
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bear climbing a tree.mp4",
+                "video_results": 0.605236291885376
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a motorcycle cruising along a coastal highway.mp4",
+                "video_results": 0.6466706395149231
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a person drinking coffee in a cafe.mp4",
+                "video_results": 0.5161150097846985
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a truck accelerating to gain speed.mp4",
+                "video_results": 0.6485483646392822
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a truck slowing down to stop.mp4",
+                "video_results": 0.6151992678642273
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a person swimming in ocean.mp4",
+                "video_results": 0.5706596374511719
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a cat running happily.mp4",
+                "video_results": 0.49883756041526794
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a person giving a presentation to a room full of colleagues.mp4",
+                "video_results": 0.6156926155090332
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a car accelerating to gain speed.mp4",
+                "video_results": 0.4658435583114624
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a zebra taking a peaceful walk.mp4",
+                "video_results": 0.5672154426574707
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a car slowing down to stop.mp4",
+                "video_results": 0.6267233490943909
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a motorcycle slowing down to stop.mp4",
+                "video_results": 0.6584854125976562
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a cow running to join a herd of its kind.mp4",
+                "video_results": 0.459113746881485
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bear hunting for prey.mp4",
+                "video_results": 0.6491565108299255
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bus accelerating to gain speed.mp4",
+                "video_results": 0.6182541251182556
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a sheep taking a peaceful walk.mp4",
+                "video_results": 0.5825930833816528
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bird building a nest from twigs and leaves.mp4",
+                "video_results": 0.4953940510749817
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a dog running happily.mp4",
+                "video_results": 0.49940624833106995
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a person eating a burger.mp4",
+                "video_results": 0.5369396805763245
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bicycle leaning against a tree.mp4",
+                "video_results": 0.6393729448318481
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a cat drinking water.mp4",
+                "video_results": 0.5122109055519104
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/an airplane taking off.mp4",
+                "video_results": 0.5078765749931335
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bird flying over a snowy forest.mp4",
+                "video_results": 0.5322213768959045
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a giraffe taking a peaceful walk.mp4",
+                "video_results": 0.5299675464630127
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a motorcycle turning a corner.mp4",
+                "video_results": 0.7172238826751709
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a cow chewing cud while resting in a tranquil barn.mp4",
+                "video_results": 0.559038519859314
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a bus stuck in traffic during rush hour.mp4",
+                "video_results": 0.4708278775215149
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a dog drinking water.mp4",
+                "video_results": 0.5813364386558533
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a train accelerating to gain speed.mp4",
+                "video_results": 0.5296894907951355
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a horse bending down to drink water from a river.mp4",
+                "video_results": 0.5945028066635132
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a zebra bending down to drink water from a river.mp4",
+                "video_results": 0.6602088809013367
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a zebra running to join a herd of its kind.mp4",
+                "video_results": 0.5731484293937683
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/wan_rej_w4c2s2/subject_consistency/a train crossing over a tall bridge.mp4",
+                "video_results": 0.5723812580108643
+            }
+        ]
+    ]
+}

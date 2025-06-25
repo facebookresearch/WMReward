@@ -30,7 +30,7 @@ from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.wan.pipeline_output import WanPipelineOutput
 
 from transformers import AutoVideoProcessor, AutoModel
-from compute_vjepa_score import get_score
+from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max
 from diffusers.utils import export_to_video
 import gpustat
 
@@ -604,19 +604,21 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                 pred_original_sample = pred_original_sample
 
                 # decode to video
+                print(pred_original_sample.shape)
                 print_gpu_memory()
 
                 orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
                 B, C, T, H, W = orig_frame.shape
                 orig_frame = orig_frame.view(T, H, W, C)
-                print(orig_frame.shape)
-                # print(self.vae.config)
+
                 visualize = False
                 if visualize:
                     orig_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type=output_type)
                     export_to_video(orig_frame[0], f"./temp/guidance_sample_{i}.mp4", fps=16)  # Export the original frames to video
                 # get vjepa loss
-                loss = get_score(orig_frame, self.vjepa_model, self.vjepa_processor, n_timesteps=4, frames_per_clip=num_frames, require_grad=True)
+                # loss = get_score(orig_frame, self.vjepa_model, self.vjepa_processor, n_timesteps=4, frames_per_clip=num_frames, require_grad=True)
+                with torch.no_grad():
+                    loss= get_sliding_window_score_max(orig_frame, self.vjepa_model, self.vjepa_processor, kernel_size=4, context_window_size=2, stride=2)
                 # print(loss)
                 # loss.backward()
                 # grad = latents.grad.clone()

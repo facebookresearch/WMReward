@@ -1,0 +1,121 @@
+Wed Jun 25 18:22:44 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.133.20             Driver Version: 570.133.20     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H200                    On  |   00000000:59:00.0 Off |                    0 |
+| N/A   38C    P0             79W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H200                    On  |   00000000:5A:00.0 Off |                    0 |
+| N/A   37C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H200                    On  |   00000000:72:00.0 Off |                    0 |
+| N/A   38C    P0             83W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H200                    On  |   00000000:73:00.0 Off |                    0 |
+| N/A   37C    P0             79W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H200                    On  |   00000000:8B:00.0 Off |                    0 |
+| N/A   38C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H200                    On  |   00000000:8C:00.0 Off |                    0 |
+| N/A   37C    P0             75W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H200                    On  |   00000000:A4:00.0 Off |                    0 |
+| N/A   38C    P0             79W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H200                    On  |   00000000:A5:00.0 Off |                    0 |
+| N/A   37C    P0             76W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Running batch sample script env activated
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a sheep taking a peaceful walk.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a boat slowing down to stop.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a person swimming in ocean.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a motorcycle gliding through a snowy field.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bear sniffing the air for scents of food.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a train speeding down the tracks.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bicycle slowing down to stop.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a dog enjoying a peaceful walk.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a boat accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a person giving a presentation to a room full of colleagues.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a sheep running to join a herd of its kind.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bear climbing a tree.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a motorcycle accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bicycle accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a train crossing over a tall bridge.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a dog playing in park.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bird soaring gracefully in the sky.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a person washing the dishes.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a cow bending down to drink water from a river.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/an airplane soaring through a clear blue sky.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bear hunting for prey.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a car stuck in traffic during rush hour.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a train accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a dog drinking water.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bird building a nest from twigs and leaves.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a person eating a burger.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a cow chewing cud while resting in a tranquil barn.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/an airplane taking off.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a zebra bending down to drink water from a river.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a car turning a corner.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bird flying over a snowy forest.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a person walking in the snowstorm.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a truck turning a corner.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a zebra running to join a herd of its kind.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a cow running to join a herd of its kind.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/an airplane landing smoothly on a runway.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a dog running happily.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a car slowing down to stop.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a cat grooming itself meticulously with its tongue.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a person drinking coffee in a cafe.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a zebra taking a peaceful walk.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/an elephant spraying itself with water using its trunk to cool down.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/an airplane accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a car accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a horse bending down to drink water from a river.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a truck anchored in a tranquil bay.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a cat playing in park.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a person playing guitar.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a giraffe bending down to drink water from a river.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/an elephant taking a peaceful walk.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bus turning a corner.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a motorcycle cruising along a coastal highway.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a horse galloping across an open field.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a truck stuck in traffic during rush hour.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a cat drinking water.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a giraffe taking a peaceful walk.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bicycle leaning against a tree.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/an elephant running to join a herd of its kind.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bus stuck in traffic during rush hour.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a motorcycle turning a corner.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a cat running happily.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a horse taking a peaceful walk.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a truck slowing down to stop.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a giraffe running to join a herd of its kind.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bicycle gliding through a snowy field.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bear catching a salmon in its powerful jaws.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a bus accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a motorcycle slowing down to stop.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a horse running to join a herd of its kind.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a truck accelerating to gain speed.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a sheep bending down to drink water from a river.mp4
+Generated video: generated_videos/wan_rej_w8c4s2_max_rej_w8c4s2/subject_consistency/a boat sailing smoothly on a calm lake.mp4

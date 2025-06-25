@@ -25,7 +25,7 @@
 ## number of GPUs per node
 
 
-# SBATCH --time=2:00:00
+# SBATCH --time=8:00:00
 
 ### Section 3:
 source /home/yjianhao/miniconda3/bin/activate

@@ -29,6 +29,7 @@ from diffusers.video_processor import VideoProcessor
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.wan.pipeline_output import WanPipelineOutput
 
+import gpustat
 
 if is_torch_xla_available():
     import torch_xla.core.xla_model as xm
@@ -91,6 +92,16 @@ def prompt_clean(text):
     text = whitespace_clean(basic_clean(text))
     return text
 
+def print_gpu_memory():
+    query = gpustat.new_query()
+    gpu = query.gpus[0]  # Assuming you want to print the first GPU's memory usage
+
+    print(f"GPU ID: {gpu.index}")
+    print(f"GPU Name: {gpu.name}")
+    print(f"GPU Utilization: {gpu.utilization}%")
+    print(f"Memory Used: {gpu.memory_used} MB / {gpu.memory_total} MB")
+    print(f"Temperature: {gpu.temperature}°C")
+    print("-" * 20)
 
 class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
     r"""
@@ -484,7 +495,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
             batch_size = len(prompt)
         else:
             batch_size = prompt_embeds.shape[0]
-
+        
         # 3. Encode input prompt
         prompt_embeds, negative_prompt_embeds = self.encode_prompt(
             prompt=prompt,
@@ -550,6 +561,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         return_dict=False,
                     )[0]
                     noise_pred = noise_uncond + guidance_scale * (noise_pred - noise_uncond)
+
+                # print_gpu_memory()
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, return_dict=False)[0]

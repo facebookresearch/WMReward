@@ -1,5 +1,8 @@
 DIMENSIONS=('subject_consistency' 'temporal_flickering' 'aesthetic_quality' 'dynamic_degree' 'imaging_quality' 'motion_smoothness')
-MODELS=("wan_rej_cw8" "wan_rej_cw16" "wan_rej_v1" "wan_vanilla")
+# MODELS=("wan_rej_cw8" "wan_rej_cw16" "wan_rej_v1" "wan_vanilla")
+# MODELS=("wan_rej_w4c2s2" "wan_rej_w4c3s1" "wan_rej_w8c4s4" "wan_rej_w8c6s2" "wan_rej_w16c10s6")
+# MODELS=("wan_rej_w8c4s2" "wan_vanilla")
+MODELS=("wan_rej_w8c4s2_max")
 PROMPT='subject_consistency'
 source ~/miniconda3/etc/profile.d/conda.sh
 cd ../VBench
