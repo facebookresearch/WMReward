@@ -463,6 +463,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         if isinstance(callback_on_step_end, (PipelineCallback, MultiPipelineCallbacks)):
             callback_on_step_end_tensor_inputs = callback_on_step_end.tensor_inputs
 
+        # print_gpu_memory()
+
         # 1. Check inputs. Raise error if not correct
         self.check_inputs(
             prompt,
@@ -507,6 +509,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
             max_sequence_length=max_sequence_length,
             device=device,
         )
+
+        # print_gpu_memory()
 
         transformer_dtype = self.transformer.dtype
         prompt_embeds = prompt_embeds.to(transformer_dtype)

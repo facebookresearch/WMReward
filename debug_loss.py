@@ -1,134 +1,73 @@
-
 from torchcodec.decoders import VideoDecoder
 from transformers import AutoVideoProcessor, AutoModel
-from diffusers.utils import export_to_video
+from diffusers.utils import export_to_video, load_video
 import torch
 from torchcodec.decoders import VideoDecoder
 import numpy as np
 import torch.nn.functional as F
-# from compute_vjepa_score import get_sliding_window_score_max
+import matplotlib.pyplot as plt
+from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max # Import the process_video function
+from PIL import Image
 
-def get_sequential_mask(spatial_size, temporal_size, spatial_dim, temporal_dim, start_frame, kernel_size, context_window_size, as_bool=False):
-    """
-    Generates a sequential mask for the given sequence.
-
-    Args:
-        spatial_size (tuple): Spatial size of each patch.
-        temporal_size (int): Temporal size of each patch.
-        spatial_dim (tuple): Spatial dimensions of the input data.
-        temporal_dim (int): Temporal dimension of the input data.
-        start_frame (int): Starting frame of the context window.
-        kernel_size (int): Size of the context window (in frames).
-        context_window_size (int): Number of frames to consider as context within the window.
-        as_bool (bool, optional): Whether to return masks as boolean tensors. Defaults to False.
-
-    Returns:
-        mask_enc: Mask for the encoder (context).
-        mask_pred: Mask for the predictor (target).
-        full_mask: Full mask for the entire sequence.
-    """
-    x, y = spatial_dim
-    t = temporal_dim
-    
-    num_patches_spatial = (x / spatial_size[0]) * (y / spatial_size[1])
-    num_patches_time = t / temporal_size
-    
-    # Calculate the total number of tokens
-    total_tokens = int(num_patches_spatial * num_patches_time)
-    
-    # Calculate the number of tokens in the kernel
-    kernel_tokens = int(kernel_size / temporal_size * num_patches_spatial)
-    
-    # Calculate the number of tokens in the encoder mask
-    context_window_tokens = int(context_window_size / temporal_size * num_patches_spatial)
-    
-    # Calculate the starting token index of the context window
-    start_token_idx = int(start_frame / temporal_size * num_patches_spatial)
-
-    patch_idcs = torch.arange(start=0, end=total_tokens, dtype=int)
-    
-    if as_bool:
-        pass
-    else:
-        # Initialize masks as index tensors
-        mask_enc = torch.arange(start=start_token_idx, end=start_token_idx+context_window_tokens, dtype=int)
-        mask_pred = torch.arange(start=start_token_idx+context_window_tokens, end=start_token_idx+kernel_tokens, dtype=int)
-        full_mask = torch.arange(start=0, end=total_tokens, dtype=int)
-    
-    return mask_enc, mask_pred, full_mask
-
-
-def apply_masks(x, masks, concat=True):
-    all_x = []
-    for m in masks:
-        mask_keep = m.unsqueeze(-1).repeat(1, 1, x.size(-1))
-        all_x.append(torch.gather(x, dim=1, index=mask_keep))
-    if not concat:
-        return all_x
-    return torch.cat(all_x, dim=0)
-
-def get_sliding_window_score_max(video, model, processor, kernel_size, context_window_size, stride=2):
-    video = processor(video, return_tensors="pt").to(model.device)
-    # print(processor)
-
-    print(f"Video shape after processing: {video['pixel_values_videos'].shape}")
-    B, T, C, H, W = video['pixel_values_videos'].shape
-    model.eval()
-    device = model.device
-    patch_size = 16
-    temporal_size = 2
-    is_mae=False
-    frames_per_clip = T
-    spatial_dim = (H, W) 
-    num_videos = B
-    B = num_videos
-    start_index_arr = np.arange(0, frames_per_clip - kernel_size + 1, stride)
-
-    loss_arr = []
-    for start_index in start_index_arr:
-        m, m_, full_m = get_sequential_mask(spatial_size=(patch_size, patch_size), temporal_size=temporal_size, spatial_dim=spatial_dim, temporal_dim=frames_per_clip, start_frame=start_index, kernel_size=kernel_size, context_window_size=context_window_size, as_bool=False)
-
-        full_m = full_m.unsqueeze(0).to(device)
-        m = m.unsqueeze(0).to(device)
-        m_ = m_.unsqueeze(0).to(device)
-        print(f"Mask shapes: m={m.shape}, m_={m_.shape}, full_m={full_m.shape}")
-
-        masks_enc = [m.repeat(B, 1)]
-        masks_pred = [m_.repeat(B, 1)]
-
-        h = model(**video, skip_predictor=True).last_hidden_state
-        targets = apply_masks(h, masks_pred, concat=False)
-
-        outputs = model(**video, context_mask=masks_enc, target_mask=masks_pred)
-        preds = outputs.predictor_output.last_hidden_state
-
-        preds = preds[0].view(num_videos, -1, *preds[0].shape[1:])
-        targets = targets[0].view(num_videos, -1, *targets[0].shape[1:]).squeeze(0)
-        loss = F.l1_loss(preds, targets, reduction="none").mean().detach()
-        print(f"Start index: {start_index}, Loss: {loss.item()}")  # Debugging line to inspect loss values
-        loss_arr.append(loss.item())
-    
-    # loss_avr = np.mean(loss_arr)
-    loss_avr = np.max(loss_arr)  # Use max instead of mean
-
-    return loss_avr
 
 # init vjepa
-processor = AutoVideoProcessor.from_pretrained("facebook/vjepa2-vitl-fpc64-256")
+processor = AutoVideoProcessor.from_pretrained("facebook/vjepa2-vith-fpc64-256")
 model = AutoModel.from_pretrained(
-    "facebook/vjepa2-vitl-fpc64-256",
+    "facebook/vjepa2-vith-fpc64-256",
     torch_dtype=torch.float16,
     device_map="auto",
     attn_implementation="sdpa"
 )
 
-video_url = "https://huggingface.co/datasets/nateraw/kinetics-mini/resolve/main/val/bowling/-WH-lxmGJVY_000005_000015.mp4"
-vr = VideoDecoder(video_url)
-frame_idx = np.arange(0, model.config.frames_per_clip, 2) # you can define more complex sampling strategy
-video = vr.get_frames_at(indices=frame_idx).data  # frames x channels x height x width
-print(f"Video shape: {video.shape}")
-# import pdb; pdb.set_trace()
+# raw_path = "/home/yjianhao/project/EvalVideoPhy/data/ball_collision_videos/subgroup_009/valid_00.mp4"
+# raw_paths = ["/home/yjianhao/project/EvalVideoPhy/data/ball_collision_videos/subgroup_009/valid_00.mp4", 
+#         "/home/yjianhao/project/EvalVideoPhy/data/ball_collision_videos/subgroup_009/temporal_disorder_00.mp4",
+#         "/home/yjianhao/project/EvalVideoPhy/data/ball_collision_videos/subgroup_009/invalid_penetration_00.mp4"]
+raw_paths = ["/home/yjianhao/project/video_guidance/base_robotarm.mp4"]
+for raw_path in raw_paths:
+    video = load_video(raw_path)
+
+    # video is a list of PIL.Image.Image objects
+    video_np = np.stack([np.array(frame.resize((256, 256))) for frame in video], axis=0)
+    print(video_np.shape)
 
 
-score = get_sliding_window_score_max(video, model, processor, kernel_size=8, context_window_size=4, stride=2)
-print(f"Score: {score}")
+
+    score, loss_arr, video_processed = get_sliding_window_score_max(video, model, processor, kernel_size=4, context_window_size=2, stride=2, loss_form="mean", return_loss_arr=True)
+    print(f"Score: {score}")
+    
+    save_path = f"./debug/{raw_path.split('/')[-1].split('.')[0]}.mp4"
+    B,F,C,H,W = video_processed.shape
+    
+    video_export = video_processed.squeeze(0).reshape(F,H,W,C).cpu().numpy()
+    export_to_video(video_export, save_path, fps=16)
+    
+    # # Save first frame as PNG
+    # first_frame = video_export[0]  # shape: (H, W, C) or possibly (C, H, W)
+    # print("Original first_frame shape:", first_frame.shape)
+
+    # # If shape is (C, H, W), transpose to (H, W, C)
+    # if first_frame.shape[0] in [1, 3] and first_frame.shape[-1] != 3:
+    #     first_frame = np.transpose(first_frame, (1, 2, 0))
+    #     print("Transposed first_frame shape:", first_frame.shape)
+
+    # # Convert to uint8 if necessary
+    # if first_frame.dtype != np.uint8:
+    #     # If values are in [0,1], scale to [0,255]
+    #     if first_frame.max() <= 1.0:
+    #         first_frame = (first_frame * 255).astype(np.uint8)
+    #     else:
+    #         first_frame = first_frame.astype(np.uint8)
+
+    # first_frame_pil = Image.fromarray(first_frame)
+    # png_save_path = f"./debug/{raw_path.split('/')[-1].split('.')[0]}.png"
+    # first_frame_pil.save(png_save_path)
+
+    plt.figure(figsize=(10,6))
+    plt.plot(loss_arr)
+    # Set title and labels
+    plt.title('Loss Over Time')
+    plt.xlabel('timestep')
+    plt.ylabel('Loss')
+    # Save the plot locally
+    plt.savefig(f"./debug/loss_{raw_path.split('/')[-1].split('.')[0]}.png")

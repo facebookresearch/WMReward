@@ -1,0 +1,160 @@
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
+
+
+
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  20%|██        | 1/5 [00:00<00:03,  1.22it/s]Loading pipeline components...:  20%|██        | 1/5 [00:00<00:03,  1.20it/s]Loading pipeline components...:  20%|██        | 1/5 [00:00<00:03,  1.09it/s]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.45s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.49s/it]
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.49s/it][A
+[ALoading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.60s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:10,  2.54s/it][ALoading pipeline components...:  40%|████      | 2/5 [00:03<00:06,  2.09s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.35s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.35s/it][A
+
+Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.63s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.63s/it][A[A
+Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.58s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:07,  3.53s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:07,  3.51s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:07,  3.77s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:11<00:08,  4.15s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:12<00:09,  4.58s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:14<00:03,  3.98s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:14<00:03,  3.94s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:14<00:14, 14.62s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:15<00:15, 15.56s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:15<00:03,  3.98s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:16<00:04,  4.40s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  6.94s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  8.09s/it]
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  7.31s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  8.55s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:17<00:29,  9.94s/it]Loading pipeline components...:  20%|██        | 1/5 [00:17<01:08, 17.19s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.54s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.55s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:17<01:11, 17.79s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  3.18s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  3.37s/it]
+
+Loading pipeline components...:  60%|██████    | 3/5 [00:17<00:13,  6.51s/it]Loading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.59s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.56s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:17<01:11, 17.84s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:18<00:23,  7.70s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:18<00:23,  7.89s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:18<00:00,  3.81s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:18<00:00,  3.77s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:18<01:15, 18.93s/it]
+Loading checkpoint shards:  80%|████████  | 4/5 [00:18<00:05,  5.26s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.06s/it][ALoading pipeline components...:  60%|██████    | 3/5 [00:20<00:13,  6.79s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:20<00:27,  9.20s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:21<00:00,  4.28s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:21<00:00,  4.29s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:21<01:26, 21.52s/it]
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.24s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.60s/it][ALoading pipeline components...:  60%|██████    | 3/5 [00:23<00:13,  6.59s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:25<00:34, 11.47s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:09,  3.10s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:22<00:22, 22.44s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:08<00:06,  3.06s/it][ALoading pipeline components...:  40%|████      | 2/5 [00:28<00:39, 13.11s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:25<00:00, 11.03s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:25<00:00, 12.75s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:29<00:25, 12.85s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:09<00:07,  3.54s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.30s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.40s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:04,  1.37s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  3.11s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.96s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:33<00:21, 10.99s/it]
+Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:02,  1.26s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:16<00:16, 16.05s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  7.62s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  8.89s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:35<00:10, 10.48s/it]Loading pipeline components...:  60%|██████    | 3/5 [00:36<00:20, 10.45s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:16<00:04,  4.64s/it][ALoading pipeline components...: 100%|██████████| 5/5 [00:37<00:00,  6.08s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:37<00:00,  7.56s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:38<00:00,  7.83s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:38<00:00,  7.65s/it]
+
+Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.62s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:18<00:00,  4.00s/it]
+[ALoading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.94s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:18<00:00,  3.78s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.92s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:39<00:11, 11.61s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  8.34s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  7.85s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  7.85s/it]
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:18<00:18, 18.79s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:16<00:16, 16.75s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:19<00:00,  8.42s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:19<00:00,  9.98s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:41<00:09,  9.75s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  7.49s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  8.88s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:41<00:00,  7.93s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:41<00:00,  8.34s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:41<00:00,  6.97s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:41<00:00,  8.38s/it]
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:17<00:17, 17.54s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  7.55s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  9.05s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:43<00:29, 14.56s/it]
+Loading checkpoint shards:  50%|█████     | 1/2 [00:07<00:07,  7.82s/it][ALoading pipeline components...:  80%|████████  | 4/5 [00:44<00:09,  9.06s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:44<00:00,  8.82s/it]
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  3.38s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  4.05s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:44<00:09,  9.56s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:44<00:00,  8.85s/it]
+Traceback (most recent call last):
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+Traceback (most recent call last):
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+    main()
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+    main()
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+Traceback (most recent call last):
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+    main()
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+    main()
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+    main()
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+    main()
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+Traceback (most recent call last):
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+Traceback (most recent call last):
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 143, in <module>
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'
+    main()
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+    main()
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 140, in main
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+    generate_videos(pipe, args, chunked_prompts, negative_prompt, args.output_folder, args.model_id, args.prompt_file, vjepa=model, vjepa_processor=processor)
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+  File "/opt/hpcaas/.mounts/fs-072917c00f01ae1ba/home/yjianhao/project/video_guidance/generator.py", line 92, in generate_videos
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'
+    frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
+TypeError: rejection_sample() got an unexpected keyword argument 'num_frames'

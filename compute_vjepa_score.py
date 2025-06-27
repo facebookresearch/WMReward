@@ -3,6 +3,7 @@ from torchcodec.decoders import VideoDecoder
 from transformers import AutoVideoProcessor, AutoModel
 import numpy as np
 import torch.nn.functional as F
+from diffusers.utils import export_to_video, load_video
 
 def get_time_masks(n_timesteps=16, spatial_size=(16, 16), temporal_size=2, spatial_dim=(224, 224), temporal_dim=16, as_bool=False):
     assert n_timesteps % temporal_size == 0
@@ -84,22 +85,25 @@ def apply_masks(x, masks, concat=True):
         return all_x
     return torch.cat(all_x, dim=0)
 
-def get_score(video,model,processor, n_timesteps=2, frames_per_clip=33, require_grad=False):
+def get_score(video,model,processor, context_length=2, frames_per_clip=33, require_grad=False):
+    print("Video shape input", video.shape)
     video = processor(video, return_tensors="pt").to(model.device)
-    # model.eval()
+    model.eval()
 
+    B, T, C, H, W = video['pixel_values_videos'].shape
+    print(f"Video shape: {B, T, C, H, W}")
     device = model.device
     patch_size = 16
+    temporal_size = 2
     is_mae=False
-    num_videos = 1
-    B = num_videos
-    m, m_, full_m = get_time_masks(n_timesteps=n_timesteps, spatial_size=(patch_size, patch_size), temporal_dim=frames_per_clip, as_bool=is_mae)
+    frames_per_clip = T
+    spatial_dim = (H, W) 
+    num_videos = B
+    m, m_, full_m = get_time_masks(n_timesteps=context_length, spatial_size=(patch_size, patch_size), temporal_dim=frames_per_clip, as_bool=is_mae)
 
     full_m = full_m.unsqueeze(0).to(device)
     m = m.unsqueeze(0).to(device)
     m_ = m_.unsqueeze(0).to(device)
-
-    # print(m.shape, m_.shape, full_m.shape)
 
     masks_enc = [m.repeat(B, 1)]
     masks_pred = [m_.repeat(B, 1)]
@@ -107,18 +111,16 @@ def get_score(video,model,processor, n_timesteps=2, frames_per_clip=33, require_
 
     h = model(**video, skip_predictor=True).last_hidden_state
     targets = apply_masks(h, masks_pred, concat=False)
-    # print("h",h.shape)
-    # print("target",targets[0].shape)
+
 
     outputs = model(**video, context_mask=masks_enc, target_mask=masks_pred)
     preds = outputs.predictor_output.last_hidden_state
-    # print("preds",preds.shape)
+
 
     preds = preds[0].view(num_videos, -1, *preds[0].shape[1:])
     targets = targets[0].view(num_videos, -1, *targets[0].shape[1:]).squeeze(0)
     loss = F.l1_loss(preds, targets, reduction="none").mean()
 
-    # import pdb; pdb.set_trace()  # Debugging line to inspect variables
     if require_grad:
         return loss
 
@@ -170,6 +172,7 @@ def get_sliding_window_score_max(video, model, processor, kernel_size, context_w
     model.eval()
 
     B, T, C, H, W = video['pixel_values_videos'].shape
+    print(f"Video shape AFTER PROCESSOR: {B, T, C, H, W}")
     device = model.device
     patch_size = 16
     temporal_size = 2
@@ -210,11 +213,12 @@ def get_sliding_window_score_max(video, model, processor, kernel_size, context_w
         final_loss = np.max(loss_arr)
 
     if return_loss_arr:
-        return final_loss, loss_arr
+        return final_loss, loss_arr, video['pixel_values_videos']
     return final_loss
 
 
-def get_sliding_window_score_max_v2(video, model, processor, kernel_size, context_window_size, stride=2, return_loss_arr=False, loss_form="max"):
+def get_sliding_window_score_max_v2(video, model, processor, kernel_size, context_window_size, stride=2, loss_form="mean"):
+    torch.set_grad_enabled(True)  # Enable gradient computation for the model
     video = processor(video, return_tensors="pt").to(model.device)
     model.eval()
 
@@ -229,7 +233,8 @@ def get_sliding_window_score_max_v2(video, model, processor, kernel_size, contex
     B = num_videos
     start_index_arr = np.arange(0, frames_per_clip - kernel_size + 1, stride)
 
-    loss_arr = []
+    total_loss = None
+    n_count = 0
     for start_index in start_index_arr:
         m, m_, full_m = get_sequential_mask(spatial_size=(patch_size, patch_size), temporal_size=2, spatial_dim=spatial_dim, temporal_dim=frames_per_clip, start_frame=start_index, kernel_size=kernel_size, context_window_size=context_window_size, as_bool=False)
 
@@ -248,16 +253,14 @@ def get_sliding_window_score_max_v2(video, model, processor, kernel_size, contex
 
         preds = preds[0].view(num_videos, -1, *preds[0].shape[1:])
         targets = targets[0].view(num_videos, -1, *targets[0].shape[1:]).squeeze(0)
-        loss = F.l1_loss(preds, targets, reduction="none").mean().detach()
+        loss = F.l1_loss(preds, targets, reduction="none").mean()
         # print(f"Start index: {start_index}, Loss: {loss.item()}")  # Debugging line to inspect loss values
-        loss_arr.append(loss.item())
-    
-    # loss_avr = np.mean(loss_arr)
-    if loss_form == 'mean':
-        final_loss = np.mean(loss_arr)
-    elif loss_form == 'max':
-        final_loss = np.max(loss_arr)
+        if total_loss:
+            total_loss += loss
+        else:
+            total_loss = loss
 
-    if return_loss_arr:
-        return final_loss, loss_arr
+        n_count += 1
+
+    final_loss = total_loss / n_count
     return final_loss

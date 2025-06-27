@@ -30,10 +30,10 @@ from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.wan.pipeline_output import WanPipelineOutput
 
 from transformers import AutoVideoProcessor, AutoModel
-from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max
+from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max_v2
 from diffusers.utils import export_to_video
 import gpustat
-
+from torch.utils.checkpoint import checkpoint
 
 if is_torch_xla_available():
     import torch_xla.core.xla_model as xm
@@ -79,16 +79,19 @@ EXAMPLE_DOC_STRING = """
         ```
 """
 
-def print_gpu_memory():
-    query = gpustat.new_query()
-    gpu = query.gpus[0]  # Assuming you want to print the first GPU's memory usage
+def print_gpu_memory(if_vis):
+    if if_vis:
+        query = gpustat.new_query()
+        gpu = query.gpus[0]  # Assuming you want to print the first GPU's memory usage
 
-    print(f"GPU ID: {gpu.index}")
-    print(f"GPU Name: {gpu.name}")
-    print(f"GPU Utilization: {gpu.utilization}%")
-    print(f"Memory Used: {gpu.memory_used} MB / {gpu.memory_total} MB")
-    print(f"Temperature: {gpu.temperature}°C")
-    print("-" * 20)
+        print(f"GPU ID: {gpu.index}")
+        print(f"GPU Name: {gpu.name}")
+        print(f"GPU Utilization: {gpu.utilization}%")
+        print(f"Memory Used: {gpu.memory_used} MB / {gpu.memory_total} MB")
+        print(f"Temperature: {gpu.temperature}°C")
+        print("-" * 20)
+    else:
+        pass
 
 
 def basic_clean(text):
@@ -203,7 +206,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         prompt_embeds = prompt_embeds.view(batch_size * num_videos_per_prompt, seq_len, -1)
 
         return prompt_embeds
-
+    
+    @torch.no_grad()
     def encode_prompt(
         self,
         prompt: Union[str, List[str]],
@@ -385,7 +389,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
     def decode_latents(self):
         pass
 
-    # @torch.no_grad()
+    @torch.no_grad()
     @replace_example_docstring(EXAMPLE_DOC_STRING)
     def __call__(
         self,
@@ -479,6 +483,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         if isinstance(callback_on_step_end, (PipelineCallback, MultiPipelineCallbacks)):
             callback_on_step_end_tensor_inputs = callback_on_step_end.tensor_inputs
 
+        print('Start')
+        VIS_MEM = False
+        print_gpu_memory(VIS_MEM)
+
         # 1. Check inputs. Raise error if not correct
         self.check_inputs(
             prompt,
@@ -513,22 +521,33 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
             batch_size = prompt_embeds.shape[0]
 
         # 3. Encode input prompt
-        with torch.no_grad():
-            prompt_embeds, negative_prompt_embeds = self.encode_prompt(
-                prompt=prompt,
-                negative_prompt=negative_prompt,
-                do_classifier_free_guidance=self.do_classifier_free_guidance,
-                num_videos_per_prompt=num_videos_per_prompt,
-                prompt_embeds=prompt_embeds,
-                negative_prompt_embeds=negative_prompt_embeds,
-                max_sequence_length=max_sequence_length,
-                device=device,
-            )
+
+        # with torch.no_grad():
+        prompt_embeds, negative_prompt_embeds = self.encode_prompt(
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            do_classifier_free_guidance=self.do_classifier_free_guidance,
+            num_videos_per_prompt=num_videos_per_prompt,
+            prompt_embeds=prompt_embeds,
+            negative_prompt_embeds=negative_prompt_embeds,
+            max_sequence_length=max_sequence_length,
+            device=device,
+        )
+
+        # print("Before move text encoder to cpu")
+        # print_gpu_memory()
+        # self.text_encoder = self.text_encoder.to('cpu')
+        # prompt_embeds = prompt_embeds.to('cpu')
+
+        # negative_prompt_embeds = negative_prompt_embeds.to('cpu')
+        # print("After move text encoder to cpu")
+        # print_gpu_memory()
 
         transformer_dtype = self.transformer.dtype
         prompt_embeds = prompt_embeds.to(transformer_dtype)
         if negative_prompt_embeds is not None:
             negative_prompt_embeds = negative_prompt_embeds.to(transformer_dtype)
+
 
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)
@@ -553,6 +572,14 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         self._num_timesteps = len(timesteps)
 
 
+        def dit_forward(latent_model_input, timestep, prompt_embeds, attention_kwargs):
+            return self.transformer(
+                hidden_states=latent_model_input,
+                timestep=timestep,
+                encoder_hidden_states=prompt_embeds,
+                attention_kwargs=attention_kwargs,
+                return_dict=False,
+            )[0]
 
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             max_grad_norm = 1.0
@@ -562,85 +589,128 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
 
                 self._current_timestep = t
                 latents = latents.detach().clone().requires_grad_(True)
+                # latents.requires_grad_(True)
                 latent_model_input = latents.to(transformer_dtype)         
                 timestep = t.expand(latents.shape[0])
 
-                with torch.enable_grad():
-                    noise_pred = self.transformer(
-                        hidden_states=latent_model_input,
-                        timestep=timestep,
-                        encoder_hidden_states=prompt_embeds,
-                        attention_kwargs=attention_kwargs,
-                        return_dict=False,
-                    )[0]
+                print("Before DIT")
+                print_gpu_memory(VIS_MEM)
 
-                    if self.do_classifier_free_guidance:
-                        noise_uncond = self.transformer(
-                            hidden_states=latent_model_input,
-                            timestep=timestep,
-                            encoder_hidden_states=negative_prompt_embeds,
-                            attention_kwargs=attention_kwargs,
-                            return_dict=False,
-                        )[0]
-                
-                
-                noise_pred = noise_uncond + guidance_scale * (noise_pred - noise_uncond)
+                # with torch.enable_grad():
+                # noise_pred = self.transformer(
+                #     hidden_states=latent_model_input,
+                #     timestep=timestep,
+                #     encoder_hidden_states=prompt_embeds,
+                #     attention_kwargs=attention_kwargs,
+                #     return_dict=False,
+                # )[0]
 
-                print_gpu_memory()
+
+
+
+                noise_pred = checkpoint(
+                    dit_forward,
+                    latent_model_input,
+                    timestep,
+                    prompt_embeds,
+                    attention_kwargs
+                ).requires_grad_(True)
+
+                print("After First DIT")
+                print_gpu_memory(VIS_MEM)
+
+                # if self.do_classifier_free_guidance:
+                #     noise_uncond = self.transformer(
+                #         hidden_states=latent_model_input,
+                #         timestep=timestep,
+                #         encoder_hidden_states=negative_prompt_embeds,
+                #         attention_kwargs=attention_kwargs,
+                #         return_dict=False,
+                #     )[0]
+
+                if self.do_classifier_free_guidance:
+                    noise_uncond = checkpoint(
+                        dit_forward,
+                        latent_model_input,
+                        timestep,
+                        negative_prompt_embeds,
+                        attention_kwargs
+                    ).requires_grad_(True)
+                
+                    
+                    noise_pred = noise_uncond + guidance_scale * (noise_pred - noise_uncond)
+
+                print("After Second DIT")
+                print_gpu_memory(VIS_MEM)
 
                 #### Guidance
                 # estimate x0|t
-                pred_original_sample = self.scheduler.step(noise_pred, t, latents, return_dict=False, return_original=True)
-                pred_original_sample = pred_original_sample.to(self.vae.dtype)
-                latents_mean = (
-                    torch.tensor(self.vae.config.latents_mean)
-                    .view(1, self.vae.config.z_dim, 1, 1, 1)
-                    .to(pred_original_sample.device, pred_original_sample.dtype)
-                )
-                latents_std = 1.0 / torch.tensor(self.vae.config.latents_std).view(1, self.vae.config.z_dim, 1, 1, 1).to(
-                    pred_original_sample.device, pred_original_sample.dtype
-                )
-                pred_original_sample = pred_original_sample / latents_std + latents_mean
-                pred_original_sample = pred_original_sample
+                with torch.set_grad_enabled(True):
+                    pred_original_sample = self.scheduler.step(noise_pred, t, latents, return_dict=False, return_original=True)
+                    pred_original_sample = pred_original_sample.to(self.vae.dtype)
+                    latents_mean = (
+                        torch.tensor(self.vae.config.latents_mean)
+                        .view(1, self.vae.config.z_dim, 1, 1, 1)
+                        .to(pred_original_sample.device, pred_original_sample.dtype)
+                    )
+                    latents_std = 1.0 / torch.tensor(self.vae.config.latents_std).view(1, self.vae.config.z_dim, 1, 1, 1).to(
+                        pred_original_sample.device, pred_original_sample.dtype
+                    )
+                    pred_original_sample = pred_original_sample / latents_std + latents_mean
+                    pred_original_sample = pred_original_sample
 
-                # decode to video
-                print(pred_original_sample.shape)
-                print_gpu_memory()
+                    # decode to video
+                    print("Latent Shape",pred_original_sample.shape)
+                    print_gpu_memory(VIS_MEM)
 
-                orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
-                B, C, T, H, W = orig_frame.shape
-                orig_frame = orig_frame.view(T, H, W, C)
+                    # Slide to reduce memory usage
+                    # slice_idx = 0
+                    # slice_window = 2
+                    # latent_frame_slice = pred_original_sample[:, :, slice_idx:slice_idx+slice_window]
 
-                visualize = False
-                if visualize:
-                    orig_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type=output_type)
-                    export_to_video(orig_frame[0], f"./temp/guidance_sample_{i}.mp4", fps=16)  # Export the original frames to video
-                # get vjepa loss
-                # loss = get_score(orig_frame, self.vjepa_model, self.vjepa_processor, n_timesteps=4, frames_per_clip=num_frames, require_grad=True)
-                with torch.no_grad():
-                    loss= get_sliding_window_score_max(orig_frame, self.vjepa_model, self.vjepa_processor, kernel_size=4, context_window_size=2, stride=2)
-                # print(loss)
-                # loss.backward()
-                # grad = latents.grad.clone()
-                # latents.grad = None  # Clear the gradients
-                # print(loss)
-                # print(latents)
-                grad = torch.autograd.grad(loss, latents, retain_graph=False, create_graph=False)[0]
+                    # print("Shape Before VAE decoder",latent_frame_slice.shape)
+                    orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
+                    # print("Shape After VAE decoder",orig_frame.shape)
 
-                # clipping and set coefficient
-                grad_norm = grad.norm(2)
-                rho = 1 / grad_norm
+                    visualize = False
+                    if visualize:
+                        save_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type=output_type)
+                        export_to_video(save_frame[0], f"./temp/guidance_sample_{i}.mp4", fps=16)  # Export the original frames to video
+                
+                    B, C, T, H, W = orig_frame.shape
+                    orig_frame = orig_frame.view(T, C, H, W)
+                    print("Shape before VJEPA processor",orig_frame.shape)
 
-                # guide latent
-                with torch.no_grad():
-                    latents = latents - guidance_lr[i] * rho * grad # update with guidance
+                    print_gpu_memory(VIS_MEM)
 
-                torch.cuda.empty_cache()
+                    # Get vjepa loss
+                    loss= get_sliding_window_score_max_v2(orig_frame, self.vjepa_model, self.vjepa_processor, kernel_size=4, context_window_size=2, stride=2, loss_form="mean")
+                    # loss = get_score(
+                    #     orig_frame, self.vjepa_model, self.vjepa_processor, context_length=4, frames_per_clip=slice_window, require_grad=True
+                    # )
+                    # print(loss)
+                    loss.backward()
+                    grad = latents.grad.clone()
+                    latents.grad = None  # Clear the gradients
+                    # print(loss)
+                    # print(latents)
+                    # grad = torch.autograd.grad(loss, latents, retain_graph=False, create_graph=False)[0]
+
+                    # clipping and set coefficient
+                    grad_norm = grad.norm(2)
+                    rho = 1 / grad_norm
+
+                    print(rho, grad.size(), loss.item())
+                    # guide latent
+                    with torch.no_grad():
+                        latents = latents - 0.1 * rho * grad # update with guidance
+
+                    torch.cuda.empty_cache()
 
                 # compute the previous noisy sample x_t -> x_t-1
-                print(3,self.scheduler._step_index)
+                # print(3,self.scheduler._step_index)
                 latents = self.scheduler.step(noise_pred, t, latents, return_dict=False)[0]
-                print(4,self.scheduler._step_index)
+                # print(4,self.scheduler._step_index)
 
                 if callback_on_step_end is not None:
                     callback_kwargs = {}

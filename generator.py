@@ -1,5 +1,5 @@
 import argparse
-from pipelines.wan_pipeline import WanPipeline
+from schedulers.unipc_multistep_scheduler import UniPCMultistepScheduler
 from torchcodec.decoders import VideoDecoder
 from transformers import AutoVideoProcessor, AutoModel
 from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max
@@ -15,14 +15,22 @@ def get_prompts(prompt_file):
         prompts = [line.strip() for line in file if line.strip()]
     
     # Define a negative prompt
-    negative_prompt = "worst quality, distortion, overexposed, static, blurred details"
+    negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation"
     
     return prompts, negative_prompt
 
-def init_pipeline(model_id):
+def init_pipeline(args):
     """Initialize the WanPipeline with the specified model ID."""
-    if "wan" in model_id:
+    if "wan" in args.model_id:
+        if args.sampling_method == 'guidance':
+            from pipelines.wan_pipeline_guidance_v2 import WanPipeline
+        elif args.sampling_method in ['rejection', 'vanilla']:
+            from pipelines.wan_pipeline import WanPipeline
+        else:
+            raise ValueError(f"Unsupported sampling method: {args.sampling_method}")
         pipe = WanPipeline.from_pretrained("Wan-AI/Wan2.1-T2V-1.3B-Diffusers", torch_dtype=torch.bfloat16)
+        scheduler = UniPCMultistepScheduler.from_pretrained("Wan-AI/Wan2.1-T2V-1.3B-Diffusers", subfolder="scheduler")
+        pipe.scheduler = scheduler
         pipe.enable_model_cpu_offload()
     return pipe
 
@@ -39,12 +47,12 @@ def init_vjepa2():
     return model, processor
 
 
-def rejection_sample(pipe, args, prompt, negative_prompt, num_frames, model, processor, num_attempts=10, generator=None):
+def rejection_sample(pipe, args, prompt, negative_prompt, model, processor, num_attempts=10, generator=None):
     best_score = float('inf')
     best_frames = None
 
     for i in range(num_attempts):
-        frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames, generator=generator, num_inference_steps=args.num_inference_steps).frames[0]
+        frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, generator=generator, num_inference_steps=50).frames[0]
         # export_to_video(frames, f"./temp/wan-t2v{i}.mp4", fps=16)  # Export to video
         # score = get_score(f"./temp/wan-t2v{i}.mp4", model, processor)  # Calculate the score
         # score = get_score(frames, model, processor, n_timesteps=args.context_length)  # Calculate the score
@@ -57,10 +65,10 @@ def rejection_sample(pipe, args, prompt, negative_prompt, num_frames, model, pro
     return best_frames  # Or return whatever is appropriate for your use case
 
 
-def generate_videos(pipe, args, prompts, negative_prompt, output_folder, model_id, prompt_name, num_frames=33, fps=16, vjepa=None, vjepa_processor=None):
+def generate_videos(pipe, args, prompts, negative_prompt, output_folder, model_id, prompt_name, fps=16, vjepa=None, vjepa_processor=None):
     """Generate videos for each prompt and save them to the output folder."""
     # Extract the base names for model and prompt file
-    model_name = f"{model_id}_rej_nt{args.num_inference_steps}_w{args.kernel_size}c{args.context_length}s{args.stride}" if args.sampling_method == 'rejection' else model_id
+    model_name = f"{model_id}_{args.sampling_method}_nt{args.num_inference_steps}_f{args.num_frames}_w{args.kernel_size}c{args.context_length}s{args.stride}"
 
     # Create the output directory structure
     model_output_folder = os.path.join(output_folder, model_name, prompt_name)
@@ -76,10 +84,12 @@ def generate_videos(pipe, args, prompts, negative_prompt, output_folder, model_i
             continue
 
         # Generate frames
-        if args.sampling_method == 'vanilla':
-            frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames, num_inference_steps=args.num_inference_steps).frames[0]
+        if args.sampling_method in ['vanilla','guidance']:
+            # frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=33, height=480, width=480, num_inference_steps=args.num_inference_steps, generator=generator).frames[0]
+            print(f"Generating video for prompt {i+1}/{len(prompts)}: {prompt}")
+            frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, generator=generator, num_inference_steps=50).frames[0]
         elif args.sampling_method == 'rejection':
-            frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames, model=vjepa, processor=vjepa_processor, generator=generator)
+            frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, model=vjepa, processor=vjepa_processor, generator=generator)
 
         # Export to video
         
@@ -95,18 +105,21 @@ def chunk_prompts(prompts, num_chunks, chunk_idx):
 
 def main():
     parser = argparse.ArgumentParser(description="Generate videos from text prompts using a specified model.")
-    parser.add_argument('prompt_file', type=str, help='Path to the text file containing prompts.')
-    parser.add_argument('model_id', type=str, help='Model ID to use for video generation.')
-    parser.add_argument('output_folder', type=str, help='Folder to save the generated videos.')
-    parser.add_argument('num_gpus', type=int, help='Total number of GPUs available.')
-    parser.add_argument('gpu_idx', type=int, help='Index of the GPU to use for this process.')
-    parser.add_argument('sampling_method',type=str, default='vanilla', help='Model ID to use for video generation.')
-    parser.add_argument('kernel_size', type=int, default=4, help='Kernel size for the model.')
-    parser.add_argument('context_length', type=int, default=2, help='Context length for the model.')
-    parser.add_argument('stride', type=int, default=2, help='Stride for the model.')
-    parser.add_argument('num_inference_steps', type=int, default=20, help='Number of inference steps to generate for each video.')
+    parser.add_argument('--prompt_file', type=str, help='Path to the text file containing prompts.')
+    parser.add_argument('--model_id', type=str, help='Model ID to use for video generation.')
+    parser.add_argument('--output_folder', type=str, help='Folder to save the generated videos.')
+    parser.add_argument('--num_gpus', type=int, help='Total number of GPUs available.')
+    parser.add_argument('--gpu_idx', type=int, help='Index of the GPU to use for this process.')
+    parser.add_argument('--sampling_method',type=str, default='vanilla', help='Model ID to use for video generation.')
+    parser.add_argument('--kernel_size', type=int, default=4, help='Kernel size for the model.')
+    parser.add_argument('--context_length', type=int, default=2, help='Context length for the model.')
+    parser.add_argument('--stride', type=int, default=2, help='Stride for the model.')
+    parser.add_argument('--num_inference_steps', type=int, default=50, help='Number of inference steps to generate for each video.')
+    parser.add_argument('--num_frames', type=int, default=33, help='Number of frames to generate for each video.')
 
     args = parser.parse_args()
+
+
 
     # Get prompts and negative prompt
     prompts, negative_prompt = get_prompts(args.prompt_file)
@@ -115,10 +128,11 @@ def main():
     chunked_prompts = chunk_prompts(prompts, args.num_gpus, args.gpu_idx)
 
     # Initialize pipeline
-    pipe = init_pipeline(args.model_id)
+    pipe = init_pipeline(args)
 
-    if args.sampling_method == 'rejection':
+    if args.sampling_method in ['rejection']:
         model, processor = init_vjepa2()
+
     else:
         model, processor = None, None
 
