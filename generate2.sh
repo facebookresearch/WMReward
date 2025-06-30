@@ -17,18 +17,25 @@ OUTPUT_FOLDER="generated_videos"
 SAMPLE_METHODS=("vanilla" "rejection" "guidance")
 NUM_SAMPLING_STEPS="50"
 
-# Ablation arrays
-CFG_SCALES=(3.0 5.0 7.5 10.0)                    # Classifier-free guidance scale
-GUIDANCE_RHO_SCALES=(1.0 3.0 5.0 10.0)          # Rho scale for physics guidance
+# 🎛️ ABLATION ARRAYS - Modify these to change the parameter sweep
+CFG_SCALES=(3.0 5.0 7.5 10.0)                    # Classifier-free guidance scale (all methods)
+GUIDANCE_RHO_SCALES=(1.0 3.0 5.0 10.0)          # Physics guidance rho scale (guidance only)
 
-# Ablation parameters (adjust these for different experiments):
-# --num_rejection_attempts: Number of attempts for rejection sampling
-# --vjepa_mode: V-JEPA aggregation mode ('mean' or 'max')
-# --cfg_scale: Classifier-free guidance scale (for all methods)
-# --guidance_start/end: Timestep range for applying guidance
-# --guidance_rho_scale: Gradient scaling factor (rho_scale) for guidance
+# 🔬 ABLATION STUDY SCRIPT: Tests different CFG scales and guidance rho scales
+# This script will generate videos for all combinations of:
+# - CFG_SCALES: Classifier-free guidance scale (applies to all methods)
+# - GUIDANCE_RHO_SCALES: Physics guidance rho scale (only for guidance method)
+#
+# Total experiments per method:
+# - Vanilla/Rejection: 4 CFG scales × 1 rho scale = 4 experiments each
+# - Guidance: 4 CFG scales × 4 rho scales = 16 experiments
+# - Total: 24 experiments
 
 mkdir -p "$OUTPUT_FOLDER"
+
+echo "🔬 Starting ablation study with ${#CFG_SCALES[@]} CFG scales and ${#GUIDANCE_RHO_SCALES[@]} rho scales"
+echo "📊 Total experiments: Vanilla(4) + Rejection(4) + Guidance(16) = 24"
+echo ""
 
 for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do 
     for CFG_SCALE in "${CFG_SCALES[@]}"; do
