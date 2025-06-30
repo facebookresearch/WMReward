@@ -110,11 +110,15 @@ def get_score(video,model,processor, context_length=2, frames_per_clip=33, requi
     full_mask = [full_m.repeat(B, 1)]
 
     h = model(**video, skip_predictor=True).last_hidden_state
+    normalize_targets = True
+    if normalize_targets:
+        h = F.layer_norm(h, (h.size(-1),))  # normalize over feature-dim  [B, N, D]
     targets = apply_masks(h, masks_pred, concat=False)
 
 
     outputs = model(**video, context_mask=masks_enc, target_mask=masks_pred)
     preds = outputs.predictor_output.last_hidden_state
+
 
 
     preds = preds[0].view(num_videos, -1, *preds[0].shape[1:])
@@ -125,6 +129,69 @@ def get_score(video,model,processor, context_length=2, frames_per_clip=33, requi
         return loss
 
     return loss.detach().item()
+
+def get_sliding_window_score_based(video, model, processor, kernel_size, context_window_size, stride=2, return_form='arr', mode='max', require_grad=False):
+    video = processor(video, return_tensors="pt").to(model.device)
+    model.eval()
+    B, T, C, H, W = video['pixel_values_videos'].shape
+    device = model.device
+    patch_size = 16
+    is_mae=False
+    spatial_dim = (H,W) 
+    start_index_arr = np.arange(0, T - kernel_size + 1, stride)
+
+    loss_arr = []
+    for start_index in start_index_arr:
+        video_slice = video['pixel_values_videos'][:,start_index:start_index+kernel_size]
+        # print("slice shape",video_slice.shape)
+        m, m_, full_m = get_time_masks(n_timesteps=context_window_size, spatial_size=(patch_size, patch_size), temporal_dim=kernel_size, as_bool=is_mae)
+
+        full_m = full_m.unsqueeze(0).to(device)
+        m = m.unsqueeze(0).to(device)
+        m_ = m_.unsqueeze(0).to(device)
+
+        masks_enc = [m.repeat(B, 1)]
+        masks_pred = [m_.repeat(B, 1)]
+        full_mask = [full_m.repeat(B, 1)]
+
+        h = model(pixel_values_videos=video_slice, skip_predictor=True).last_hidden_state
+        normalize_targets = True
+        if normalize_targets:
+            h = F.layer_norm(h, (h.size(-1),))  # normalize over feature-dim  [B, N, D]
+        targets = apply_masks(h, masks_pred, concat=False)
+
+        outputs = model(pixel_values_videos=video_slice, context_mask=masks_enc, target_mask=masks_pred)
+        preds = outputs.predictor_output.last_hidden_state
+
+        preds = preds[0].view(B,-1,*preds[0].shape[1:]).unsqueeze(0)
+        targets = targets[0].view(B,-1,*targets[0].shape[1:])
+        
+        if require_grad:
+            loss = F.l1_loss(preds,targets,reduction="none").mean((1,2,3))
+            loss_arr.append(loss)
+        else:
+            loss = F.l1_loss(preds,targets,reduction="none").mean((1,2,3)).detach()
+            loss_arr.append(loss.item())
+
+    if require_grad:
+        loss_tensor = torch.stack(loss_arr)
+        if mode=='max':
+            final_loss = torch.max(loss_tensor)
+        elif mode == 'mean':
+            final_loss = torch.mean(loss_tensor)
+
+        return final_loss
+    else:
+        # Original logic for non-gradient case
+        if mode=='max':
+            final_loss = np.max(loss_arr)
+        elif mode == 'mean':
+            final_loss = np.mean(loss_arr)
+
+        if return_form == 'arr':
+            return final_loss, loss_arr
+        else:
+            return final_loss
 
 def get_sliding_window_score(video, model, processor, kernel_size, context_window_size, stride=2):
     video = processor(video, return_tensors="pt").to(model.device)
@@ -167,54 +234,54 @@ def get_sliding_window_score(video, model, processor, kernel_size, context_windo
     return loss_avr
 
 
-def get_sliding_window_score_max(video, model, processor, kernel_size, context_window_size, stride=2, return_loss_arr=False, loss_form="max"):
-    video = processor(video, return_tensors="pt").to(model.device)
-    model.eval()
+# def get_sliding_window_score_max(video, model, processor, kernel_size, context_window_size, stride=2, return_loss_arr=False, loss_form="max"):
+#     video = processor(video, return_tensors="pt").to(model.device)
+#     model.eval()
 
-    B, T, C, H, W = video['pixel_values_videos'].shape
-    print(f"Video shape AFTER PROCESSOR: {B, T, C, H, W}")
-    device = model.device
-    patch_size = 16
-    temporal_size = 2
-    is_mae=False
-    frames_per_clip = T
-    spatial_dim = (H, W) 
-    num_videos = B
-    B = num_videos
-    start_index_arr = np.arange(0, frames_per_clip - kernel_size + 1, stride)
+#     B, T, C, H, W = video['pixel_values_videos'].shape
+#     print(f"Video shape AFTER PROCESSOR: {B, T, C, H, W}")
+#     device = model.device
+#     patch_size = 16
+#     temporal_size = 2
+#     is_mae=False
+#     frames_per_clip = T
+#     spatial_dim = (H, W) 
+#     num_videos = B
+#     B = num_videos
+#     start_index_arr = np.arange(0, frames_per_clip - kernel_size + 1, stride)
 
-    loss_arr = []
-    for start_index in start_index_arr:
-        m, m_, full_m = get_sequential_mask(spatial_size=(patch_size, patch_size), temporal_size=2, spatial_dim=spatial_dim, temporal_dim=frames_per_clip, start_frame=start_index, kernel_size=kernel_size, context_window_size=context_window_size, as_bool=False)
+#     loss_arr = []
+#     for start_index in start_index_arr:
+#         m, m_, full_m = get_sequential_mask(spatial_size=(patch_size, patch_size), temporal_size=2, spatial_dim=spatial_dim, temporal_dim=frames_per_clip, start_frame=start_index, kernel_size=kernel_size, context_window_size=context_window_size, as_bool=False)
 
-        full_m = full_m.unsqueeze(0).to(device)
-        m = m.unsqueeze(0).to(device)
-        m_ = m_.unsqueeze(0).to(device)
+#         full_m = full_m.unsqueeze(0).to(device)
+#         m = m.unsqueeze(0).to(device)
+#         m_ = m_.unsqueeze(0).to(device)
 
-        masks_enc = [m.repeat(B, 1)]
-        masks_pred = [m_.repeat(B, 1)]
+#         masks_enc = [m.repeat(B, 1)]
+#         masks_pred = [m_.repeat(B, 1)]
 
-        h = model(**video, skip_predictor=True).last_hidden_state
-        targets = apply_masks(h, masks_pred, concat=False)
+#         h = model(**video, skip_predictor=True).last_hidden_state
+#         targets = apply_masks(h, masks_pred, concat=False)
 
-        outputs = model(**video, context_mask=masks_enc, target_mask=masks_pred)
-        preds = outputs.predictor_output.last_hidden_state
+#         outputs = model(**video, context_mask=masks_enc, target_mask=masks_pred)
+#         preds = outputs.predictor_output.last_hidden_state
 
-        preds = preds[0].view(num_videos, -1, *preds[0].shape[1:])
-        targets = targets[0].view(num_videos, -1, *targets[0].shape[1:]).squeeze(0)
-        loss = F.l1_loss(preds, targets, reduction="none").mean().detach()
-        # print(f"Start index: {start_index}, Loss: {loss.item()}")  # Debugging line to inspect loss values
-        loss_arr.append(loss.item())
+#         preds = preds[0].view(num_videos, -1, *preds[0].shape[1:])
+#         targets = targets[0].view(num_videos, -1, *targets[0].shape[1:]).squeeze(0)
+#         loss = F.l1_loss(preds, targets, reduction="none").mean().detach()
+#         # print(f"Start index: {start_index}, Loss: {loss.item()}")  # Debugging line to inspect loss values
+#         loss_arr.append(loss.item())
     
-    # loss_avr = np.mean(loss_arr)
-    if loss_form == 'mean':
-        final_loss = np.mean(loss_arr)
-    elif loss_form == 'max':
-        final_loss = np.max(loss_arr)
+#     # loss_avr = np.mean(loss_arr)
+#     if loss_form == 'mean':
+#         final_loss = np.mean(loss_arr)
+#     elif loss_form == 'max':
+#         final_loss = np.max(loss_arr)
 
-    if return_loss_arr:
-        return final_loss, loss_arr, video['pixel_values_videos']
-    return final_loss
+#     if return_loss_arr:
+#         return final_loss, loss_arr, video['pixel_values_videos']
+#     return final_loss
 
 
 def get_sliding_window_score_max_v2(video, model, processor, kernel_size, context_window_size, stride=2, loss_form="mean"):

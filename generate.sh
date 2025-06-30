@@ -2,24 +2,27 @@
 #!/bin/bash
 
 # Define hyperparameter triplets (kernel_size, context_length, stride)
+# For vanilla: parameters are ignored, so use dummy values
+# For rejection/guidance: use meaningful V-JEPA parameters
 TRIPLETS=(
-    # "4 2 2"   # Triplet 1
-    # "4 3 1"   # Triplet 4
-    # "8 4 4"   # Triplet 2
-    # "8 6 2"   # Triplet 3
-    # "16 10 6"
-    # "8 4 2"
-    "0 0 0"
+    "8 6 2"   # Good balance for V-JEPA evaluation
+    # "4 2 2"   # Shorter context
+    # "16 10 4" # Longer context
 )
 
 MODEL_NAMES=("wan")
 PROMPT_FILES=("subject_consistency")
 NUM_GPUS=8
 OUTPUT_FOLDER="generated_videos"
-# SAMPLE_METHOD="rejection"
-SAMPLE_METHODS=("rejection")
-# SAMPLE_METHOD="vanilla"
+SAMPLE_METHODS=("vanilla" "rejection" "guidance")
 NUM_SAMPLING_STEPS="50"
+
+# Ablation parameters (adjust these for different experiments):
+# --num_rejection_attempts: Number of attempts for rejection sampling
+# --vjepa_mode: V-JEPA aggregation mode ('mean' or 'max')
+# --cfg_scale: Classifier-free guidance scale (for all methods)
+# --guidance_start/end: Timestep range for applying guidance
+# --guidance_rho_scale: Gradient scaling factor (rho_scale) for guidance
 
 mkdir -p "$OUTPUT_FOLDER"
 
@@ -46,7 +49,13 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
                     --context_length $CONTEXT_LENGTH \
                     --stride $STRIDE \
                     --num_inference_steps $NUM_SAMPLING_STEPS \
-                    --num_frame 17 &
+                    --num_frames 17 \
+                    --num_rejection_attempts 10 \
+                    --vjepa_mode "max" \
+                    --cfg_scale 5.0 \
+                    --guidance_start 0 \
+                    --guidance_end 1001 \
+                    --guidance_rho_scale 3.0 &
             done
             wait
         done

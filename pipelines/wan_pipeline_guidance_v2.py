@@ -30,7 +30,7 @@ from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.wan.pipeline_output import WanPipelineOutput
 
 from transformers import AutoVideoProcessor, AutoModel
-from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max_v2
+from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_based
 from diffusers.utils import export_to_video
 import gpustat
 from torch.utils.checkpoint import checkpoint
@@ -486,6 +486,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
 
         VIS_MEM = False
         print_gpu_memory(VIS_MEM, info="Start ================================")
+        print(f"🎬 STARTING GUIDANCE PIPELINE GENERATION")
+        print(f"   Frames: {num_frames}, Steps: {num_inference_steps}, CFG Scale: {guidance_scale}")
 
         self.text_encoder.requires_grad_(False)
         for p in self.text_encoder.parameters():
@@ -590,6 +592,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         # 6. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         self._num_timesteps = len(timesteps)
+        guidance_steps_count = 0
 
 
         def dit_forward(latent_model_input, timestep, prompt_embeds, attention_kwargs):
@@ -603,8 +606,20 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                 )[0]
             return output
 
-        guidance_range = [750,990]
+        # Use configurable guidance parameters if available, otherwise use defaults
+        guidance_range = [getattr(self, 'guidance_start', 750), getattr(self, 'guidance_end', 990)]
         time_travel_range = [-1, -1]
+        
+        # Print guidance configuration
+        print(f"\n🔧 GUIDANCE PIPELINE CONFIGURATION:")
+        print(f"   Guidance range: {guidance_range[0]} - {guidance_range[1]}")
+        print(f"   Rho scale: {getattr(self, 'guidance_rho_scale', 3.0)}")
+        print(f"   V-JEPA kernel_size: {getattr(self, 'vjepa_kernel_size', 8)}")
+        print(f"   V-JEPA context_length: {getattr(self, 'vjepa_context_length', 6)}")
+        print(f"   V-JEPA stride: {getattr(self, 'vjepa_stride', 2)}")
+        print(f"   V-JEPA mode: {getattr(self, 'vjepa_mode', 'max')}")
+        print(f"   Total timesteps: {len(timesteps)}")
+        print()
         
         
         with self.progress_bar(total=num_inference_steps) as progress_bar:
@@ -614,7 +629,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                     continue
                 perform_guidance = True if (t > guidance_range[0] and t < guidance_range[1]) else False
                 perform_travel = True if (t > time_travel_range[0] and t < time_travel_range[1]) else False
-                rho_scale = 3 if (t > guidance_range[1] - 40 and t < guidance_range[1]) else 1
+                # Use configurable rho_scale
+                guidance_rho_scale = getattr(self, 'guidance_rho_scale', 3.0)
                 n_travel = 1 if perform_travel else 1
                 # perform_guidance = False
                 self._current_timestep = t
@@ -644,7 +660,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         latent_model_input,
                         timestep,
                         prompt_embeds,
-                        attention_kwargs
+                        attention_kwargs,
+                        use_reentrant=False
                     ).requires_grad_(True)
 
                     # noise_pred = self.transformer(
@@ -661,7 +678,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                             latent_model_input,
                             timestep,
                             negative_prompt_embeds,
-                            attention_kwargs
+                            attention_kwargs,
+                            use_reentrant=False
                         ).requires_grad_(True)
 
                         # noise_uncond = self.transformer(
@@ -675,10 +693,11 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         noise_pred = noise_uncond + guidance_scale * (noise_pred - noise_uncond)
                     # print("Shape of noise_pred",noise_pred.shape)
                     print_gpu_memory(VIS_MEM, info="after DIT ================================")
-                    #### Guidance
-                    # estimate x0|t
-                    if perform_guidance:
-                        print("Performing Guidance at step:",i,t.item(),rep,timestep.item())
+                                    #### Guidance
+                # estimate x0|t
+                if perform_guidance:
+                    guidance_steps_count += 1
+                    print(f"🚀 APPLYING GUIDANCE at step {i} (timestep={t.item():.0f})")
                         with torch.set_grad_enabled(True):
                             pred_original_sample = self.scheduler.step(noise_pred, t, latents, return_dict=False, return_original=True)
                             pred_original_sample = pred_original_sample.to(self.vae.dtype)
@@ -708,7 +727,18 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                             B, C, T, H, W = orig_frame.shape
                             orig_frame = orig_frame.view(T, C, H, W)
                             with torch.enable_grad():
-                                loss= get_sliding_window_score_max_v2(orig_frame, self.vjepa_model, self.vjepa_processor, kernel_size=4, context_window_size=2, stride=2, loss_form="mean")
+                                # Use configurable V-JEPA parameters
+                                kernel_size = getattr(self, 'vjepa_kernel_size', 8)
+                                context_window_size = getattr(self, 'vjepa_context_length', 6)
+                                stride = getattr(self, 'vjepa_stride', 2)
+                                mode = getattr(self, 'vjepa_mode', 'max')
+                                loss = get_sliding_window_score_based(orig_frame, self.vjepa_model, self.vjepa_processor, 
+                                                                    kernel_size=kernel_size, 
+                                                                    context_window_size=context_window_size, 
+                                                                    stride=stride, 
+                                                                    return_form='no', 
+                                                                    mode=mode, 
+                                                                    require_grad=True)
 
                             print_gpu_memory(VIS_MEM, info="after vjepa ================================")
                             
@@ -720,7 +750,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                             grad_norm = grad.norm(2)
                             rho = 1 / grad_norm
 
-                            print('Guidance Strength:',rho.item(), "-- Loss:", loss.item(), "-- Score Func:", grad.norm(2).item())
+                            print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Rho={rho.item():.6f}, Grad_norm={grad.norm(2).item():.4f}, Final_scale={guidance_rho_scale * rho.item():.4f}')
 
                             if perform_travel:
                                 # with torch.no_grad():
@@ -732,7 +762,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                                 
                             else:
                                 with torch.no_grad():
-                                    latents = latents - 10 * rho * grad # update with guidance
+                                    latents = latents - guidance_rho_scale * rho * grad # update with guidance
                         # import pdb; pdb.set_trace()
                         torch.cuda.empty_cache()
 

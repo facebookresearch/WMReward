@@ -1,12 +1,11 @@
-from torchcodec.decoders import VideoDecoder
+
 from transformers import AutoVideoProcessor, AutoModel
 from diffusers.utils import export_to_video, load_video
 import torch
-from torchcodec.decoders import VideoDecoder
 import numpy as np
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
-from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max # Import the process_video function
+from compute_vjepa_score import get_score, get_sliding_window_score,  get_sliding_window_score_based
 from PIL import Image
 import os
 import shutil
@@ -40,11 +39,10 @@ for raw_path in raw_paths:
     video_np = np.stack([np.array(frame.resize((256, 256))) for frame in video], axis=0)
     print(video_np.shape)
 
-
-
-    score, loss_arr, video_processed = get_sliding_window_score_max(video, model, processor, kernel_size=12, context_window_size=8, stride=4, loss_form="mean", return_loss_arr=True)
+    score, loss_arr = get_sliding_window_score_based(video, model, processor, kernel_size=16, context_window_size=10, stride=2, return_form='arr')
     print(f"Score: {score}")
 
+    # dir_name = "./debug/ball1"
     dir_name = "./debug/pyramid1"
     if not os.path.exists(dir_name):
         os.mkdir(dir_name)
@@ -53,7 +51,7 @@ for raw_path in raw_paths:
     shutil.copy2(raw_path, save_path)
     plt.figure(figsize=(6,6))
     plt.plot(loss_arr)
-    
+
     # Set title and labels
     # plt.title('Loss Over Time')
     plt.xlabel('timestep')

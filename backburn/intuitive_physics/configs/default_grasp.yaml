@@ -1,0 +1,30 @@
+pretrain:
+  enc_checkpoint_key: encoder
+  pred_checkpoint_key: predictor
+  model_name: vit_huge_rope
+  patch_size: 16
+  folder: /checkpoint/garridoq/intphys/vit-h-rope/
+  checkpoint: jepa-latest.pth.tar
+  write_tag: jepa
+  use_sdpa: true
+  use_silu: true
+  wide_silu: false
+  uniform_power: true
+  is_causal: false
+  pred_is_causal: false
+  pred_depth: 12
+  tubelet_size: 2
+  frames_per_clip: 16
+data:
+  batch_size: 1
+  resolution: 224
+  stride_sliding_window: 2
+  use_bfloat16: true
+  frames_per_clip: 16
+  context_lengths: [2,4,6,8,10]
+  frame_steps: 10
+tag: default
+nodes: 1
+tasks_per_node: 8
+eval_name: intuitive_physics
+dataset: grasp
