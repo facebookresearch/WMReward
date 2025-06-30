@@ -1,5 +1,5 @@
 import torch
-from torchcodec.decoders import VideoDecoder
+# from torchcodec.decoders import VideoDecoder
 from transformers import AutoVideoProcessor, AutoModel
 import numpy as np
 import torch.nn.functional as F
