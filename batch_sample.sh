@@ -33,3 +33,4 @@ conda activate vg
 nvidia-smi
 echo "Running batch sample script env activated"
 bash generate.sh
+# bash eval_pipe.sh

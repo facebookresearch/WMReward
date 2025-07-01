@@ -1,7 +1,6 @@
 from pipelines.wan_pipeline_guidance_v2 import WanPipeline
 # from pipelines.wan_pipeline import WanPipeline
 from schedulers.unipc_multistep_scheduler import UniPCMultistepScheduler
-from torchcodec.decoders import VideoDecoder
 from transformers import AutoVideoProcessor, AutoModel
 from diffusers.utils import export_to_video
 import torch
@@ -28,7 +27,7 @@ prompt = "A robot arm reaching for a red cube, the robot arm is moving towards t
 # negative_prompt = "Bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards"
 negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation"
 num_frames = 33
-H, W = 480, 480
+H, W = 480, 832
 frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_frames, height=H, width=W, generator=generator, num_inference_steps=50).frames[0]
 
 export_to_video(frames,f"./guidance_sample_robotarm.mp4", fps=16)  # Export the worst frames to video

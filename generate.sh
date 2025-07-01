@@ -14,8 +14,9 @@ MODEL_NAMES=("wan")
 PROMPT_FILES=("subject_consistency")
 NUM_GPUS=8
 OUTPUT_FOLDER="generated_videos"
-SAMPLE_METHODS=("vanilla" "rejection" "guidance")
-NUM_SAMPLING_STEPS="50"
+SAMPLE_METHODS=("vanilla" "rejection")
+# SAMPLE_METHODS=("guidance")
+NUM_SAMPLING_STEPS="50" 
 
 # Ablation parameters (adjust these for different experiments):
 # --num_rejection_attempts: Number of attempts for rejection sampling
@@ -49,13 +50,15 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
                     --context_length $CONTEXT_LENGTH \
                     --stride $STRIDE \
                     --num_inference_steps $NUM_SAMPLING_STEPS \
-                    --num_frames 17 \
+                    --num_frames 33 \
+                    --height 480 \
+                    --width 832 \
                     --num_rejection_attempts 10 \
                     --vjepa_mode "max" \
                     --cfg_scale 5.0 \
                     --guidance_start 0 \
                     --guidance_end 1001 \
-                    --guidance_rho_scale 3.0 &
+                    --guidance_rho_scale 10.0 &
             done
             wait
         done

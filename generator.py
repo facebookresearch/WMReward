@@ -64,7 +64,7 @@ def rejection_sample(pipe, args, prompt, negative_prompt, model, processor, gene
     best_frames = None
 
     for i in range(args.num_rejection_attempts):
-        frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
+        frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=args.height, width=args.width, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
         
         score = get_sliding_window_score_based(frames, model, processor, 
                                               kernel_size=args.kernel_size, 
@@ -97,7 +97,7 @@ def generate_videos(pipe, args, prompts, negative_prompt, experiment_name, fps=1
         safe_prompt = "".join(c for c in prompt if c.isalnum() or c in (' ', '-', '_')).rstrip()
         safe_prompt = safe_prompt.replace(' ', '_')[:50]  # Limit length
         
-        video_path = os.path.join(output_folder, f"{i:03d}_{safe_prompt}.mp4")
+        video_path = os.path.join(output_folder, f"{safe_prompt}.mp4")
         if os.path.exists(video_path):
             print(f"Video already exists, skipping: {video_path}")
             continue
@@ -106,10 +106,10 @@ def generate_videos(pipe, args, prompts, negative_prompt, experiment_name, fps=1
 
         # Generate frames
         if args.sampling_method == 'vanilla':
-            frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
+            frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=args.height, width=args.width, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
         elif args.sampling_method == 'guidance':
             # Guidance uses configurable V-JEPA parameters set on the pipeline
-            frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=480, width=480, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
+            frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=args.height, width=args.width, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
         elif args.sampling_method == 'rejection':
             frames = rejection_sample(pipe=pipe, args=args, prompt=prompt, negative_prompt=negative_prompt, model=vjepa, processor=vjepa_processor, generator=generator)
 
@@ -141,6 +141,8 @@ def main():
     parser.add_argument('--stride', type=int, default=2, help='Stride for V-JEPA sliding window.')
     parser.add_argument('--num_inference_steps', type=int, default=50, help='Number of inference steps to generate for each video.')
     parser.add_argument('--num_frames', type=int, default=17, help='Number of frames to generate for each video.')
+    parser.add_argument('--height', type=int, default=480, help='Height of the generated videos.')
+    parser.add_argument('--width', type=int, default=832, help='Width of the generated videos.')
     
     # Ablation parameters for rejection sampling
     parser.add_argument('--num_rejection_attempts', type=int, default=10, help='Number of attempts for rejection sampling.')

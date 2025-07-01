@@ -3,7 +3,7 @@ DIMENSIONS=('subject_consistency' 'temporal_flickering' 'aesthetic_quality' 'dyn
 # MODELS=("wan_rej_w4c2s2" "wan_rej_w4c3s1" "wan_rej_w8c4s4" "wan_rej_w8c6s2" "wan_rej_w16c10s6")
 # MODELS=("wan_rej_w8c4s2" "wan_vanilla")
 # MODELS=("wan_rej_nt50_w8c4s2_max" "wan_rej_nt50_w8c4s2_mean" "wan_vanilla")
-MODELS=("wan_guidance_nt50_f17_w0c0s0" "wan_vanilla_nt50_f17_w0c0s0")
+MODELS=("rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111" "vanilla_f33_s50_cfg5.0_0701_2103" "guidance_f33_s50_w8c6_rho10.0_cfg5.0_0701_1608" "guidance_f17_s50_w8c6_rho10.0_cfg5.0_0701_1658" "rejection_f17_s50_w8c6_a10_cfg5.0_0701_1606" "vanilla_f17_s50_cfg5.0_0701_1600")
 PROMPT='subject_consistency'
 source ~/miniconda3/etc/profile.d/conda.sh
 cd ../VBench
@@ -17,7 +17,7 @@ GPU_INDEX=0
 for MODEL in "${MODELS[@]}"; do
     for DIMENSION in "${DIMENSIONS[@]}"; do
         echo "Evaluating dimension: $DIMENSION"
-        VIDEO_PATH="../video_guidance/generated_videos/$MODEL/$PROMPT"
+        VIDEO_PATH="../video_guidance/generated_videos/$PROMPT/$MODEL"
         OUT_PATH="../video_guidance/results/vbench/$PROMPT/$MODEL/$DIMENSION"
         mkdir -p "$OUT_PATH"
         

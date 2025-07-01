@@ -693,78 +693,78 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         noise_pred = noise_uncond + guidance_scale * (noise_pred - noise_uncond)
                     # print("Shape of noise_pred",noise_pred.shape)
                     print_gpu_memory(VIS_MEM, info="after DIT ================================")
-                                    #### Guidance
+
                 # estimate x0|t
                 if perform_guidance:
                     guidance_steps_count += 1
                     print(f"🚀 APPLYING GUIDANCE at step {i} (timestep={t.item():.0f})")
-                        with torch.set_grad_enabled(True):
-                            pred_original_sample = self.scheduler.step(noise_pred, t, latents, return_dict=False, return_original=True)
-                            pred_original_sample = pred_original_sample.to(self.vae.dtype)
-                            latents_mean = (
-                                torch.tensor(self.vae.config.latents_mean)
-                                .view(1, self.vae.config.z_dim, 1, 1, 1)
-                                .to(pred_original_sample.device, pred_original_sample.dtype)
-                            )
-                            latents_std = 1.0 / torch.tensor(self.vae.config.latents_std).view(1, self.vae.config.z_dim, 1, 1, 1).to(
-                                pred_original_sample.device, pred_original_sample.dtype
-                            )
-                            pred_original_sample = pred_original_sample / latents_std + latents_mean
+                    with torch.set_grad_enabled(True):
+                        pred_original_sample = self.scheduler.step(noise_pred, t, latents, return_dict=False, return_original=True)
+                        pred_original_sample = pred_original_sample.to(self.vae.dtype)
+                        latents_mean = (
+                            torch.tensor(self.vae.config.latents_mean)
+                            .view(1, self.vae.config.z_dim, 1, 1, 1)
+                            .to(pred_original_sample.device, pred_original_sample.dtype)
+                        )
+                        latents_std = 1.0 / torch.tensor(self.vae.config.latents_std).view(1, self.vae.config.z_dim, 1, 1, 1).to(
+                            pred_original_sample.device, pred_original_sample.dtype
+                        )
+                        pred_original_sample = pred_original_sample / latents_std + latents_mean
 
-                            # print("Shape Before VAE decoder",latent_frame_slice.shape)
-                            orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
-                            # print("Shape After VAE decoder",orig_frame.shape)
+                        # print("Shape Before VAE decoder",latent_frame_slice.shape)
+                        orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
+                        # print("Shape After VAE decoder",orig_frame.shape)
 
-                            visualize = False
-                            if visualize:
-                                with torch.no_grad():
-                                    save_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type=output_type)
-                                    export_to_video(save_frame[0], f"./temp/robotarm2/guidance_sample_{rep}_{i}.mp4", fps=16)  # Export the original frames to video
+                        visualize = False
+                        if visualize:
+                            with torch.no_grad():
+                                save_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type=output_type)
+                                export_to_video(save_frame[0], f"./temp/robotarm2/guidance_sample_{rep}_{i}.mp4", fps=16)  # Export the original frames to video
+                    
+
+
+                        # Get vjepa loss
+                        B, C, T, H, W = orig_frame.shape
+                        orig_frame = orig_frame.view(T, C, H, W)
+                        with torch.enable_grad():
+                            # Use configurable V-JEPA parameters
+                            kernel_size = getattr(self, 'vjepa_kernel_size', 8)
+                            context_window_size = getattr(self, 'vjepa_context_length', 6)
+                            stride = getattr(self, 'vjepa_stride', 2)
+                            mode = getattr(self, 'vjepa_mode', 'max')
+                            loss = get_sliding_window_score_based(orig_frame, self.vjepa_model, self.vjepa_processor, 
+                                                                kernel_size=kernel_size, 
+                                                                context_window_size=context_window_size, 
+                                                                stride=stride, 
+                                                                return_form='no', 
+                                                                mode=mode, 
+                                                                require_grad=True)
+
+                        print_gpu_memory(VIS_MEM, info="after vjepa ================================")
                         
+                        loss.backward()
+                        grad = latents.grad.clone()
+                        latents.grad = None  # Clear the gradients
 
+                        # clipping and set coefficient
+                        grad_norm = grad.norm(2)
+                        rho = 1 / grad_norm
 
-                            # Get vjepa loss
-                            B, C, T, H, W = orig_frame.shape
-                            orig_frame = orig_frame.view(T, C, H, W)
-                            with torch.enable_grad():
-                                # Use configurable V-JEPA parameters
-                                kernel_size = getattr(self, 'vjepa_kernel_size', 8)
-                                context_window_size = getattr(self, 'vjepa_context_length', 6)
-                                stride = getattr(self, 'vjepa_stride', 2)
-                                mode = getattr(self, 'vjepa_mode', 'max')
-                                loss = get_sliding_window_score_based(orig_frame, self.vjepa_model, self.vjepa_processor, 
-                                                                    kernel_size=kernel_size, 
-                                                                    context_window_size=context_window_size, 
-                                                                    stride=stride, 
-                                                                    return_form='no', 
-                                                                    mode=mode, 
-                                                                    require_grad=True)
+                        print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Rho={rho.item():.6f}, Grad_norm={grad.norm(2).item():.4f}, Final_scale={guidance_rho_scale * rho.item():.4f}')
 
-                            print_gpu_memory(VIS_MEM, info="after vjepa ================================")
+                        if perform_travel:
+                            # with torch.no_grad():
+                            #     # pred_original_sample # clean data
+                            #     noise = randn_tensor(pred_original_sample.shape, generator=generator, device=device, dtype=pred_original_sample.dtype)
+                            #     latents = self.scheduler.add_noise(pred_original_sample, noise, t)
+                            #     latents = latents - 1 * grad # update with guidance
+                            pass
                             
-                            loss.backward()
-                            grad = latents.grad.clone()
-                            latents.grad = None  # Clear the gradients
-
-                            # clipping and set coefficient
-                            grad_norm = grad.norm(2)
-                            rho = 1 / grad_norm
-
-                            print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Rho={rho.item():.6f}, Grad_norm={grad.norm(2).item():.4f}, Final_scale={guidance_rho_scale * rho.item():.4f}')
-
-                            if perform_travel:
-                                # with torch.no_grad():
-                                #     # pred_original_sample # clean data
-                                #     noise = randn_tensor(pred_original_sample.shape, generator=generator, device=device, dtype=pred_original_sample.dtype)
-                                #     latents = self.scheduler.add_noise(pred_original_sample, noise, t)
-                                #     latents = latents - 1 * grad # update with guidance
-                                pass
-                                
-                            else:
-                                with torch.no_grad():
-                                    latents = latents - guidance_rho_scale * rho * grad # update with guidance
-                        # import pdb; pdb.set_trace()
-                        torch.cuda.empty_cache()
+                        else:
+                            with torch.no_grad():
+                                latents = latents - guidance_rho_scale * rho * grad # update with guidance
+                    # import pdb; pdb.set_trace()
+                    torch.cuda.empty_cache()
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, return_dict=False)[0]

@@ -1,0 +1,173 @@
+Tue Jul  1 15:57:26 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.133.20             Driver Version: 570.133.20     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H200                    On  |   00000000:59:00.0 Off |                    0 |
+| N/A   37C    P0             76W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H200                    On  |   00000000:5A:00.0 Off |                    0 |
+| N/A   34C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H200                    On  |   00000000:72:00.0 Off |                    0 |
+| N/A   35C    P0             75W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H200                    On  |   00000000:73:00.0 Off |                    0 |
+| N/A   34C    P0             75W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H200                    On  |   00000000:8B:00.0 Off |                    0 |
+| N/A   36C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H200                    On  |   00000000:8C:00.0 Off |                    0 |
+| N/A   38C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H200                    On  |   00000000:A4:00.0 Off |                    0 |
+| N/A   38C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H200                    On  |   00000000:A5:00.0 Off |                    0 |
+| N/A   34C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Running batch sample script env activated
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f17_s50_cfg5.0_0701_1557
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 17
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a sheep taking a peaceful walk
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a motorcycle gliding through a snowy field
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a dog enjoying a peaceful walk
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a train speeding down the tracks
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a boat slowing down to stop
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a person swimming in ocean
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a bicycle slowing down to stop
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 1/9 (vanilla): a bear sniffing the air for scents of food
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_motorcycle_gliding_through_a_snowy_field.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a motorcycle accelerating to gain speed
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_dog_enjoying_a_peaceful_walk.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a dog playing in park
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_sheep_taking_a_peaceful_walk.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a sheep running to join a herd of its kind
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_person_swimming_in_ocean.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a person giving a presentation to a room full of colleagues
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_bear_sniffing_the_air_for_scents_of_food.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a bear climbing a tree
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_bicycle_slowing_down_to_stop.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a bicycle accelerating to gain speed
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_boat_slowing_down_to_stop.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a boat accelerating to gain speed
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_train_speeding_down_the_tracks.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 2/9 (vanilla): a train crossing over a tall bridge
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_motorcycle_accelerating_to_gain_speed.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 3/9 (vanilla): an airplane soaring through a clear blue sky
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_sheep_running_to_join_a_herd_of_its_kind.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 3/9 (vanilla): a cow bending down to drink water from a river
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_dog_playing_in_park.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 3/9 (vanilla): a dog drinking water
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_person_giving_a_presentation_to_a_room_full_of_c.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 3/9 (vanilla): a person washing the dishes
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_bicycle_accelerating_to_gain_speed.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 3/9 (vanilla): a car stuck in traffic during rush hour
+[vanilla_f17_s50_cfg5.0_0701_1557] Generated: generated_videos/subject_consistency/vanilla_f17_s50_cfg5.0_0701_1557/a_bear_climbing_a_tree.mp4
+[vanilla_f17_s50_cfg5.0_0701_1557] Generating video 3/9 (vanilla): a bear hunting for prey
