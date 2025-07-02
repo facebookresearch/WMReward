@@ -43,26 +43,26 @@ NUM_GPUS=8
 GPU_INDEX=0
 
 
-# for MODEL in "${MODELS[@]}"; do
-#     for DIMENSION in "${DIMENSIONS[@]}"; do
-#         echo "Evaluating dimension: $DIMENSION for model: $MODEL"
-#         VIDEO_PATH="../video_guidance/generated_videos/$PROMPT/$MODEL"
-#         OUT_PATH="../video_guidance/results/vbench/$PROMPT/$MODEL/$DIMENSION"
-#         mkdir -p "$OUT_PATH"
+for MODEL in "${MODELS[@]}"; do
+    for DIMENSION in "${DIMENSIONS[@]}"; do
+        echo "Evaluating dimension: $DIMENSION for model: $MODEL"
+        VIDEO_PATH="../video_guidance/generated_videos/$PROMPT/$MODEL"
+        OUT_PATH="../video_guidance/results/vbench/$PROMPT/$MODEL/$DIMENSION"
+        mkdir -p "$OUT_PATH"
         
-#         # Assign the current task to a GPU
-#         CUDA_VISIBLE_DEVICES=$((GPU_INDEX % NUM_GPUS)) python3 ./evaluate.py \
-#             --dimension "$DIMENSION" \
-#             --videos_path "$VIDEO_PATH" \
-#             --output_path "$OUT_PATH" \
-#             --mode=custom_input &
-#         # Increment the GPU index
-#         GPU_INDEX=$((GPU_INDEX + 1))
-#     done
-#     wait
-# done
-# # Wait for all background processes to finish
-# wait
+        # Assign the current task to a GPU
+        CUDA_VISIBLE_DEVICES=$((GPU_INDEX % NUM_GPUS)) python3 ./evaluate.py \
+            --dimension "$DIMENSION" \
+            --videos_path "$VIDEO_PATH" \
+            --output_path "$OUT_PATH" \
+            --mode=custom_input &
+        # Increment the GPU index
+        GPU_INDEX=$((GPU_INDEX + 1))
+    done
+    wait
+done
+# Wait for all background processes to finish
+wait
 
 cd ../video_guidance
 

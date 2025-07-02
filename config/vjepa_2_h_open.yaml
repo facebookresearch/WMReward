@@ -1,0 +1,58 @@
+nodes: 1
+tasks_per_node: 6
+tag: test_intphys_2
+eval_name: intuitive_physics_modelcustom
+folder:  ./vit-h-open/
+resume_checkpoint: false
+experiment:
+  data:
+    batch_size: 1
+    resolution: 256
+    stride_sliding_window: 2
+    use_bfloat16: true
+    frames_per_clip: 16
+    context_lengths: [2,4,6,8,10]
+    frame_steps: 2
+    num_frames_to_pred: -1
+    dataset: intphys
+model_kwargs:
+  checkpoint: ./vit-h-open/vith.pt
+  module_name: app.vjepa.modelcustom.vit_encoder_predictor_noar_targets
+  wrapper_kwargs:
+    no_predictor: false
+    # num_output_frames: 2
+  pretrain_kwargs:
+    resolution: 256
+    predictor:
+      model_name: vit_predictor
+      checkpoint_key: predictor
+      depth: 12
+      is_causal: false
+      local_window:
+      - -1
+      - -1
+      - -1
+      num_heads: 12
+      uniform_power: true
+      use_activation_checkpointing: true
+      use_mask_tokens: true
+      use_rope: true
+      zero_init_mask_tokens: true
+      num_mask_tokens: 10
+      num_frames: 16
+    encoder:
+      model_name: vit_huge
+      checkpoint_key: encoder
+      is_causal: false
+      local_window:
+      - -1
+      - -1
+      - -1
+      uniform_power: true
+      use_activation_checkpointing: true
+      use_mask_tokens: true
+      use_rope: true
+      zero_init_mask_tokens: true
+      num_frames: 16
+    target_encoder:
+      checkpoint_key: target_encoder

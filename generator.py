@@ -2,9 +2,10 @@ import argparse
 from schedulers.unipc_multistep_scheduler import UniPCMultistepScheduler
 # from torchcodec.decoders import VideoDecoder
 from transformers import AutoVideoProcessor, AutoModel
-from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_based
+from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_based, calculate_torch_vjepa_loss
 from diffusers.utils import export_to_video
 from simple_benchmarking import get_simple_experiment_name, log_experiment_simple, get_simple_output_folder
+from utils import init_torch_vjepa, preprocess_video_for_torch_vjepa
 import torch
 import os
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
@@ -46,17 +47,23 @@ def init_pipeline(args):
             
     return pipe
 
-def init_vjepa2():
-    # jepa_model_id = "facebook/vjepa2-vitl-fpc64-256"  # or "facebook/vjepa2-vith-fpc64-256"
-    jepa_model_id = "facebook/vjepa2-vith-fpc64-256"  # Use the ViT-L model for better performance
-    processor = AutoVideoProcessor.from_pretrained(jepa_model_id)
-    model = AutoModel.from_pretrained(
-        jepa_model_id,
-        torch_dtype=torch.float16,
-        device_map="auto",
-        attn_implementation="sdpa"
-    )
-    return model, processor
+def init_vjepa2(model_type='hf'):
+    """Initialize V-JEPA model - either HuggingFace or torch version"""
+    if model_type == 'hf':
+        # jepa_model_id = "facebook/vjepa2-vitl-fpc64-256"  # or "facebook/vjepa2-vith-fpc64-256"
+        jepa_model_id = "facebook/vjepa2-vith-fpc64-256"  # Use the ViT-L model for better performance
+        processor = AutoVideoProcessor.from_pretrained(jepa_model_id)
+        model = AutoModel.from_pretrained(
+            jepa_model_id,
+            torch_dtype=torch.float16,
+            device_map="auto",
+            attn_implementation="sdpa"
+        )
+        return model, processor
+    elif model_type == 'torch':
+        return init_torch_vjepa(), None
+    else:
+        raise ValueError(f"Unknown model_type: {model_type}. Use 'hf' or 'torch'")
 
 
 def rejection_sample(pipe, args, prompt, negative_prompt, model, processor, generator=None):
@@ -65,14 +72,10 @@ def rejection_sample(pipe, args, prompt, negative_prompt, model, processor, gene
 
     for i in range(args.num_rejection_attempts):
         frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=args.height, width=args.width, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
+        # Convert frames to tensor format expected by torch model
+        video_tensor = preprocess_video_for_torch_vjepa(frames)
+        score = calculate_torch_vjepa_loss(video_tensor, model, context_length=args.context_length)
         
-        score = get_sliding_window_score_based(frames, model, processor, 
-                                              kernel_size=args.kernel_size, 
-                                              context_window_size=args.context_length, 
-                                              stride=args.stride, 
-                                              return_form='loss', 
-                                              mode=args.vjepa_mode, 
-                                              require_grad=False)
         # print(f"Attempt {i+1}/{args.num_rejection_attempts}, Score: {score}")
         if score < best_score:  # Update the best score and frames
             best_score = score
@@ -93,9 +96,6 @@ def generate_videos(pipe, args, prompts, negative_prompt, experiment_name, fps=1
 
     # Generate videos for each prompt
     for i, prompt in enumerate(prompts):
-        # Clean prompt for filename (remove special characters)
-        # safe_prompt = "".join(c for c in prompt if c.isalnum() or c in (' ', '-', '_')).rstrip()
-        # safe_prompt = safe_prompt.replace(' ', '_')[:50]  # Limit length
         safe_prompt = prompt
         
         video_path = os.path.join(output_folder, f"{safe_prompt}.mp4")
@@ -154,6 +154,9 @@ def main():
     parser.add_argument('--guidance_start', type=int, default=0, help='Timestep to start applying guidance.')
     parser.add_argument('--guidance_end', type=int, default=1001, help='Timestep to end applying guidance.')
     parser.add_argument('--guidance_rho_scale', type=float, default=3.0, help='Gradient scaling factor (rho_scale) for guidance.')
+    
+    # V-JEPA model type selection
+    parser.add_argument('--vjepa_model_type', type=str, default='hf', choices=['hf', 'torch'], help='V-JEPA model type: "hf" for HuggingFace or "torch" for Quentin\'s model.')
 
     args = parser.parse_args()
 
@@ -187,6 +190,7 @@ def main():
     
     if args.sampling_method in ['rejection', 'guidance']:
         print(f"V-JEPA parameters:")
+        print(f"  - Model type: {args.vjepa_model_type}")
         print(f"  - Kernel size: {args.kernel_size}")
         print(f"  - Context length: {args.context_length}")
         print(f"  - Stride: {args.stride}")
@@ -207,7 +211,7 @@ def main():
 
     # Initialize V-JEPA for methods that need it
     if args.sampling_method in ['rejection']:
-        model, processor = init_vjepa2()
+        model, processor = init_vjepa2(model_type=args.vjepa_model_type)
     else:
         # Vanilla doesn't need V-JEPA, guidance has it built into pipeline
         model, processor = None, None

@@ -4,3 +4,5 @@ CUDA_VISIBLE_DEVICES=7 nohup python3 generate_guidance.py > log.txt 2>&1 &
 
 
 # CUDA_VISIBLE_DEVICES=7 python3 generate_cosmos_guidance_i2v.py
+
+CUDA_VISIBLE_DEVICES=7 nohup python reproduce_intphy_v2.py --data_path /home/yjianhao/project/video_guidance/dev/O1 > log.txt 2>&1 &

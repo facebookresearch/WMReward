@@ -1,71 +1,178 @@
 nohup: ignoring input
-Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
-Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:00,  5.18it/s][A
-Loading checkpoint shards:  40%|████      | 2/5 [00:00<00:00,  4.91it/s][A
-Loading checkpoint shards:  60%|██████    | 3/5 [00:00<00:00,  4.92it/s][A
-Loading checkpoint shards:  80%|████████  | 4/5 [00:00<00:00,  4.46it/s][A
-Loading checkpoint shards: 100%|██████████| 5/5 [00:00<00:00,  5.46it/s][ALoading checkpoint shards: 100%|██████████| 5/5 [00:00<00:00,  5.13it/s]
-Loading pipeline components...:  60%|██████    | 3/5 [00:01<00:00,  2.53it/s]
-Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
-Loading checkpoint shards:  50%|█████     | 1/2 [00:00<00:00,  5.28it/s][ALoading checkpoint shards: 100%|██████████| 2/2 [00:00<00:00,  9.10it/s]
-Loading pipeline components...:  80%|████████  | 4/5 [00:01<00:00,  2.82it/s]Loading pipeline components...: 100%|██████████| 5/5 [00:01<00:00,  2.61it/s]Loading pipeline components...: 100%|██████████| 5/5 [00:01<00:00,  2.63it/s]
-🎬 STARTING GUIDANCE PIPELINE GENERATION
-   Frames: 33, Steps: 50, CFG Scale: 5.0
-
-🔧 GUIDANCE PIPELINE CONFIGURATION:
-   Guidance range: 750 - 990
-   Rho scale: 3.0
-   V-JEPA kernel_size: 8
-   V-JEPA context_length: 6
-   V-JEPA stride: 2
-   V-JEPA mode: max
-   Total timesteps: 50
-
-  0%|          | 0/50 [00:00<?, ?it/s]  2%|▏         | 1/50 [00:02<01:40,  2.04s/it]  4%|▍         | 2/50 [00:02<00:56,  1.17s/it]  6%|▌         | 3/50 [00:15<05:05,  6.51s/it]  8%|▊         | 4/50 [00:28<06:54,  9.02s/it] 10%|█         | 5/50 [00:42<08:05, 10.78s/it] 12%|█▏        | 6/50 [00:55<08:25, 11.49s/it] 14%|█▍        | 7/50 [01:06<08:18, 11.60s/it] 16%|█▌        | 8/50 [01:19<08:23, 12.00s/it] 18%|█▊        | 9/50 [01:32<08:21, 12.24s/it] 20%|██        | 10/50 [01:45<08:16, 12.41s/it] 22%|██▏       | 11/50 [01:58<08:10, 12.57s/it] 24%|██▍       | 12/50 [02:11<08:00, 12.64s/it] 26%|██▌       | 13/50 [02:23<07:48, 12.66s/it] 28%|██▊       | 14/50 [02:36<07:36, 12.68s/it] 30%|███       | 15/50 [02:49<07:25, 12.74s/it] 32%|███▏      | 16/50 [03:02<07:15, 12.81s/it] 34%|███▍      | 17/50 [03:12<06:34, 11.94s/it] 36%|███▌      | 18/50 [03:22<06:02, 11.34s/it] 38%|███▊      | 19/50 [03:31<05:35, 10.81s/it] 40%|████      | 20/50 [03:41<05:15, 10.50s/it] 42%|████▏     | 21/50 [03:51<04:57, 10.27s/it] 44%|████▍     | 22/50 [04:01<04:44, 10.15s/it] 46%|████▌     | 23/50 [04:12<04:40, 10.38s/it] 48%|████▊     | 24/50 [04:22<04:29, 10.35s/it] 50%|█████     | 25/50 [04:31<04:12, 10.11s/it] 52%|█████▏    | 26/50 [04:32<02:53,  7.24s/it] 54%|█████▍    | 27/50 [04:33<02:00,  5.24s/it] 56%|█████▌    | 28/50 [04:33<01:24,  3.83s/it] 58%|█████▊    | 29/50 [04:34<01:00,  2.87s/it] 60%|██████    | 30/50 [04:34<00:43,  2.18s/it] 62%|██████▏   | 31/50 [04:35<00:32,  1.69s/it] 64%|██████▍   | 32/50 [04:35<00:24,  1.35s/it] 66%|██████▌   | 33/50 [04:36<00:18,  1.11s/it] 68%|██████▊   | 34/50 [04:36<00:15,  1.06it/s] 70%|███████   | 35/50 [04:37<00:12,  1.21it/s] 72%|███████▏  | 36/50 [04:38<00:10,  1.34it/s] 74%|███████▍  | 37/50 [04:38<00:09,  1.42it/s] 76%|███████▌  | 38/50 [04:39<00:07,  1.52it/s] 78%|███████▊  | 39/50 [04:39<00:06,  1.59it/s] 80%|████████  | 40/50 [04:40<00:06,  1.65it/s] 82%|████████▏ | 41/50 [04:40<00:05,  1.69it/s] 84%|████████▍ | 42/50 [04:41<00:04,  1.72it/s] 86%|████████▌ | 43/50 [04:42<00:04,  1.74it/s] 88%|████████▊ | 44/50 [04:42<00:03,  1.76it/s] 90%|█████████ | 45/50 [04:43<00:02,  1.77it/s] 92%|█████████▏| 46/50 [04:43<00:02,  1.78it/s] 94%|█████████▍| 47/50 [04:44<00:01,  1.78it/s] 96%|█████████▌| 48/50 [04:44<00:01,  1.70it/s] 98%|█████████▊| 49/50 [04:45<00:00,  1.72it/s]100%|██████████| 50/50 [04:46<00:00,  1.74it/s]100%|██████████| 50/50 [04:46<00:00,  5.72s/it]
-🚀 APPLYING GUIDANCE at step 2 (timestep=985)
-🎯 GUIDANCE STEP 2 (t=985): Loss=0.5767, Rho=12.194089, Grad_norm=0.0820, Final_scale=36.5823
-🚀 APPLYING GUIDANCE at step 3 (timestep=978)
-🎯 GUIDANCE STEP 3 (t=978): Loss=0.5928, Rho=5.106112, Grad_norm=0.1958, Final_scale=15.3183
-🚀 APPLYING GUIDANCE at step 4 (timestep=971)
-🎯 GUIDANCE STEP 4 (t=971): Loss=0.6128, Rho=7.477750, Grad_norm=0.1337, Final_scale=22.4332
-🚀 APPLYING GUIDANCE at step 5 (timestep=963)
-🎯 GUIDANCE STEP 5 (t=963): Loss=0.6211, Rho=4.862832, Grad_norm=0.2056, Final_scale=14.5885
-🚀 APPLYING GUIDANCE at step 6 (timestep=956)
-🎯 GUIDANCE STEP 6 (t=956): Loss=0.6187, Rho=4.210995, Grad_norm=0.2375, Final_scale=12.6330
-🚀 APPLYING GUIDANCE at step 7 (timestep=948)
-🎯 GUIDANCE STEP 7 (t=948): Loss=0.6216, Rho=9.486125, Grad_norm=0.1054, Final_scale=28.4584
-🚀 APPLYING GUIDANCE at step 8 (timestep=939)
-🎯 GUIDANCE STEP 8 (t=939): Loss=0.6123, Rho=10.304067, Grad_norm=0.0970, Final_scale=30.9122
-🚀 APPLYING GUIDANCE at step 9 (timestep=931)
-🎯 GUIDANCE STEP 9 (t=931): Loss=0.6152, Rho=15.112919, Grad_norm=0.0662, Final_scale=45.3388
-🚀 APPLYING GUIDANCE at step 10 (timestep=922)
-🎯 GUIDANCE STEP 10 (t=922): Loss=0.6201, Rho=10.495243, Grad_norm=0.0953, Final_scale=31.4857
-🚀 APPLYING GUIDANCE at step 11 (timestep=913)
-🎯 GUIDANCE STEP 11 (t=913): Loss=0.6230, Rho=11.417736, Grad_norm=0.0876, Final_scale=34.2532
-🚀 APPLYING GUIDANCE at step 12 (timestep=904)
-🎯 GUIDANCE STEP 12 (t=904): Loss=0.6260, Rho=14.276277, Grad_norm=0.0700, Final_scale=42.8288
-🚀 APPLYING GUIDANCE at step 13 (timestep=894)
-🎯 GUIDANCE STEP 13 (t=894): Loss=0.6216, Rho=16.053066, Grad_norm=0.0623, Final_scale=48.1592
-🚀 APPLYING GUIDANCE at step 14 (timestep=884)
-🎯 GUIDANCE STEP 14 (t=884): Loss=0.6245, Rho=9.381124, Grad_norm=0.1066, Final_scale=28.1434
-🚀 APPLYING GUIDANCE at step 15 (timestep=874)
-🎯 GUIDANCE STEP 15 (t=874): Loss=0.6255, Rho=9.571714, Grad_norm=0.1045, Final_scale=28.7151
-🚀 APPLYING GUIDANCE at step 16 (timestep=864)
-🎯 GUIDANCE STEP 16 (t=864): Loss=0.6221, Rho=4.237576, Grad_norm=0.2360, Final_scale=12.7127
-🚀 APPLYING GUIDANCE at step 17 (timestep=853)
-🎯 GUIDANCE STEP 17 (t=853): Loss=0.6206, Rho=18.657112, Grad_norm=0.0536, Final_scale=55.9713
-🚀 APPLYING GUIDANCE at step 18 (timestep=841)
-🎯 GUIDANCE STEP 18 (t=841): Loss=0.6216, Rho=8.958950, Grad_norm=0.1116, Final_scale=26.8769
-🚀 APPLYING GUIDANCE at step 19 (timestep=829)
-🎯 GUIDANCE STEP 19 (t=829): Loss=0.6240, Rho=2.389407, Grad_norm=0.4185, Final_scale=7.1682
-🚀 APPLYING GUIDANCE at step 20 (timestep=817)
-🎯 GUIDANCE STEP 20 (t=817): Loss=0.6235, Rho=18.363138, Grad_norm=0.0545, Final_scale=55.0894
-🚀 APPLYING GUIDANCE at step 21 (timestep=805)
-🎯 GUIDANCE STEP 21 (t=805): Loss=0.6230, Rho=14.275664, Grad_norm=0.0700, Final_scale=42.8270
-🚀 APPLYING GUIDANCE at step 22 (timestep=792)
-🎯 GUIDANCE STEP 22 (t=792): Loss=0.6265, Rho=11.546314, Grad_norm=0.0866, Final_scale=34.6389
-🚀 APPLYING GUIDANCE at step 23 (timestep=778)
-🎯 GUIDANCE STEP 23 (t=778): Loss=0.6255, Rho=17.690119, Grad_norm=0.0565, Final_scale=53.0704
-🚀 APPLYING GUIDANCE at step 24 (timestep=764)
-🎯 GUIDANCE STEP 24 (t=764): Loss=0.6270, Rho=15.889744, Grad_norm=0.0629, Final_scale=47.6692
+/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from /home/yjianhao/project/quentinecode/vjepa2/vit-h-open/vith.pt
+INFO:root:loaded pretrained model with msg: <All keys matched successfully>
+INFO:root:loaded pretrained model with msg: <All keys matched successfully>
+INFO:root:loaded pretrained model with msg: <All keys matched successfully>
+Loading Quentin's full JEPA model from: /home/yjianhao/project/quentinecode/vjepa2/vit-h-open/vith.pt
+VisionTransformer(
+  (patch_embed): PatchEmbed3D(
+    (proj): Conv3d(3, 1280, kernel_size=(2, 16, 16), stride=(2, 16, 16))
+  )
+  (blocks): ModuleList(
+    (0-31): 32 x Block(
+      (norm1): LayerNorm((1280,), eps=1e-06, elementwise_affine=True)
+      (attn): RoPEAttention(
+        (qkv): Linear(in_features=1280, out_features=3840, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=1280, out_features=1280, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((1280,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=1280, out_features=5120, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=5120, out_features=1280, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((1280,), eps=1e-06, elementwise_affine=True)
+)
+VisionTransformerPredictor(
+  (predictor_embed): Linear(in_features=1280, out_features=384, bias=True)
+  (mask_tokens): ParameterList(
+      (0): Parameter containing: [torch.float32 of size 1x1x384]
+      (1): Parameter containing: [torch.float32 of size 1x1x384]
+      (2): Parameter containing: [torch.float32 of size 1x1x384]
+      (3): Parameter containing: [torch.float32 of size 1x1x384]
+      (4): Parameter containing: [torch.float32 of size 1x1x384]
+      (5): Parameter containing: [torch.float32 of size 1x1x384]
+      (6): Parameter containing: [torch.float32 of size 1x1x384]
+      (7): Parameter containing: [torch.float32 of size 1x1x384]
+      (8): Parameter containing: [torch.float32 of size 1x1x384]
+      (9): Parameter containing: [torch.float32 of size 1x1x384]
+  )
+  (predictor_blocks): ModuleList(
+    (0-11): 12 x Block(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): RoPEAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (predictor_norm): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+  (predictor_proj): Linear(in_features=384, out_features=1280, bias=True)
+)
+Quentin's full JEPA model loaded successfully!
+Evaluating dataset at: /home/yjianhao/project/video_guidance/dev/O1
+Results will be saved to: ./intphys_results_v2_quentin_style_dev_O1_f16_s2_20250702_191522
+Using Quentin's full JEPA model (encoder + target_encoder + predictor)
+Dataset loaded: 30 scenes
+Evaluating scenes:   0%|          | 0/30 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/queues.py", line 264, in _feed
+    obj = _ForkingPickler.dumps(obj)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/site-packages/torch/multiprocessing/reductions.py", line 619, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 198, in DupFd
+    return resource_sharer.DupFd(fd)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 76, in register
+    self._start()
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 126, in _start
+    self._listener = Listener(authkey=process.current_process().authkey, backlog=128)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 464, in __init__
+    self._listener = SocketListener(address, family, backlog)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 608, in __init__
+    self._socket.bind(address)
+OSError: AF_UNIX path too long
+Traceback (most recent call last):
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/queues.py", line 264, in _feed
+    obj = _ForkingPickler.dumps(obj)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/site-packages/torch/multiprocessing/reductions.py", line 619, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 198, in DupFd
+    return resource_sharer.DupFd(fd)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 76, in register
+    self._start()
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 126, in _start
+    self._listener = Listener(authkey=process.current_process().authkey, backlog=128)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 464, in __init__
+    self._listener = SocketListener(address, family, backlog)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 608, in __init__
+    self._socket.bind(address)
+OSError: AF_UNIX path too long
+Traceback (most recent call last):
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/queues.py", line 264, in _feed
+    obj = _ForkingPickler.dumps(obj)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/site-packages/torch/multiprocessing/reductions.py", line 619, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 198, in DupFd
+    return resource_sharer.DupFd(fd)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 76, in register
+    self._start()
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 126, in _start
+    self._listener = Listener(authkey=process.current_process().authkey, backlog=128)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 464, in __init__
+    self._listener = SocketListener(address, family, backlog)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 608, in __init__
+    self._socket.bind(address)
+OSError: AF_UNIX path too long
+Traceback (most recent call last):
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/queues.py", line 264, in _feed
+    obj = _ForkingPickler.dumps(obj)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/site-packages/torch/multiprocessing/reductions.py", line 619, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/reduction.py", line 198, in DupFd
+    return resource_sharer.DupFd(fd)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 76, in register
+    self._start()
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/resource_sharer.py", line 126, in _start
+    self._listener = Listener(authkey=process.current_process().authkey, backlog=128)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 464, in __init__
+    self._listener = SocketListener(address, family, backlog)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yjianhao/miniconda3/envs/debugvjepa/lib/python3.12/multiprocessing/connection.py", line 608, in __init__
+    self._socket.bind(address)
+OSError: AF_UNIX path too long
