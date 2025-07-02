@@ -7,12 +7,12 @@ set -e
 
 # Configuration
 INTPHYS_ROOT="/home/yjianhao/project/video_guidance"
-SCRIPT_PATH="./reproduce_intphy_v2.py"
-MODEL_PATH="/home/yjianhao/project/vjepa2/checkpoints/vitg-384.pt"
+SCRIPT_PATH="/home/yjianhao/project/video_guidance/reproduce_intphy_v2.py"
+MODEL_PATH="/home/yjianhao/project/quentinecode/vjepa2/vit-h-open/vith.pt"
 DEVICE="cuda"  # cuda, cpu
 FRAME_STEP=2   # Original paper uses frame skip of 2 (matching original config)
 FRAMES_PER_CLIP=16  # Standard for V-JEPA
-IMG_SIZE=224   # Match original config (224, not 384!)
+IMG_SIZE=256   # Match original config (224, not 384!)
 BATCH_SIZE=1
 
 # Check if script exists
@@ -39,7 +39,7 @@ if [ ! -f "$MODEL_PATH" ]; then
 fi
 
 echo "================================================"
-echo "PyTorch V-JEPA V2 IntPhys Evaluation (Corrected JEPA)"
+echo "Quentin's Full JEPA IntPhys Evaluation"
 echo "================================================"
 echo "Data root: $INTPHYS_ROOT"
 echo "Model: $MODEL_PATH"
@@ -63,14 +63,16 @@ run_evaluation() {
         return
     fi
     
-    # Run evaluation
+    # Run evaluation and save log
+    echo "Running evaluation for $parent_name/$dataset_name..."
     python3 "$SCRIPT_PATH" \
         --data_path "$dataset_path" \
         --model_path "$MODEL_PATH" \
         --frame_step $FRAME_STEP \
         --frames_per_clip $FRAMES_PER_CLIP \
         --img_size $IMG_SIZE \
-        --batch_size $BATCH_SIZE
+        --batch_size $BATCH_SIZE \
+        2>&1 | tee "evaluation_log_${parent_name}_${dataset_name}_$(date +%Y%m%d_%H%M%S).txt"
     
     echo "Completed $parent_name/$dataset_name"
     echo ""
@@ -85,16 +87,17 @@ run_evaluation "$INTPHYS_ROOT/dev/O2"
 run_evaluation "$INTPHYS_ROOT/dev/O3"
 
 echo "================================================"
-echo "All PyTorch V-JEPA V2 evaluations completed!"
+echo "All Quentin's Full JEPA evaluations completed!"
 echo "================================================"
 echo ""
-echo "Results saved in timestamped directories:"
-echo "- intphys_results_v2_pytorch_dev_O*_f${FRAMES_PER_CLIP}_s${FRAME_STEP}_YYYYMMDD_HHMMSS/"
+echo "Results saved in current directory:"
+echo "- intphys_results_v2_quentin_style_dev_O*_f${FRAMES_PER_CLIP}_s${FRAME_STEP}_YYYYMMDD_HHMMSS/ (result directories)"
+echo "- evaluation_log_dev_O*_YYYYMMDD_HHMMSS.txt (evaluation logs)"
 echo ""
-echo "Each directory contains:"
-echo "- performance_pytorch_vjepa_v2.csv: Results in original paper format"
-echo "- raw_losses_pytorch_vjepa_v2.pth: Raw loss data for further analysis"
-echo "- detailed_metrics_pytorch_vjepa_v2.json: Detailed metrics breakdown"
+echo "Each result directory contains:"
+echo "- performance_quentin_style_jepa.csv: Results in original paper format"
+echo "- raw_losses_quentin_style_jepa.pth: Raw loss data for further analysis"
+echo "- detailed_metrics_quentin_style_jepa.json: Detailed metrics breakdown"
 echo ""
 echo "CSV format matches original paper with columns:"
 echo "- Block, Context length(s), Frame skip"
@@ -102,5 +105,5 @@ echo "- Relative Accuracy (avg), Relative Accuracy (max)"
 echo "- Absolute Accuracy (max), Best Absolute Accuracy (max)"
 echo "- AUPRC (avg), AUPRC (max), AUROC (avg), AUROC (max)" 
 echo ""
-echo "Note: Currently using simplified approach (single encoder) until"
-echo "full JEPA checkpoint with target_encoder and predictor is available." 
+echo "Note: Now using Quentin's full JEPA implementation with"
+echo "encoder, target_encoder, and predictor components from vith.pt checkpoint." 

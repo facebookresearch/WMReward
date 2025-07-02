@@ -11,11 +11,11 @@ import torchvision.transforms as transforms
 
 class IntPhysDataset(Dataset):
     """
-    Minimal IntPhys Dataset for loading intuitive physics videos.
+    IntPhys Dataset following the original implementation structure.
     
     Expected data structure:
-    data_path/
-    ├── scene_001/
+    data_path/ (e.g., O1, O2, O3)
+    ├── 01/
     │   ├── 1/
     │   │   ├── scene/
     │   │   │   ├── frame_000.jpg
@@ -24,6 +24,7 @@ class IntPhysDataset(Dataset):
     │   ├── 2/ (similar structure)
     │   ├── 3/ (similar structure)
     │   └── 4/ (similar structure)
+    ├── 02/ (similar structure)
     └── ...
     """
     
@@ -37,7 +38,7 @@ class IntPhysDataset(Dataset):
     ):
         """
         Args:
-            data_path: Path to IntPhys dataset
+            data_path: Path to IntPhys property (e.g., /path/to/IntPhys/dev/O1/)
             frames_per_clip: Number of frames to sample per clip
             frame_step: Step size between sampled frames
             transform: Transform to apply to frames
@@ -49,7 +50,7 @@ class IntPhysDataset(Dataset):
         self.transform = transform
         self.return_paths = return_paths
         
-        # Get all scene directories
+        # Get all scene directories (like 01, 02, 03, etc.)
         self.scenes = sorted([d for d in os.listdir(self.data_path) 
                              if os.path.isdir(os.path.join(self.data_path, d))])
         
@@ -58,7 +59,7 @@ class IntPhysDataset(Dataset):
         
         self.length_clip = self.frames_per_clip * self.frame_step
         
-        # Default transform if none provided
+        # Default transform if none provided - matches original implementation
         if self.transform is None:
             self.transform = transforms.Compose([
                 transforms.Resize((224, 224)),
@@ -67,93 +68,103 @@ class IntPhysDataset(Dataset):
                                    std=[0.229, 0.224, 0.225])
             ])
 
-    def _load_frames(self, scene_path, possibility):
-        """Load frames for a specific scene and possibility."""
-        frames_dir = os.path.join(scene_path, str(possibility), "scene")
+    def _load_frames(self, scene, possibility):
+        """Load frames for a specific scene and possibility following original structure."""
+        frames_dir = os.path.join(self.data_path, scene, str(possibility), "scene")
         
         if not os.path.exists(frames_dir):
             raise FileNotFoundError(f"Frames directory not found: {frames_dir}")
         
-        # Get all frame files
-        frame_files = sorted([f for f in os.listdir(frames_dir) 
-                            if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
+        # Get all frame files and sort them
+        frames_all = sorted([f for f in os.listdir(frames_dir) 
+                           if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
         
-        if len(frame_files) < self.length_clip:
+        if len(frames_all) < self.length_clip:
             # If not enough frames, start from beginning
             start = 0
         else:
-            # Random start position
-            start = np.random.randint(0, len(frame_files) - self.length_clip + 1)
+            # Random start position like original
+            start = np.random.randint(0, len(frames_all) - self.length_clip)
+            
+        # Handle edge case for very long clips
+        if self.length_clip > 90:
+            start = 0
+            
+        # Sample frames with step like original
+        frames_to_load = frames_all[start:start + self.length_clip:self.frame_step]
         
-        # Sample frames with step
-        frames_to_load = frame_files[start:start + self.length_clip:self.frame_step]
-        
-        # Load and transform frames
+        # Load frames as PIL images first
         clip = []
-        for frame_file in frames_to_load:
-            frame_path = os.path.join(frames_dir, frame_file)
-            frame = Image.open(frame_path).convert('RGB')
-            clip.append(frame)
+        for frame in frames_to_load:
+            frame_path = os.path.join(frames_dir, frame)
+            frame_ = Image.open(frame_path).convert('RGB')
+            clip.append(frame_)
         
-        # Apply transforms
-        if self.transform:
+        # Apply transforms to PIL images (transforms handle PIL -> Tensor conversion)
+        if self.transform is not None:
             clip = [self.transform(frame) for frame in clip]
-        
-        return torch.stack(clip)
+            clip = torch.stack(clip)
+        else:
+            # Manual conversion if no transform
+            clip = [torch.tensor(np.array(frame)).permute(2, 0, 1).float() / 255.0 for frame in clip]
+            clip = torch.stack(clip)
+            
+        return clip
 
-    def _load_label(self, scene_path, possibility):
-        """Load label from status.json."""
-        status_path = os.path.join(scene_path, str(possibility), "status.json")
+    def _load_label(self, scene, possibility):
+        """Load label from status.json following original implementation."""
+        status_path = os.path.join(self.data_path, scene, str(possibility), "status.json")
         
         try:
             with open(status_path, 'r') as f:
-                status_data = json.load(f)
-            return status_data['header']['is_possible']
-        except (FileNotFoundError, KeyError, json.JSONDecodeError):
-            # Default to True if status file is missing or malformed
-            return True
+                a = json.load(f)
+            label = a['header']['is_possible']
+        except:
+            label = True  # Default like original
+            
+        return label
 
     def __getitem__(self, index):
-        """Get a scene with all 4 possibilities."""
+        """Get a scene with all 4 possibilities following original implementation."""
         scene = self.scenes[index]
-        scene_path = os.path.join(self.data_path, scene)
         
-        clips = []
         labels = []
+        buffer = []
         paths = []
         
-        # Load all 4 possibilities for this scene
+        # Load all 4 possibilities for this scene like original
         for possibility in [1, 2, 3, 4]:
             try:
                 # Load video clip
-                clip = self._load_frames(scene_path, possibility)
-                clips.append(clip)
+                clip = self._load_frames(scene, possibility)
+                buffer.append(clip)
                 
                 # Load label
-                label = self._load_label(scene_path, possibility)
+                label = self._load_label(scene, possibility)
                 labels.append(label)
                 
-                # Store path if requested
+                # Store path if requested (matches original format)
                 if self.return_paths:
-                    paths.append(f"{scene}/{possibility}")
+                    paths.append(f"{self.data_path[-2:]}/{scene}/{possibility}")
                     
             except Exception as e:
                 print(f"Warning: Error loading {scene}/{possibility}: {e}")
                 # Create dummy data for missing possibilities
                 dummy_clip = torch.zeros(self.frames_per_clip, 3, 224, 224)
-                clips.append(dummy_clip)
+                buffer.append(dummy_clip)
                 labels.append(False)
                 if self.return_paths:
-                    paths.append(f"{scene}/{possibility}")
+                    paths.append(f"{self.data_path[-2:]}/{scene}/{possibility}")
         
-        # Stack clips and convert labels
-        clips = torch.stack(clips)  # Shape: (4, frames, 3, H, W)
-        labels = torch.tensor(labels, dtype=torch.bool)
+        # Stack clips and convert labels like original
+        buffer = torch.stack(buffer)  # Shape: (4, frames, 3, H, W)
+        labels = torch.Tensor(labels)
+        id = torch.Tensor([index])
         
         if self.return_paths:
-            return clips, labels, paths
+            return buffer, labels, paths
         else:
-            return clips, labels
+            return buffer, labels, id
 
     def __len__(self):
         return len(self.scenes)
@@ -170,10 +181,10 @@ def create_intphys_dataloader(
     return_paths=False
 ):
     """
-    Create a DataLoader for IntPhys dataset.
+    Create a DataLoader for IntPhys dataset following original implementation.
     
     Args:
-        data_path: Path to IntPhys dataset
+        data_path: Path to IntPhys property (e.g., /path/to/IntPhys/dev/O1/)
         batch_size: Batch size
         frames_per_clip: Number of frames per clip
         frame_step: Frame sampling step
@@ -198,7 +209,8 @@ def create_intphys_dataloader(
         batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,
-        pin_memory=True
+        pin_memory=True,
+        drop_last=False
     )
     
     return dataloader

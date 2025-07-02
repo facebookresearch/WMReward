@@ -1,0 +1,74 @@
+{
+  "2": {
+    "Relative Accuracy (avg)": 50.0,
+    "Relative Accuracy (max)": 40.0,
+    "Absolute Accuracy (max)": 51.666664123535156,
+    "Classifier threhshold": 0.6964840888977051,
+    "Best Absolute Accuracy (max)": 58.33333206176758,
+    "Best Classifier threhshold": 0.683317193479249,
+    "AUPRC (avg)": 0.46711033169708677,
+    "AUPRC (max)": 0.521745646840678,
+    "AUROC (avg)": 0.49999999999999994,
+    "AUROC (max)": 0.5172222222222222
+  },
+  "4": {
+    "Relative Accuracy (avg)": 40.0,
+    "Relative Accuracy (max)": 46.66666793823242,
+    "Absolute Accuracy (max)": 51.666664123535156,
+    "Classifier threhshold": 0.6941325068473816,
+    "Best Absolute Accuracy (max)": 58.33333206176758,
+    "Best Classifier threhshold": 0.6848301327589786,
+    "AUPRC (avg)": 0.4711509899129279,
+    "AUPRC (max)": 0.5062463538946707,
+    "AUROC (avg)": 0.47888888888888886,
+    "AUROC (max)": 0.5138888888888888
+  },
+  "6": {
+    "Relative Accuracy (avg)": 43.33333206176758,
+    "Relative Accuracy (max)": 40.0,
+    "Absolute Accuracy (max)": 51.666664123535156,
+    "Classifier threhshold": 0.6965205669403076,
+    "Best Absolute Accuracy (max)": 55.0,
+    "Best Classifier threhshold": 0.640178362528483,
+    "AUPRC (avg)": 0.48094498303435734,
+    "AUPRC (max)": 0.5261283557026886,
+    "AUROC (avg)": 0.47000000000000003,
+    "AUROC (max)": 0.48333333333333334
+  },
+  "8": {
+    "Relative Accuracy (avg)": 30.000001907348633,
+    "Relative Accuracy (max)": 40.0,
+    "Absolute Accuracy (max)": 48.33333206176758,
+    "Classifier threhshold": 0.7025761604309082,
+    "Best Absolute Accuracy (max)": 56.66666793823242,
+    "Best Classifier threhshold": 0.6430799425250352,
+    "AUPRC (avg)": 0.5080900931457417,
+    "AUPRC (max)": 0.5603164261360767,
+    "AUROC (avg)": 0.4633333333333333,
+    "AUROC (max)": 0.4844444444444444
+  },
+  "10": {
+    "Relative Accuracy (avg)": 46.66666793823242,
+    "Relative Accuracy (max)": 36.66666793823242,
+    "Absolute Accuracy (max)": 46.66666793823242,
+    "Classifier threhshold": 0.7008443474769592,
+    "Best Absolute Accuracy (max)": 56.66666793823242,
+    "Best Classifier threhshold": 0.6473100510510531,
+    "AUPRC (avg)": 0.5488998047307336,
+    "AUPRC (max)": 0.5782324796439056,
+    "AUROC (avg)": 0.49888888888888894,
+    "AUROC (max)": 0.5233333333333333
+  },
+  "Filtered": {
+    "Relative Accuracy (avg)": 46.66666793823242,
+    "Relative Accuracy (max)": 46.66666793823242,
+    "Absolute Accuracy (max)": 50.0,
+    "Classifier threhshold": 0.6810670495033264,
+    "Best Absolute Accuracy (max)": 55.0,
+    "Best Classifier threhshold": 0.6402126893852697,
+    "AUPRC (avg)": 0.5115060571633927,
+    "AUPRC (max)": 0.5644045227838271,
+    "AUROC (avg)": 0.48333333333333334,
+    "AUROC (max)": 0.5222222222222223
+  }
+}

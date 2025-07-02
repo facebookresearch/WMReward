@@ -94,8 +94,9 @@ def generate_videos(pipe, args, prompts, negative_prompt, experiment_name, fps=1
     # Generate videos for each prompt
     for i, prompt in enumerate(prompts):
         # Clean prompt for filename (remove special characters)
-        safe_prompt = "".join(c for c in prompt if c.isalnum() or c in (' ', '-', '_')).rstrip()
-        safe_prompt = safe_prompt.replace(' ', '_')[:50]  # Limit length
+        # safe_prompt = "".join(c for c in prompt if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        # safe_prompt = safe_prompt.replace(' ', '_')[:50]  # Limit length
+        safe_prompt = prompt
         
         video_path = os.path.join(output_folder, f"{safe_prompt}.mp4")
         if os.path.exists(video_path):

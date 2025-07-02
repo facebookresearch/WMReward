@@ -4,14 +4,23 @@ import argparse
 
 args = argparse.ArgumentParser(description="Generate a CSV file for video paths and captions.")
 args.add_argument('--model', type=str, default='wan2.1-1.3b', help='Model name to use for video generation.')
+args.add_argument('--prompt', type=str, default='subject_consistency', help='Prompt type/category.')
 args = args.parse_args()
-# Directory containing the video files
-# directory = '/home/yjianhao/project/video_guidance/generated_videos/wan2.1-1.3b/subject_consistency'
-directory = f'/home/yjianhao/project/video_guidance/generated_videos/{args.model}/subject_consistency'
+
+# Directory containing the video files - corrected path structure
+directory = f'/home/yjianhao/project/video_guidance/generated_videos/{args.prompt}/{args.model}'
 
 # Output CSV file
-# output_csv = 'sapc_wan.csv'
 output_csv = f'/home/yjianhao/project/video_guidance/temp/{args.model}.csv'
+
+# Create temp directory if it doesn't exist
+os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+
+# Check if directory exists
+if not os.path.exists(directory):
+    print(f"Error: Directory not found: {directory}")
+    print("Please check if videos have been generated for this model.")
+    exit(1)
 
 # List to store the rows for the CSV
 rows = []
@@ -28,6 +37,10 @@ for filename in os.listdir(directory):
         # Append the row to the list
         rows.append([caption, videopath])
 
+if not rows:
+    print(f"Warning: No .mp4 files found in {directory}")
+    exit(1)
+
 # Write the rows to the CSV file
 with open(output_csv, 'w', newline='') as csvfile:
     csvwriter = csv.writer(csvfile)
@@ -36,4 +49,4 @@ with open(output_csv, 'w', newline='') as csvfile:
     # Write the data
     csvwriter.writerows(rows)
 
-print(f"CSV file '{output_csv}' has been created.")
+print(f"CSV file '{output_csv}' has been created with {len(rows)} video entries.")

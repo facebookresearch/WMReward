@@ -1,0 +1,1761 @@
+Wed Jul  2 01:27:17 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.133.20             Driver Version: 570.133.20     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H200                    On  |   00000000:59:00.0 Off |                    0 |
+| N/A   37C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H200                    On  |   00000000:5A:00.0 Off |                    0 |
+| N/A   34C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H200                    On  |   00000000:72:00.0 Off |                    0 |
+| N/A   36C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H200                    On  |   00000000:73:00.0 Off |                    0 |
+| N/A   35C    P0             76W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H200                    On  |   00000000:8B:00.0 Off |                    0 |
+| N/A   37C    P0             80W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H200                    On  |   00000000:8C:00.0 Off |                    0 |
+| N/A   36C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H200                    On  |   00000000:A4:00.0 Off |                    0 |
+| N/A   37C    P0             76W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H200                    On  |   00000000:A5:00.0 Off |                    0 |
+| N/A   34C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Running batch sample script env activated
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a sheep taking a peaceful walk
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a dog enjoying a peaceful walk
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a bear sniffing the air for scents of food
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a motorcycle gliding through a snowy field
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a bicycle slowing down to stop
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a train speeding down the tracks
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a person swimming in ocean
+[vanilla_f33_s50_cfg5.0] Generating video 1/9 (vanilla): a boat slowing down to stop
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep taking a peaceful walk.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a sheep running to join a herd of its kind
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog enjoying a peaceful walk.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a dog playing in park
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear sniffing the air for scents of food.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a bear climbing a tree
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle gliding through a snowy field.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a motorcycle accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a bicycle accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person swimming in ocean.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a person giving a presentation to a room full of colleagues
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a boat accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train speeding down the tracks.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 2/9 (vanilla): a train crossing over a tall bridge
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): a cow bending down to drink water from a river
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear climbing a tree.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): a bear hunting for prey
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog playing in park.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): a dog drinking water
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): an airplane soaring through a clear blue sky
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): a car stuck in traffic during rush hour
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): a bird soaring gracefully in the sky
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): a person washing the dishes
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train crossing over a tall bridge.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 3/9 (vanilla): a train accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear hunting for prey.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): a zebra bending down to drink water from a river
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): a cow chewing cud while resting in a tranquil barn
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog drinking water.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): a dog running happily
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane soaring through a clear blue sky.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): an airplane taking off
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car stuck in traffic during rush hour.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): a car turning a corner
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird soaring gracefully in the sky.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): a bird building a nest from twigs and leaves
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person washing the dishes.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): a person eating a burger
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 4/9 (vanilla): a truck turning a corner
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): a zebra running to join a herd of its kind
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): a cow running to join a herd of its kind
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog running happily.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): a horse bending down to drink water from a river
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane taking off.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): an airplane landing smoothly on a runway
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird building a nest from twigs and leaves.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): a bird flying over a snowy forest
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car turning a corner.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): a car slowing down to stop
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck turning a corner.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): a truck anchored in a tranquil bay
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person eating a burger.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 5/9 (vanilla): a person walking in the snowstorm
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): a zebra taking a peaceful walk
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): an elephant spraying itself with water using its trunk to cool down
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): a horse galloping across an open field
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane landing smoothly on a runway.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): an airplane accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird flying over a snowy forest.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): a cat grooming itself meticulously with its tongue
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): a car accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck anchored in a tranquil bay.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): a truck stuck in traffic during rush hour
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person walking in the snowstorm.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 6/9 (vanilla): a person drinking coffee in a cafe
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra taking a peaceful walk.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): a giraffe bending down to drink water from a river
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): an elephant taking a peaceful walk
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse galloping across an open field.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): a horse taking a peaceful walk
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): a bus turning a corner
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): a cat playing in park
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): a motorcycle cruising along a coastal highway
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck stuck in traffic during rush hour.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): a truck slowing down to stop
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person drinking coffee in a cafe.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 7/9 (vanilla): a person playing guitar
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): a giraffe taking a peaceful walk
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant taking a peaceful walk.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): an elephant running to join a herd of its kind
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse taking a peaceful walk.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): a horse running to join a herd of its kind
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus turning a corner.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): a bus stuck in traffic during rush hour
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat playing in park.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): a cat drinking water
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): a motorcycle turning a corner
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): a truck accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person playing guitar.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 8/9 (vanilla): a bicycle leaning against a tree
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe taking a peaceful walk.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a giraffe running to join a herd of its kind
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a bear catching a salmon in its powerful jaws
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a sheep bending down to drink water from a river
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus stuck in traffic during rush hour.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a bus accelerating to gain speed
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle turning a corner.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a motorcycle slowing down to stop
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat drinking water.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a cat running happily
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a boat sailing smoothly on a calm lake
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle leaning against a tree.mp4
+[vanilla_f33_s50_cfg5.0] Generating video 9/9 (vanilla): a bicycle gliding through a snowy field
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat running happily.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+[vanilla_f33_s50_cfg5.0] Generated: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle gliding through a snowy field.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear sniffing the air for scents of food.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear climbing a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear hunting for prey.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train speeding down the tracks.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train crossing over a tall bridge.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck anchored in a tranquil bay.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle gliding through a snowy field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane soaring through a clear blue sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane taking off.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane landing smoothly on a runway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog enjoying a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog running happily.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse galloping across an open field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird soaring gracefully in the sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird building a nest from twigs and leaves.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird flying over a snowy forest.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat running happily.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person swimming in ocean.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person washing the dishes.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person eating a burger.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person walking in the snowstorm.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person drinking coffee in a cafe.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person playing guitar.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle leaning against a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle gliding through a snowy field.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle gliding through a snowy field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane soaring through a clear blue sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane taking off.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane landing smoothly on a runway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person swimming in ocean.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person washing the dishes.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person eating a burger.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person walking in the snowstorm.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person drinking coffee in a cafe.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person playing guitar.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle leaning against a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle gliding through a snowy field.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train speeding down the tracks.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train crossing over a tall bridge.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck anchored in a tranquil bay.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear sniffing the air for scents of food.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear climbing a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear hunting for prey.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog enjoying a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog running happily.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse galloping across an open field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird soaring gracefully in the sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird building a nest from twigs and leaves.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird flying over a snowy forest.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat running happily.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+
+============================================================
+EXPERIMENT: vanilla_f33_s50_cfg5.0
+============================================================
+Sampling method: vanilla
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+============================================================
+
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog enjoying a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a dog running happily.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse galloping across an open field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a horse running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep bending down to drink water from a river.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train speeding down the tracks.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train crossing over a tall bridge.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a train accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck anchored in a tranquil bay.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a truck accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person swimming in ocean.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person washing the dishes.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person eating a burger.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person walking in the snowstorm.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person drinking coffee in a cafe.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a person playing guitar.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle leaning against a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle gliding through a snowy field.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a sheep running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cow running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an elephant running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear sniffing the air for scents of food.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear climbing a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bear hunting for prey.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a zebra taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bicycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a car accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle slowing down to stop.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle gliding through a snowy field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a motorcycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane soaring through a clear blue sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane taking off.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane landing smoothly on a runway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/an airplane accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bus accelerating to gain speed.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a boat accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird soaring gracefully in the sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird building a nest from twigs and leaves.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a bird flying over a snowy forest.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0/a cat running happily.mp4
+[vanilla_f33_s50_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/vanilla_f33_s50_cfg5.0
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a bear sniffing the air for scents of food
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a motorcycle gliding through a snowy field
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a bicycle slowing down to stop
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a sheep taking a peaceful walk
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a train speeding down the tracks
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a dog enjoying a peaceful walk
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a boat slowing down to stop
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 1/9 (rejection): a person swimming in ocean
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog enjoying a peaceful walk.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a dog playing in park
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear sniffing the air for scents of food.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a bear climbing a tree
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train speeding down the tracks.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a train crossing over a tall bridge
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle gliding through a snowy field.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a motorcycle accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep taking a peaceful walk.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a sheep running to join a herd of its kind
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a boat accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a bicycle accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person swimming in ocean.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 2/9 (rejection): a person giving a presentation to a room full of colleagues
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog playing in park.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): a dog drinking water
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear climbing a tree.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): a bear hunting for prey
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train crossing over a tall bridge.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): a train accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): an airplane soaring through a clear blue sky
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): a bird soaring gracefully in the sky
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): a cow bending down to drink water from a river
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): a car stuck in traffic during rush hour
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 3/9 (rejection): a person washing the dishes
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear hunting for prey.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): a zebra bending down to drink water from a river
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog drinking water.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): a dog running happily
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): a truck turning a corner
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird soaring gracefully in the sky.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): a bird building a nest from twigs and leaves
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): a cow chewing cud while resting in a tranquil barn
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane soaring through a clear blue sky.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): an airplane taking off
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car stuck in traffic during rush hour.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): a car turning a corner
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person washing the dishes.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 4/9 (rejection): a person eating a burger
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck turning a corner.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): a truck anchored in a tranquil bay
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): a zebra running to join a herd of its kind
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog running happily.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): a horse bending down to drink water from a river
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird building a nest from twigs and leaves.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): a bird flying over a snowy forest
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane taking off.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): an airplane landing smoothly on a runway
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): a cow running to join a herd of its kind
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car turning a corner.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): a car slowing down to stop
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person eating a burger.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 5/9 (rejection): a person walking in the snowstorm
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck anchored in a tranquil bay.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): a truck stuck in traffic during rush hour
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): a zebra taking a peaceful walk
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): a horse galloping across an open field
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird flying over a snowy forest.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): a cat grooming itself meticulously with its tongue
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane landing smoothly on a runway.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): an airplane accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): an elephant spraying itself with water using its trunk to cool down
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): a car accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person walking in the snowstorm.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 6/9 (rejection): a person drinking coffee in a cafe
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra taking a peaceful walk.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): a giraffe bending down to drink water from a river
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse galloping across an open field.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): a horse taking a peaceful walk
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck stuck in traffic during rush hour.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): a truck slowing down to stop
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): a cat playing in park
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): a bus turning a corner
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): a motorcycle cruising along a coastal highway
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): an elephant taking a peaceful walk
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): a giraffe taking a peaceful walk
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): a truck accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse taking a peaceful walk.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): a horse running to join a herd of its kind
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat playing in park.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): a cat drinking water
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person drinking coffee in a cafe.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 7/9 (rejection): a person playing guitar
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus turning a corner.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): a bus stuck in traffic during rush hour
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): a motorcycle turning a corner
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant taking a peaceful walk.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): an elephant running to join a herd of its kind
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a sheep bending down to drink water from a river
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe taking a peaceful walk.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a giraffe running to join a herd of its kind
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a boat sailing smoothly on a calm lake
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat drinking water.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a cat running happily
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus stuck in traffic during rush hour.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a bus accelerating to gain speed
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person playing guitar.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 8/9 (rejection): a bicycle leaning against a tree
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle turning a corner.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a motorcycle slowing down to stop
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a bear catching a salmon in its powerful jaws
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat running happily.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle leaning against a tree.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generating video 9/9 (rejection): a bicycle gliding through a snowy field
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+[rejection_f33_s50_w8c6_a10_cfg5.0] Generated: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle gliding through a snowy field.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird soaring gracefully in the sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird building a nest from twigs and leaves.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird flying over a snowy forest.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat running happily.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train speeding down the tracks.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train crossing over a tall bridge.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck anchored in a tranquil bay.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle gliding through a snowy field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane soaring through a clear blue sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane taking off.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane landing smoothly on a runway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person swimming in ocean.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person washing the dishes.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person eating a burger.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person walking in the snowstorm.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person drinking coffee in a cafe.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person playing guitar.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle leaning against a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle gliding through a snowy field.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog enjoying a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog running happily.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse galloping across an open field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear sniffing the air for scents of food.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear climbing a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear hunting for prey.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle gliding through a snowy field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane soaring through a clear blue sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane taking off.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane landing smoothly on a runway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird soaring gracefully in the sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird building a nest from twigs and leaves.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird flying over a snowy forest.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat running happily.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person swimming in ocean.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person washing the dishes.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person eating a burger.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person walking in the snowstorm.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person drinking coffee in a cafe.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person playing guitar.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle leaning against a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle gliding through a snowy field.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog enjoying a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog running happily.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse galloping across an open field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train speeding down the tracks.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train crossing over a tall bridge.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck anchored in a tranquil bay.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear sniffing the air for scents of food.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear climbing a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear hunting for prey.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+
+============================================================
+EXPERIMENT: rejection_f33_s50_w8c6_a10_cfg5.0
+============================================================
+Sampling method: rejection
+Inference steps: 50
+Frames per video: 33
+CFG scale: 5.0
+Prompts assigned to this GPU: 9
+V-JEPA parameters:
+  - Kernel size: 8
+  - Context length: 6
+  - Stride: 2
+  - Mode: max
+Rejection sampling:
+  - Attempts: 10
+============================================================
+
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird soaring gracefully in the sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird building a nest from twigs and leaves.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bird flying over a snowy forest.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat grooming itself meticulously with its tongue.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cat running happily.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person swimming in ocean.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person giving a presentation to a room full of colleagues.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person washing the dishes.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person eating a burger.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person walking in the snowstorm.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person drinking coffee in a cafe.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a person playing guitar.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle leaning against a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle gliding through a snowy field.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow chewing cud while resting in a tranquil barn.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a cow running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant spraying itself with water using its trunk to cool down.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an elephant running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear catching a salmon in its powerful jaws.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bicycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a car accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle cruising along a coastal highway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle slowing down to stop.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear sniffing the air for scents of food.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear climbing a tree.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bear hunting for prey.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a zebra taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a giraffe running to join a herd of its kind.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog enjoying a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog playing in park.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog drinking water.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a dog running happily.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse bending down to drink water from a river.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse galloping across an open field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse taking a peaceful walk.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a horse running to join a herd of its kind.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a sheep bending down to drink water from a river.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train speeding down the tracks.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train crossing over a tall bridge.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a train accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck anchored in a tranquil bay.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck slowing down to stop.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a truck accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a boat sailing smoothly on a calm lake.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle gliding through a snowy field.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a motorcycle accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane soaring through a clear blue sky.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane taking off.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane landing smoothly on a runway.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/an airplane accelerating to gain speed.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus turning a corner.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus stuck in traffic during rush hour.mp4
+Video already exists, skipping: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0/a bus accelerating to gain speed.mp4
+[rejection_f33_s50_w8c6_a10_cfg5.0] Experiment completed! Results saved to: generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0

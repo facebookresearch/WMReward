@@ -1,0 +1,295 @@
+{
+    "temporal_flickering": [
+        0.967964169684968,
+        [
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_cow_bending_down_to_drink_water_from_a_river.mp4",
+                "video_results": 0.9619384765625
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/an_elephant_spraying_itself_with_water_using_its_t.mp4",
+                "video_results": 0.9825630655475691
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_person_walking_in_the_snowstorm.mp4",
+                "video_results": 0.9889291342566995
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_truck_accelerating_to_gain_speed.mp4",
+                "video_results": 0.9663500692330155
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_giraffe_taking_a_peaceful_walk.mp4",
+                "video_results": 0.9679052951289159
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_dog_enjoying_a_peaceful_walk.mp4",
+                "video_results": 0.9926927370183608
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_person_swimming_in_ocean.mp4",
+                "video_results": 0.9851233482360839
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bus_accelerating_to_gain_speed.mp4",
+                "video_results": 0.9539157717835669
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bird_building_a_nest_from_twigs_and_leaves.mp4",
+                "video_results": 0.9740538017422545
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bear_hunting_for_prey.mp4",
+                "video_results": 0.9739441422855153
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_person_playing_guitar.mp4",
+                "video_results": 0.9673546435786229
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bicycle_gliding_through_a_snowy_field.mp4",
+                "video_results": 0.9731473660936543
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_dog_drinking_water.mp4",
+                "video_results": 0.9739614729787789
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_cow_chewing_cud_while_resting_in_a_tranquil_barn.mp4",
+                "video_results": 0.9921733631807215
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_cat_grooming_itself_meticulously_with_its_tongue.mp4",
+                "video_results": 0.976534480674594
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_car_accelerating_to_gain_speed.mp4",
+                "video_results": 0.9167512482287837
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_horse_running_to_join_a_herd_of_its_kind.mp4",
+                "video_results": 0.9538439881567862
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bear_sniffing_the_air_for_scents_of_food.mp4",
+                "video_results": 0.9856530105366427
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_motorcycle_slowing_down_to_stop.mp4",
+                "video_results": 0.976065590802361
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bird_flying_over_a_snowy_forest.mp4",
+                "video_results": 0.9390249364516314
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_sheep_bending_down_to_drink_water_from_a_river.mp4",
+                "video_results": 0.9771098604389266
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_boat_slowing_down_to_stop.mp4",
+                "video_results": 0.9797422820446537
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_cow_running_to_join_a_herd_of_its_kind.mp4",
+                "video_results": 0.9834076750512216
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_person_drinking_coffee_in_a_cafe.mp4",
+                "video_results": 0.9951970278048048
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_cat_drinking_water.mp4",
+                "video_results": 0.9897054812487434
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/an_airplane_accelerating_to_gain_speed.mp4",
+                "video_results": 0.9747366849113913
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bicycle_slowing_down_to_stop.mp4",
+                "video_results": 0.9665459127987133
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bus_stuck_in_traffic_during_rush_hour.mp4",
+                "video_results": 0.9630347906374463
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_train_accelerating_to_gain_speed.mp4",
+                "video_results": 0.9172717898499732
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_motorcycle_cruising_along_a_coastal_highway.mp4",
+                "video_results": 0.9750048749587115
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_person_washing_the_dishes.mp4",
+                "video_results": 0.9613307391895968
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_truck_anchored_in_a_tranquil_bay.mp4",
+                "video_results": 0.9850664709128586
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_truck_stuck_in_traffic_during_rush_hour.mp4",
+                "video_results": 0.9747109244851505
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_train_crossing_over_a_tall_bridge.mp4",
+                "video_results": 0.9849601783004461
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_sheep_running_to_join_a_herd_of_its_kind.mp4",
+                "video_results": 0.9698589381049662
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_motorcycle_gliding_through_a_snowy_field.mp4",
+                "video_results": 0.9634066824819527
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_horse_taking_a_peaceful_walk.mp4",
+                "video_results": 0.9897734754225787
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bicycle_leaning_against_a_tree.mp4",
+                "video_results": 0.9863301445456112
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/an_airplane_taking_off.mp4",
+                "video_results": 0.989134713715198
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bird_soaring_gracefully_in_the_sky.mp4",
+                "video_results": 0.9944092610303094
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/an_elephant_taking_a_peaceful_walk.mp4",
+                "video_results": 0.9844227136350145
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_motorcycle_turning_a_corner.mp4",
+                "video_results": 0.9426808039347331
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_horse_galloping_across_an_open_field.mp4",
+                "video_results": 0.9560318254957012
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_giraffe_bending_down_to_drink_water_from_a_river.mp4",
+                "video_results": 0.9599553800096698
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_boat_accelerating_to_gain_speed.mp4",
+                "video_results": 0.940433292762906
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_truck_slowing_down_to_stop.mp4",
+                "video_results": 0.9694328420302447
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bicycle_accelerating_to_gain_speed.mp4",
+                "video_results": 0.9510478561999751
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bus_turning_a_corner.mp4",
+                "video_results": 0.9216742496864468
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/an_elephant_running_to_join_a_herd_of_its_kind.mp4",
+                "video_results": 0.9596766527961282
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_dog_playing_in_park.mp4",
+                "video_results": 0.9847500071806066
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_motorcycle_accelerating_to_gain_speed.mp4",
+                "video_results": 0.9577581181245691
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bear_climbing_a_tree.mp4",
+                "video_results": 0.984990099364636
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_bear_catching_a_salmon_in_its_powerful_jaws.mp4",
+                "video_results": 0.9637025459139955
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_sheep_taking_a_peaceful_walk.mp4",
+                "video_results": 0.9716880704842362
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/an_airplane_soaring_through_a_clear_blue_sky.mp4",
+                "video_results": 0.9967283153066449
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_boat_sailing_smoothly_on_a_calm_lake.mp4",
+                "video_results": 0.9655878515804515
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_cat_playing_in_park.mp4",
+                "video_results": 0.9679349712297028
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_person_giving_a_presentation_to_a_room_full_of_c.mp4",
+                "video_results": 0.9950077028835521
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_zebra_taking_a_peaceful_walk.mp4",
+                "video_results": 0.9712099019218894
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_zebra_running_to_join_a_herd_of_its_kind.mp4",
+                "video_results": 0.9721748370750277
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_car_turning_a_corner.mp4",
+                "video_results": 0.9479340010998296
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_train_speeding_down_the_tracks.mp4",
+                "video_results": 0.9115538279215495
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_car_stuck_in_traffic_during_rush_hour.mp4",
+                "video_results": 0.9464217803057502
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/an_airplane_landing_smoothly_on_a_runway.mp4",
+                "video_results": 0.9916966587889429
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_car_slowing_down_to_stop.mp4",
+                "video_results": 0.9788561241299498
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_person_eating_a_burger.mp4",
+                "video_results": 0.9829081367043888
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_cat_running_happily.mp4",
+                "video_results": 0.9181878332998238
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_truck_turning_a_corner.mp4",
+                "video_results": 0.9504790810977711
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_horse_bending_down_to_drink_water_from_a_river.mp4",
+                "video_results": 0.9805812199910482
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_zebra_bending_down_to_drink_water_from_a_river.mp4",
+                "video_results": 0.9743199105356254
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_giraffe_running_to_join_a_herd_of_its_kind.mp4",
+                "video_results": 0.9454633002187691
+            },
+            {
+                "video_path": "../video_guidance/generated_videos/subject_consistency/rejection_f33_s50_w8c6_a10_cfg5.0_0701_2111/a_dog_running_happily.mp4",
+                "video_results": 0.9254664551978018
+            }
+        ]
+    ]
+}
