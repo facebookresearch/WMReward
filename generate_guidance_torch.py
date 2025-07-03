@@ -4,7 +4,7 @@ from schedulers.unipc_multistep_scheduler import UniPCMultistepScheduler
 from diffusers.utils import export_to_video
 import torch
 from utils import init_torch_vjepa, preprocess_video_for_torch_vjepa  # Import torch V-JEPA functions
-from compute_vjepa_score import calculate_torch_vjepa_loss, calculate_torch_vjepa_loss_with_grad  # Import torch V-JEPA loss computation
+from compute_vjepa_score import calculate_torch_vjepa_loss  # Import torch V-JEPA loss computation
 import os
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
@@ -22,6 +22,9 @@ pipe.scheduler = scheduler
 # Replace HuggingFace V-JEPA with torch version in the pipeline
 pipe.vjepa_model = torch_vjepa
 pipe.vjepa_processor = None
+
+# Set V-JEPA parameters to match config (frames_per_clip = 16)
+pipe.vjepa_kernel_size = 16
 
 pipe.enable_model_cpu_offload()
 # pipe.vae.enable_tiling()

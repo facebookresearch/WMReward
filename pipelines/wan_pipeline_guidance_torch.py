@@ -30,7 +30,7 @@ from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.wan.pipeline_output import WanPipelineOutput
 
 from utils import init_torch_vjepa, preprocess_video_for_torch_vjepa
-from compute_vjepa_score import calculate_torch_vjepa_loss, calculate_torch_vjepa_loss_with_grad
+from compute_vjepa_score import calculate_torch_vjepa_loss
 from diffusers.utils import export_to_video
 import gpustat
 from torch.utils.checkpoint import checkpoint
@@ -603,14 +603,14 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
             return output
 
         # Use configurable guidance parameters if available, otherwise use defaults
-        guidance_range = [getattr(self, 'guidance_start', 750), getattr(self, 'guidance_end', 990)]
+        guidance_range = [getattr(self, 'guidance_start', 750), getattr(self, 'guidance_end', 900)]
         time_travel_range = [-1, -1]
         
         # Print guidance configuration
         print(f"\n🔧 GUIDANCE PIPELINE CONFIGURATION:")
         print(f"   Guidance range: {guidance_range[0]} - {guidance_range[1]}")
         print(f"   Rho scale: {getattr(self, 'guidance_rho_scale', 3.0)}")
-        print(f"   V-JEPA kernel_size: {getattr(self, 'vjepa_kernel_size', 8)}")
+        print(f"   V-JEPA kernel_size: {getattr(self, 'vjepa_kernel_size', 16)}")
         print(f"   V-JEPA context_length: {getattr(self, 'vjepa_context_length', 6)}")
         print(f"   V-JEPA stride: {getattr(self, 'vjepa_stride', 2)}")
         print(f"   V-JEPA mode: {getattr(self, 'vjepa_mode', 'max')}")
@@ -695,7 +695,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
                         # print("Shape After VAE decoder",orig_frame.shape)
 
-                        visualize = False
+                        visualize = True
                         if visualize:
                             with torch.no_grad():
                                 save_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type=output_type)
@@ -708,20 +708,21 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         
                         with torch.enable_grad():
                             # Use configurable V-JEPA parameters 
-                            kernel_size = getattr(self, 'vjepa_kernel_size', 8)
-                            context_window_size = getattr(self, 'vjepa_context_length', 6)
+                            frames_per_clip = 16  # Fixed size that model was trained with
+                            context_window_size = getattr(self, 'vjepa_context_length', 12)
                             stride = getattr(self, 'vjepa_stride', 2)
                             
-                            # frames_per_clip should match the temporal dimension T of the video
-                            frames_per_clip = T
-                            
-                            # Calculate loss with gradients enabled for torch V-JEPA
-                            loss = calculate_torch_vjepa_loss_with_grad(
+                            # Calculate loss with sliding window handled inside the function
+                            loss = calculate_torch_vjepa_loss(
                                 orig_frame_tensor, 
                                 self.vjepa_model,
                                 context_length=context_window_size,
                                 frames_per_clip=frames_per_clip,
-                                stride=stride
+                                stride=stride,
+                                require_grad=True,
+                                mode='max',
+                                return_arr=False,
+                                is_vae_output=True
                             )
 
                         print_gpu_memory(VIS_MEM, info="after vjepa ================================")

@@ -263,13 +263,20 @@ def extract_losses_for_scene(model, scene_data, context_lengths, frames_per_clip
         pieces = clip.unfold(2, model.frames_per_clip, stride).permute(0, 2, -1, 1, 3, 4).contiguous()
         pieces = pieces.flatten(0, 1)
         pieces = rearrange(pieces, "b t c h w -> b c t h w")
-        
+
+        # Save the first piece and check the value range
+        first_piece = pieces[0].detach().cpu()
+        logger.info(f"First piece shape: {first_piece.shape}")
+        logger.info(f"First piece value range: [{first_piece.min():.6f}, {first_piece.max():.6f}]")
+        logger.info(f"First piece mean: {first_piece.mean():.6f}")
+        logger.info(f"First piece std: {first_piece.std():.6f}")
+        # import pdb; pdb.set_trace()        
         logger.info(f"pieces {pieces.shape}")
         
         # Process in chunks exactly as Quentin does
         chunked_preds = []
         chunked_targets = []
-        CHUNK_SIZE = 2  # Same as Quentin's
+        CHUNK_SIZE = 1 # Same as Quentin's
         
         logger.info(f"Number of chunks {int(np.ceil(pieces.shape[0]/CHUNK_SIZE))}")
         

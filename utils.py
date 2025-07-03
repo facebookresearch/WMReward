@@ -89,10 +89,7 @@ def init_torch_vjepa():
         model_kwargs=model_kwargs,
         wrapper_kwargs=wrapper_kwargs,
     ).to(device)
-    
-    # model.eval()
-    # for p in model.parameters():
-    #     p.requires_grad = False
+
     
     print(f"Torch V-JEPA model loaded from {checkpoint_path} using config {config_path}")
     return model 

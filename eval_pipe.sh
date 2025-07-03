@@ -2,27 +2,19 @@ DIMENSIONS=('subject_consistency' 'temporal_flickering' 'aesthetic_quality' 'dyn
 
 # Auto-discover models from generated videos directory
 PROMPT='subject_consistency'
+# Specify the list of experiments (model folders) to evaluate
+EXPS=(
+    # "guidance_f33_s50_w16c8_rho100.0_cfg5.0torch"
+    # "guidance_f33_s50_w16c8_rho50.0_cfg5.0torch"
+    # "guidance_f33_s50_w16c8_rho3.0_cfg5.0torch"
+    # "guidance_f33_s50_w16c8_rho1.0_cfg5.0torch"
+    # "vanilla_f33_s50_cfg5.0_0701_2103"
+    # "vanilla_f33_s50_cfg5.0"
+    "guidance_f33_s50_w16c8_rho10.0_cfg5.0torch"
+)
 GENERATED_VIDEOS_DIR="../video_guidance/generated_videos/$PROMPT"
+MODELS=("${EXPS[@]}")
 
-echo "Auto-discovering models from: $GENERATED_VIDEOS_DIR"
-if [ ! -d "$GENERATED_VIDEOS_DIR" ]; then
-    echo "Error: Generated videos directory not found: $GENERATED_VIDEOS_DIR"
-    echo "Please run generate.sh first!"
-    exit 1
-fi
-
-# Get all model directories that contain .mp4 files
-MODELS=()
-for model_dir in "$GENERATED_VIDEOS_DIR"/*; do
-    if [ -d "$model_dir" ]; then
-        model_name=$(basename "$model_dir")
-        # Check if directory contains video files
-        if ls "$model_dir"/*.mp4 >/dev/null 2>&1; then
-            MODELS+=("$model_name")
-            echo "Found model: $model_name"
-        fi
-    fi
-done
 
 if [ ${#MODELS[@]} -eq 0 ]; then
     echo "Error: No models with video files found in $GENERATED_VIDEOS_DIR"

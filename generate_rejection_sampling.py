@@ -1,8 +1,7 @@
 from pipelines.wan_pipeline import WanPipeline
-from torchcodec.decoders import VideoDecoder
 from transformers import AutoVideoProcessor, AutoModel
 from diffusers.utils import export_to_video
-from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max, calculate_torch_vjepa_loss # Import the process_video function
+from compute_vjepa_score import calculate_torch_vjepa_loss # Import the process_video function
 from utils import init_torch_vjepa, preprocess_video_for_torch_vjepa
 import torch
 import matplotlib.pyplot as plt
@@ -29,7 +28,7 @@ num_frames = 33
 # init torch vjepa (using corrected version)
 print("Loading torch V-JEPA model...")
 torch_model = init_torch_vjepa()
-context_length = 2  # Set context length for scoring
+context_length = 10  # Set context length for scoring (changed from 2 to 4, which is more standard)
 
 # Parameters for rejection sampling
 num_attempts = 10
@@ -48,7 +47,16 @@ for i in range(num_attempts):  # Try 10 times
     
     # Use torch V-JEPA with corrected preprocessing
     video_tensor = preprocess_video_for_torch_vjepa(frames)
-    score = calculate_torch_vjepa_loss(video_tensor, torch_model, context_length=context_length)
+    score = calculate_torch_vjepa_loss(
+                                video_tensor, 
+                                torch_model,
+                                context_length=context_length,  # Use variable instead of hardcoded 10
+                                frames_per_clip=16,
+                                stride=2,
+                                use_bfloat16=True,  # Explicitly set for clarity
+                                require_grad=False,
+                                mode='max'
+                            )
     all_scores.append(score)
     
     export_to_video(frames, f"{dir_path}/wan-t2v{i}_{score:.6f}.mp4", fps=16)  # Export to video

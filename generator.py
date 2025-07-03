@@ -25,7 +25,11 @@ def init_pipeline(args):
     """Initialize the WanPipeline with the specified model ID."""
     if "wan" in args.model_id:
         if args.sampling_method == 'guidance':
-            from pipelines.wan_pipeline_guidance_v2 import WanPipeline
+            # Use torch V-JEPA guidance pipeline if specified
+            if hasattr(args, 'vjepa_model_type') and args.vjepa_model_type == 'torch':
+                from pipelines.wan_pipeline_guidance_torch import WanPipeline
+            else:
+                from pipelines.wan_pipeline_guidance_v2 import WanPipeline
         elif args.sampling_method in ['rejection', 'vanilla']:
             from pipelines.wan_pipeline import WanPipeline
         else:
@@ -40,7 +44,11 @@ def init_pipeline(args):
             pipe.guidance_start = args.guidance_start
             pipe.guidance_end = args.guidance_end
             pipe.guidance_rho_scale = args.guidance_rho_scale
-            pipe.vjepa_kernel_size = args.kernel_size
+            # For torch V-JEPA, always use kernel_size=16 (frames_per_clip)
+            if hasattr(args, 'vjepa_model_type') and args.vjepa_model_type == 'torch':
+                pipe.vjepa_kernel_size = 16  # Torch V-JEPA always uses 16 frames per clip
+            else:
+                pipe.vjepa_kernel_size = args.kernel_size  # Use configurable kernel_size for HF V-JEPA
             pipe.vjepa_context_length = args.context_length
             pipe.vjepa_stride = args.stride
             pipe.vjepa_mode = args.vjepa_mode
@@ -74,7 +82,16 @@ def rejection_sample(pipe, args, prompt, negative_prompt, model, processor, gene
         frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=args.num_frames, height=args.height, width=args.width, generator=generator, num_inference_steps=args.num_inference_steps, guidance_scale=args.cfg_scale).frames[0]
         # Convert frames to tensor format expected by torch model
         video_tensor = preprocess_video_for_torch_vjepa(frames)
-        score = calculate_torch_vjepa_loss(video_tensor, model, context_length=args.context_length)
+        score = calculate_torch_vjepa_loss(
+            video_tensor, 
+            model, 
+            context_length=args.context_length,
+            frames_per_clip=16,  # V-JEPA always uses 16 frames per clip
+            stride=args.stride,
+            use_bfloat16=True,
+            require_grad=False,
+            mode=args.vjepa_mode
+        )
         
         # print(f"Attempt {i+1}/{args.num_rejection_attempts}, Score: {score}")
         if score < best_score:  # Update the best score and frames
@@ -162,10 +179,19 @@ def main():
 
     # Validate V-JEPA parameters
     if args.sampling_method in ['rejection', 'guidance']:
-        if args.context_length >= args.kernel_size:
-            raise ValueError(f"context_length ({args.context_length}) must be less than kernel_size ({args.kernel_size})")
-        if args.kernel_size > args.num_frames:
-            raise ValueError(f"kernel_size ({args.kernel_size}) cannot be larger than num_frames ({args.num_frames})")
+        if args.sampling_method == 'rejection' and args.vjepa_model_type == 'torch':
+            # For torch V-JEPA: frames_per_clip is always 16
+            if args.context_length >= 16:
+                raise ValueError(f"context_length ({args.context_length}) must be less than 16 (torch V-JEPA frames_per_clip)")
+            if 16 > args.num_frames:
+                raise ValueError(f"torch V-JEPA requires at least 16 frames, but num_frames is {args.num_frames}")
+        elif args.sampling_method == 'guidance' or (args.sampling_method == 'rejection' and args.vjepa_model_type == 'hf'):
+            # For HuggingFace V-JEPA or guidance pipeline: use args.kernel_size
+            if args.context_length >= args.kernel_size:
+                raise ValueError(f"context_length ({args.context_length}) must be less than kernel_size ({args.kernel_size})")
+            if args.kernel_size > args.num_frames:
+                raise ValueError(f"kernel_size ({args.kernel_size}) cannot be larger than num_frames ({args.num_frames})")
+        
         if args.stride <= 0:
             raise ValueError(f"stride ({args.stride}) must be positive")
 
@@ -191,7 +217,10 @@ def main():
     if args.sampling_method in ['rejection', 'guidance']:
         print(f"V-JEPA parameters:")
         print(f"  - Model type: {args.vjepa_model_type}")
-        print(f"  - Kernel size: {args.kernel_size}")
+        if args.vjepa_model_type == 'torch':
+            print(f"  - Kernel size: 16 (torch V-JEPA frames_per_clip)")
+        else:
+            print(f"  - Kernel size: {args.kernel_size}")
         print(f"  - Context length: {args.context_length}")
         print(f"  - Stride: {args.stride}")
         print(f"  - Mode: {args.vjepa_mode}")

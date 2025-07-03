@@ -2,21 +2,21 @@
 
 # Define hyperparameter triplets (kernel_size, context_length, stride)
 # For vanilla: parameters are ignored, so use dummy values
-# For rejection/guidance: use meaningful V-JEPA parameters
+# For rejection/guidance with torch V-JEPA: kernel_size is ignored (always 16), use meaningful context_length and stride
 TRIPLETS=(
-    "8 6 2"   # Good balance for V-JEPA evaluation
-    # "4 2 2"   # Shorter context
-    # "16 10 4" # Longer context
+    # "16 4 2"   # context_length=4, stride=2 (kernel_size ignored for torch V-JEPA)
+    "16 8 2"   # context_length=6, stride=2 (kernel_size ignored for torch V-JEPA)
+    # "16 10 2"  # context_length=10, stride=2 (kernel_size ignored for torch V-JEPA)
 )
 
 # Rho scale values for guidance ablation
 RHO_SCALES=(
-    "1.0"
-    "3.0"
-    "50.0"
-    "100.0" 
-    # "5.0"
-    # "10.0"
+    # "1.0"
+    # "3.0"
+    # "50.0"
+    # "100.0" 
+    "5.0"
+    "10.0"
     # "15.0"
     # "20.0"
 )
@@ -25,8 +25,8 @@ MODEL_NAMES=("wan")
 PROMPT_FILES=("subject_consistency")
 NUM_GPUS=8
 OUTPUT_FOLDER="generated_videos"
-SAMPLE_METHODS=("vanilla" "rejection")
-# SAMPLE_METHODS=("guidance")
+# SAMPLE_METHODS=("vanilla" "rejection")
+SAMPLE_METHODS=("guidance")
 NUM_SAMPLING_STEPS="50" 
 
 # Ablation parameters (adjust these for different experiments):
@@ -35,6 +35,7 @@ NUM_SAMPLING_STEPS="50"
 # --cfg_scale: Classifier-free guidance scale (for all methods)
 # --guidance_start/end: Timestep range for applying guidance
 # --guidance_rho_scale: Gradient scaling factor (rho_scale) for guidance
+# --vjepa_model_type: Use 'torch' for Quentin's V-JEPA implementation
 
 mkdir -p "$OUTPUT_FOLDER"
 
@@ -70,7 +71,8 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
                         --cfg_scale 5.0 \
                         --guidance_start 0 \
                         --guidance_end 1001 \
-                        --guidance_rho_scale $RHO_SCALE &
+                        --guidance_rho_scale $RHO_SCALE \
+                        --vjepa_model_type torch &
                 done
                 wait
             done

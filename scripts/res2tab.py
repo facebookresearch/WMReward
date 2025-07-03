@@ -74,34 +74,33 @@ def generate_latex_table(model_list, prompt, metrics_to_average, base_dir, csv_r
         \textbf{Model Evaluation Metrics.} A comparison of metrics across different models.
     }
     \resizebox{1.0\linewidth}{!}{
-    \begin{tabular}{l""" + "c" * (len(metric_list) + 3) + r"""}
+    \begin{tabular}{l""" + "c" * (len(metric_list) + 4) + r"""}
         \toprule
         \textbf{Model}"""
     
     for metric in metric_list:
         latex_table += f" & \\textbf{{{metric.replace('_', ' ')}}}"
-    latex_table += r" & \textbf{Average} & \textbf{PC} & \textbf{SA} \\"
+    latex_table += r" & \textbf{PC} & \textbf{SA} & \textbf{PCp} & \textbf{SAp} \\"
     latex_table += r"        \midrule" + "\n"
 
     for model in model_list:
         row = [f"        {model}"]
-        scores = []
         for metric in metric_list:
             score = results[model].get(metric, None)
             if score is not None:
                 row.append(f"{score * 100:.2f}")
-                scores.append(score)
             else:
                 row.append("N/A")
         
-        valid_scores = [s for s in scores if s is not None]
-        avg = sum(valid_scores)/len(valid_scores)*100 if valid_scores else "N/A"
-        row.append(f"{avg:.2f}" if isinstance(avg, float) else "N/A")
-        
         pc_avg = csv_results.get(model, {}).get('pc', "N/A")
         sa_avg = csv_results.get(model, {}).get('sa', "N/A")
+        pcp_score = csv_results.get(model, {}).get('pcp', "N/A")
+        sap_score = csv_results.get(model, {}).get('sap', "N/A")
+        
         row.append(f"{pc_avg:.2f}" if isinstance(pc_avg, float) else "N/A")
         row.append(f"{sa_avg:.2f}" if isinstance(sa_avg, float) else "N/A")
+        row.append(f"{pcp_score:.2f}" if isinstance(pcp_score, float) else "N/A")
+        row.append(f"{sap_score:.2f}" if isinstance(sap_score, float) else "N/A")
         
         latex_table += " & ".join(row) + r" \\\\ " + "\n"
 
@@ -112,29 +111,28 @@ def generate_latex_table(model_list, prompt, metrics_to_average, base_dir, csv_r
     return latex_table
 
 def generate_markdown_table(model_list, metric_list, results, csv_results):
-    header = ["Model"] + [metric.replace('_', ' ').title() for metric in metric_list] + ["Average", "PC", "SA"]
+    header = ["Model"] + [metric.replace('_', ' ').title() for metric in metric_list] + ["PC", "SA", "PCp", "SAp"]
     md_table = "| " + " | ".join(header) + " |\n"
     md_table += "| " + " | ".join(["---"] * len(header)) + " |\n"
     
     for model in model_list:
         row = [model]
-        scores = []
         for metric in metric_list:
             score = results[model].get(metric, None)
             if score is not None:
                 row.append(f"{score * 100:.2f}")
-                scores.append(score)
             else:
                 row.append("N/A")
         
-        valid_scores = [s for s in scores if s is not None]
-        avg = sum(valid_scores)/len(valid_scores)*100 if valid_scores else "N/A"
-        row.append(f"{avg:.2f}" if isinstance(avg, float) else "N/A")
-        
         pc_avg = csv_results.get(model, {}).get('pc', "N/A")
         sa_avg = csv_results.get(model, {}).get('sa', "N/A")
+        pcp_score = csv_results.get(model, {}).get('pcp', "N/A")
+        sap_score = csv_results.get(model, {}).get('sap', "N/A")
+        
         row.append(f"{pc_avg:.2f}" if isinstance(pc_avg, float) else "N/A")
         row.append(f"{sa_avg:.2f}" if isinstance(sa_avg, float) else "N/A")
+        row.append(f"{pcp_score:.2f}" if isinstance(pcp_score, float) else "N/A")
+        row.append(f"{sap_score:.2f}" if isinstance(sap_score, float) else "N/A")
         
         md_table += "| " + " | ".join(row) + " |\n"
     return md_table
@@ -147,17 +145,26 @@ def calculate_csv_averages(models, base_dir):
         
         pc_averages = []
         sa_averages = []
+        pc_proportions = []
+        sa_proportions = []
         for csv_file in csv_files:
             df = pd.read_csv(csv_file)
+            # Calculate mean score
             avg = df['score'].mean()
+            # Calculate proportion of videos rated >= 4
+            proportion_ge_4 = (df['score'] >= 4).mean() * 100  # Convert to percentage
             if 'pc' in os.path.basename(csv_file):
                 pc_averages.append(avg)
+                pc_proportions.append(proportion_ge_4)
             elif 'sa' in os.path.basename(csv_file):
                 sa_averages.append(avg)
+                sa_proportions.append(proportion_ge_4)
         
         results[model] = {
             'pc': sum(pc_averages)/len(pc_averages) if pc_averages else None,
-            'sa': sum(sa_averages)/len(sa_averages) if sa_averages else None
+            'sa': sum(sa_averages)/len(sa_averages) if sa_averages else None,
+            'pcp': sum(pc_proportions)/len(pc_proportions) if pc_proportions else None,
+            'sap': sum(sa_proportions)/len(sa_proportions) if sa_proportions else None
         }
     
     return results
@@ -285,5 +292,10 @@ if __name__ == "__main__":
     for model, metrics in csv_results.items():
         pc_avg = metrics['pc']
         sa_avg = metrics['sa']
-        print(f"{model}: PC Average = {pc_avg:.4f}" if pc_avg is not None else f"{model}: PC Average = N/A", 
-              f"SA Average = {sa_avg:.4f}" if sa_avg is not None else "SA Average = N/A")
+        pcp_score = metrics['pcp']
+        sap_score = metrics['sap']
+        print(f"{model}:")
+        print(f"  PC (average) = {pc_avg:.4f}" if pc_avg is not None else f"  PC (average) = N/A")
+        print(f"  SA (average) = {sa_avg:.4f}" if sa_avg is not None else f"  SA (average) = N/A")
+        print(f"  PCp (% videos ≥ 4) = {pcp_score:.2f}%" if pcp_score is not None else f"  PCp (% videos ≥ 4) = N/A")
+        print(f"  SAp (% videos ≥ 4) = {sap_score:.2f}%" if sap_score is not None else f"  SAp (% videos ≥ 4) = N/A")
