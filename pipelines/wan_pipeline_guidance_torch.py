@@ -626,7 +626,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                 perform_guidance = True if (t > guidance_range[0] and t < guidance_range[1]) else False
                 perform_travel = True if (t > time_travel_range[0] and t < time_travel_range[1]) else False
                 # Use configurable rho_scale
-                guidance_rho_scale = getattr(self, 'guidance_rho_scale', 3.0)
+                guidance_rho_scale = getattr(self, 'guidance_rho_scale', 100.0)
                 n_travel = 1 if perform_travel else 1
                 # perform_guidance = False
                 self._current_timestep = t
@@ -709,7 +709,7 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         with torch.enable_grad():
                             # Use configurable V-JEPA parameters 
                             frames_per_clip = 16  # Fixed size that model was trained with
-                            context_window_size = getattr(self, 'vjepa_context_length', 12)
+                            context_window_size = getattr(self, 'vjepa_context_length', 8)
                             stride = getattr(self, 'vjepa_stride', 2)
                             
                             # Calculate loss with sliding window handled inside the function
@@ -735,19 +735,16 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         grad_norm = grad.norm(2)
                         rho = 1 / grad_norm
 
-                        print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Rho={rho.item():.6f}, Grad_norm={grad.norm(2).item():.4f}, Final_scale={guidance_rho_scale * rho.item():.4f}')
+                        print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Grad_norm={grad.norm(2).item():.4f}, Rho={rho.item():.4f}, Rho_scale={guidance_rho_scale}')
 
                         if perform_travel:
-                            # with torch.no_grad():
-                            #     # pred_original_sample # clean data
-                            #     noise = randn_tensor(pred_original_sample.shape, generator=generator, device=device, dtype=pred_original_sample.dtype)
-                            #     latents = self.scheduler.add_noise(pred_original_sample, noise, t)
-                            #     latents = latents - 1 * grad # update with guidance
+
                             pass
                             
                         else:
                             with torch.no_grad():
-                                latents = latents - guidance_rho_scale * rho * grad # update with guidance
+                                # latents = latents - guidance_rho_scale * rho * grad # update with guidance
+                                latents = latents - guidance_rho_scale * grad # update with guidance
                     # import pdb; pdb.set_trace()
                     torch.cuda.empty_cache()
 

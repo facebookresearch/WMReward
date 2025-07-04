@@ -11,9 +11,9 @@ TRIPLETS=(
 
 # Rho scale values for guidance ablation
 RHO_SCALES=(
-    # "1.0"
+    "1.0"
     # "3.0"
-    # "50.0"
+    "50.0"
     # "100.0" 
     "5.0"
     "10.0"

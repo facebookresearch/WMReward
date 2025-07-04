@@ -285,6 +285,172 @@ def get_sliding_window_score_max_v2(video, model, processor, kernel_size, contex
     final_loss = total_loss / n_count
     return final_loss
 
+# def calculate_torch_vjepa_loss(video_tensor, model, context_length=4, frames_per_clip=16, stride=2, use_bfloat16=True, require_grad=False, mode='max', return_arr=False, is_vae_output=True):
+#     """
+#     Calculate V-JEPA loss exactly as in reproduce_intphys_clean.py.
+#     Uses sliding windows with proper batching and chunking.
+    
+#     Args:
+#         video_tensor: Tensor of shape [B, C, T, H, W] where T > frames_per_clip
+#         model: Quentin's V-JEPA model
+#         context_length: Context length to use 
+#         frames_per_clip: Number of frames per clip (16 for V-JEPA)
+#         stride: Stride for sliding window
+#         use_bfloat16: Whether to use bfloat16 precision
+#         require_grad: Whether to keep gradients (True) or return detached value (False)
+#         mode: 'max' or 'mean' for aggregating losses across windows
+#         return_arr: Whether to return individual window losses
+#         is_vae_output: If True, converts from VAE output [-1,1] to [0,255]. If False, assumes input is already in correct format.
+    
+#     Returns:
+#         torch.Tensor or float: Max loss across all windows
+#     """
+#     from einops import rearrange
+#     import numpy as np
+    
+#     model.eval()
+#     num_videos, C, T, H, W = video_tensor.shape
+#     device = next(model.parameters()).device
+    
+#     # Conditional gradient context
+#     grad_context = torch.enable_grad() if require_grad else torch.no_grad()
+    
+#     with grad_context:
+#         # Apply same preprocessing as reproduce_intphys_clean.py
+#         import sys
+#         sys.path.append('/home/yjianhao/project/quentinecode/vjepa2')
+#         from app.vjepa.transforms import make_transforms
+        
+#         transform = make_transforms(
+#             random_horizontal_flip=False,
+#             random_resize_aspect_ratio=[1/1, 1/1],
+#             random_resize_scale=[1.0, 1.0], 
+#             reprob=0.,
+#             auto_augment=False,
+#             motion_shift=False,
+#             crop_size=256
+#         )
+        
+#         if is_vae_output:
+#             # Debug: Check input tensor properties
+#             # print(f"DEBUG: Input video_tensor shape: {video_tensor.shape}")
+#             # print(f"DEBUG: Input video_tensor dtype: {video_tensor.dtype}")
+#             # print(f"DEBUG: Input video_tensor min: {video_tensor.min():.4f}, max: {video_tensor.max():.4f}")
+#             # print(f"DEBUG: Input video_tensor has NaN: {torch.isnan(video_tensor).any()}")
+#             # print(f"DEBUG: Input video_tensor has Inf: {torch.isinf(video_tensor).any()}")
+            
+#             # Convert VAE output [-1,1] to [0,255] like PIL images, then apply V-JEPA transforms
+#             # Handle potential NaN/inf values
+#             if torch.isnan(video_tensor).any() or torch.isinf(video_tensor).any():
+#                 # print("WARNING: Found NaN or Inf values in video_tensor, replacing with zeros")
+#                 video_tensor = torch.nan_to_num(video_tensor, nan=0.0, posinf=1.0, neginf=-1.0)
+            
+#             # Clamp input to expected range to prevent issues
+#             video_tensor = torch.clamp(video_tensor, -1.0, 1.0)
+            
+#             video_255 = (video_tensor + 1.0) / 2.0 * 255.0
+#             # print(f"DEBUG: After scaling to [0,255] - min: {video_255.min():.4f}, max: {video_255.max():.4f}")
+            
+#             video_frame = video_255.squeeze(0).permute(1, 2, 3, 0).cpu()  # [T, H, W, C] on CPU
+#             # print(f"DEBUG: video_frame shape after permute: {video_frame.shape}")
+            
+#             # Save frames to temporary directory for inspection
+#             # temp_dir = "./temp/vjepa_frames"
+#             # os.makedirs(temp_dir, exist_ok=True)
+#             # print(f"Saving PIL frames to: {temp_dir}")
+            
+#             # # Convert to uint8 and save each frame
+#             # video_uint8 = video_frame.clamp(0, 255).to(torch.uint8).numpy()
+#             # print(f"DEBUG: video_uint8 shape: {video_uint8.shape}, dtype: {video_uint8.dtype}")
+#             # print(f"DEBUG: video_uint8 min: {video_uint8.min()}, max: {video_uint8.max()}")
+            
+#             # for frame_idx in range(video_uint8.shape[0]):
+#             #     frame = video_uint8[frame_idx]  # [H, W, C]
+#             #     print(f"DEBUG: Frame {frame_idx} - shape: {frame.shape}, min: {frame.min()}, max: {frame.max()}")
+                
+#             #     # Additional check for all-zero frames
+#             #     if frame.max() == 0:
+#             #         print(f"WARNING: Frame {frame_idx} is completely black (all zeros)!")
+                
+#             #     pil_image = Image.fromarray(frame)
+#             #     frame_path = os.path.join(temp_dir, f"frame_{frame_idx:04d}.png")
+#             #     pil_image.save(frame_path)
+            
+#             # print(f"Saved {video_uint8.shape[0]} frames to {temp_dir}")
+            
+#             video_normalized = transform(video_frame).unsqueeze(0).to(device)  # [B, C, T, H, W]
+#         else:
+#             # Input is already in correct format (e.g., from IntPhys dataset after transforms)
+#             video_normalized = video_tensor.to(device)
+        
+#         # Update model parameters exactly as in reproduce_intphys_clean.py
+#         model.nb_context_frames = context_length
+#         model.frames_per_clip = frames_per_clip
+#         model.grid_depth = model.frames_per_clip // model.encoder.tubelet_size
+        
+#         # Create sliding windows exactly as in reproduce_intphys_clean.py  
+#         pieces = video_normalized.unfold(2, model.frames_per_clip, stride).permute(0, 2, -1, 1, 3, 4).contiguous()
+#         pieces = pieces.flatten(0, 1)
+#         pieces = rearrange(pieces, "b t c h w -> b c t h w")
+
+        
+        
+#         # Collect all predictions and targets exactly like reference implementation
+#         chunked_preds = []
+#         chunked_targets = []
+#         CHUNK_SIZE = 1  # Process one at a time for memory efficiency
+        
+#         with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
+#             for chunk_id in range(int(np.ceil(pieces.shape[0]/CHUNK_SIZE))):
+#                 chunk = pieces[CHUNK_SIZE*chunk_id:CHUNK_SIZE*(chunk_id+1)]
+                
+#                 preds, targets = model(chunk)
+#                 chunked_preds.append(preds.cpu())
+#                 chunked_targets.append(targets.cpu())
+        
+#         # Combine all chunks exactly as in reference implementation
+#         preds = torch.vstack(chunked_preds)
+#         targets = torch.vstack(chunked_targets)
+#         preds = preds.view(num_videos, -1, *preds.shape[1:])
+#         targets = targets.view(num_videos, -1, *targets.shape[1:])
+        
+#         # Compute loss exactly as Quentin does
+#         loss = F.l1_loss(preds, targets, reduction="none").mean((2, 3))
+        
+        
+        
+#         # Recompute with gradients if needed
+#         preds_grad = torch.vstack([p.to(device) for p in chunked_preds])
+#         targets_grad = torch.vstack([t.to(device) for t in chunked_targets])
+#         preds_grad = preds_grad.view(num_videos, -1, *preds_grad.shape[1:])
+#         targets_grad = targets_grad.view(num_videos, -1, *targets_grad.shape[1:])
+#         # print(f"preds_grad shape: {preds_grad.shape}")
+#         # print(f"targets_grad shape: {targets_grad.shape}")
+#         # import pdb; pdb.set_trace()
+#         loss_grad = F.l1_loss(preds_grad, targets_grad, reduction="none").mean((2, 3))
+#         # print(f"loss_grad shape: {loss_grad.shape}")
+        
+#         if mode == 'max':
+#             final_loss = torch.max(loss_grad)
+#             # print(f"final_loss: {final_loss}")
+#         elif mode == 'mean':
+#             final_loss = torch.mean(loss_grad)
+        
+
+
+#         print(f"final_loss: {final_loss}")
+        
+#         if require_grad:
+#             if return_arr:
+#                 return final_loss, loss_grad
+#             else:
+#                 return final_loss
+#         else:
+#             if return_arr:
+#                 return final_loss.detach().item(), loss_grad
+#             else:
+#                 return final_loss.detach().item()  # Return float
+
 def calculate_torch_vjepa_loss(video_tensor, model, context_length=4, frames_per_clip=16, stride=2, use_bfloat16=True, require_grad=False, mode='max', return_arr=False, is_vae_output=True):
     """
     Calculate V-JEPA loss exactly as in reproduce_intphys_clean.py.
@@ -422,4 +588,163 @@ def calculate_torch_vjepa_loss(video_tensor, model, context_length=4, frames_per
                 return final_loss.detach().item(), loss_grad
             else:
                 return final_loss.detach().item()  # Return float
+
+def calculate_torch_vjepa_loss_v2(video_tensor, model, processor, context_length=4, frames_per_clip=16, stride=2, use_bfloat16=True, require_grad=False, mode='max', return_arr=False, is_vae_output=True):
+    """
+    Calculate V-JEPA loss for PyTorch V-JEPA models (vit_giant_xformers_rope), 
+    following the same pattern as calculate_torch_vjepa_loss but adapted for PyTorch implementation.
+    Uses sliding windows with proper batching and chunking.
+    
+    Args:
+        video_tensor: Tensor of shape [B, C, T, H, W] or numpy array [T, H, W, C]
+        model: PyTorch V-JEPA model (vit_giant_xformers_rope)
+        processor: PyTorch video transform pipeline (from build_pt_video_transform)
+        context_length: Context length to use 
+        frames_per_clip: Number of frames per clip (16 for V-JEPA)
+        stride: Stride for sliding window
+        use_bfloat16: Whether to use bfloat16 precision
+        require_grad: Whether to keep gradients (True) or return detached value (False)
+        mode: 'max' or 'mean' for aggregating losses across windows
+        return_arr: Whether to return individual window losses
+        is_vae_output: If True, converts from VAE output [-1,1] to [0,255]. If False, assumes input is already in correct format.
+    
+    Returns:
+        torch.Tensor or float: Max/mean loss across all windows
+        Optional: loss array if return_arr=True
+    """
+    import numpy as np
+    import torch.nn.functional as F
+    
+    model.eval()
+    device = next(model.parameters()).device
+    
+    # Conditional gradient context
+    grad_context = torch.enable_grad() if require_grad else torch.no_grad()
+    
+    with grad_context:
+        # Handle input preprocessing
+        if isinstance(video_tensor, np.ndarray):
+            # Convert numpy array to tensor
+            if video_tensor.ndim == 4:  # [T, H, W, C]
+                video_tensor = torch.from_numpy(video_tensor).float().permute(0, 3, 1, 2)  # [T, C, H, W]
+                video_tensor = video_tensor.unsqueeze(0)  # [B, T, C, H, W]
+                video_tensor = video_tensor.permute(0, 2, 1, 3, 4)  # [B, C, T, H, W]
+        
+        if video_tensor.dim() == 4:  # [T, C, H, W]
+            video_tensor = video_tensor.unsqueeze(0)  # [B, T, C, H, W]
+            video_tensor = video_tensor.permute(0, 2, 1, 3, 4)  # [B, C, T, H, W]
+        
+        num_videos, C, T, H, W = video_tensor.shape
+        
+        if is_vae_output:
+            # Convert VAE output [-1,1] to [0,255] like PIL images
+            if torch.isnan(video_tensor).any() or torch.isinf(video_tensor).any():
+                video_tensor = torch.nan_to_num(video_tensor, nan=0.0, posinf=1.0, neginf=-1.0)
+            
+            video_tensor = torch.clamp(video_tensor, -1.0, 1.0)
+            video_255 = (video_tensor + 1.0) / 2.0 * 255.0
+            video_frame = video_255.squeeze(0).permute(1, 2, 3, 0).cpu()  # [T, H, W, C] on CPU
+            
+            # Apply PyTorch transforms
+            video_normalized = processor(video_frame).unsqueeze(0).to(device)  # [B, C, T, H, W]
+        else:
+            # Input is already in correct format, just ensure it's on the right device
+            if video_tensor.device != device:
+                video_tensor = video_tensor.to(device)
+            video_normalized = video_tensor
+        
+        # Create sliding windows using unfold (similar to Quentin's approach)
+        pieces = video_normalized.unfold(2, frames_per_clip, stride).permute(0, 2, -1, 1, 3, 4).contiguous()
+        pieces = pieces.flatten(0, 1)  # Flatten batch and window dimensions
+        pieces = pieces.permute(0, 2, 1, 3, 4)  # [B*windows, C, T, H, W]
+        
+        print(f"Video tensor shape: {video_normalized.shape}")
+        print(f"Pieces shape: {pieces.shape}")
+        print(f"Number of windows: {pieces.shape[0]}")
+        
+        # Process each window with masking (similar to get_sliding_window_score_torch)
+        CHUNK_SIZE = 1  # Process one window at a time for memory efficiency
+        loss_arr = []
+        
+        # Set up masking parameters
+        patch_size = 16
+        is_mae = False
+        
+        with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
+            for chunk_id in range(int(np.ceil(pieces.shape[0]/CHUNK_SIZE))):
+                chunk = pieces[CHUNK_SIZE*chunk_id:CHUNK_SIZE*(chunk_id+1)]
+                
+                # Get masks for this chunk
+                m, m_, full_m = get_time_masks(
+                    n_timesteps=context_length, 
+                    spatial_size=(patch_size, patch_size), 
+                    temporal_dim=frames_per_clip, 
+                    as_bool=is_mae
+                )
+                
+                full_m = full_m.unsqueeze(0).to(device)
+                m = m.unsqueeze(0).to(device)
+                m_ = m_.unsqueeze(0).to(device)
+                
+                # Get features from PyTorch V-JEPA model
+                h = model(chunk)  # [batch, num_patches, feature_dim]
+                
+                # Normalize features
+                h = F.layer_norm(h, (h.size(-1),))
+                
+                # Apply masks to get target patches
+                masks_pred = [m_.repeat(chunk.shape[0], 1)]
+                targets = apply_masks(h, masks_pred, concat=False)
+                
+                if len(targets) > 0:
+                    target_features = targets[0]  # [num_masked_patches, feature_dim]
+                    
+                    # Compute L1 loss for this window (following V-JEPA pattern)
+                    window_loss = torch.abs(target_features).mean()
+                    
+                    if require_grad:
+                        loss_arr.append(window_loss)
+                    else:
+                        loss_arr.append(window_loss.detach())
+                    
+                    print(f"Window {chunk_id}: loss = {window_loss.item():.6f}")
+                else:
+                    print(f"Window {chunk_id}: No valid masks, skipping")
+        
+        if len(loss_arr) == 0:
+            print("Warning: No valid losses computed")
+            if require_grad:
+                return torch.tensor(0.0, device=device, requires_grad=True)
+            else:
+                if return_arr:
+                    return 0.0, []
+                else:
+                    return 0.0
+        
+        # Aggregate losses following the same pattern as calculate_torch_vjepa_loss
+        if require_grad:
+            loss_tensor = torch.stack(loss_arr)
+        else:
+            loss_tensor = torch.stack(loss_arr)
+        
+        # Create gradient-enabled version for final computation
+        loss_grad = torch.stack([l.to(device) if not l.requires_grad else l for l in loss_arr])
+        
+        if mode == 'max':
+            final_loss = torch.max(loss_grad)
+        elif mode == 'mean':
+            final_loss = torch.mean(loss_grad)
+        
+        print(f"Final loss ({mode}): {final_loss}")
+        
+        if require_grad:
+            if return_arr:
+                return final_loss, loss_grad
+            else:
+                return final_loss
+        else:
+            if return_arr:
+                return final_loss.detach().item(), loss_grad.detach()
+            else:
+                return final_loss.detach().item()
 

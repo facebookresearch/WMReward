@@ -14,7 +14,8 @@ def get_simple_experiment_name(args):
     elif args.sampling_method == 'guidance':
         name = f"guidance_f{args.num_frames}_s{args.num_inference_steps}_w{args.kernel_size}c{args.context_length}_rho{args.guidance_rho_scale}_cfg{args.cfg_scale}"
     
-    name = name + "torch"
+    # name = name + "torch"
+    name = name + "nodyna"
 
     return name
 

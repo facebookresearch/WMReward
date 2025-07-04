@@ -166,6 +166,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
             device_map="auto",
             attn_implementation="sdpa"
         )
+        
+        # Loss tracking attributes
+        self.track_losses = False  # Enable/disable loss tracking
+        self.loss_history = []     # Store loss trajectory
 
     @torch.no_grad()
     def _get_t5_prompt_embeds(
@@ -593,6 +597,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         self._num_timesteps = len(timesteps)
         guidance_steps_count = 0
+        
+        # Initialize loss tracking for this generation
+        if self.track_losses:
+            self.loss_history = []
 
 
         def dit_forward(latent_model_input, timestep, prompt_embeds, attention_kwargs):
@@ -752,6 +760,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
 
                         print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Rho={rho.item():.6f}, Grad_norm={grad.norm(2).item():.4f}, Final_scale={guidance_rho_scale * rho.item():.4f}')
 
+                        # Track loss if enabled
+                        if self.track_losses:
+                            self.loss_history.append(loss.item())
+
                         if perform_travel:
                             # with torch.no_grad():
                             #     # pred_original_sample # clean data
@@ -765,6 +777,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                                 latents = latents - guidance_rho_scale * rho * grad # update with guidance
                     # import pdb; pdb.set_trace()
                     torch.cuda.empty_cache()
+                else:
+                    # Track non-guidance steps if loss tracking is enabled
+                    if self.track_losses:
+                        self.loss_history.append(None)  # None indicates no guidance applied
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, return_dict=False)[0]
@@ -787,6 +803,19 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                     xm.mark_step()
 
         self._current_timestep = None
+        
+        # Print loss tracking summary
+        if self.track_losses and self.loss_history:
+            guidance_losses = [l for l in self.loss_history if l is not None]
+            if guidance_losses:
+                print(f"\n📊 LOSS TRACKING SUMMARY:")
+                print(f"   Total steps: {len(self.loss_history)}")
+                print(f"   Guidance steps: {len(guidance_losses)}")
+                print(f"   Initial loss: {guidance_losses[0]:.4f}")
+                print(f"   Final loss: {guidance_losses[-1]:.4f}")
+                print(f"   Loss reduction: {guidance_losses[0] - guidance_losses[-1]:.4f}")
+                print(f"   Average loss: {sum(guidance_losses) / len(guidance_losses):.4f}")
+                print()
 
         
         if not output_type == "latent":

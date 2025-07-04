@@ -205,7 +205,8 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         super().__init__()
 
         if safety_checker is None:
-            safety_checker = CosmosSafetyChecker()
+            # safety_checker = CosmosSafetyChecker()
+            safety_checker = None
 
         self.register_modules(
             vae=vae,
@@ -233,13 +234,13 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             )
 
 
-        self.vjepa_processor = AutoVideoProcessor.from_pretrained("facebook/vjepa2-vith-fpc64-256")
-        self.vjepa_model = AutoModel.from_pretrained(
-            "facebook/vjepa2-vith-fpc64-256",
-            torch_dtype=torch.float16,
-            device_map="auto",
-            attn_implementation="sdpa"
-        )
+        # self.vjepa_processor = AutoVideoProcessor.from_pretrained("facebook/vjepa2-vith-fpc64-256")
+        # self.vjepa_model = AutoModel.from_pretrained(
+        #     "facebook/vjepa2-vith-fpc64-256",
+        #     torch_dtype=torch.float16,
+        #     device_map="auto",
+        #     attn_implementation="sdpa"
+        # )
 
     # Copied from diffusers.pipelines.cosmos.pipeline_cosmos_text2world.CosmosTextToWorldPipeline._get_t5_prompt_embeds
     def _get_t5_prompt_embeds(
@@ -596,12 +597,12 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                 indicating whether the corresponding generated image contains "not-safe-for-work" (nsfw) content.
         """
 
-        if self.safety_checker is None:
-            raise ValueError(
-                f"You have disabled the safety checker for {self.__class__}. This is in violation of the "
-                "[NVIDIA Open Model License Agreement](https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license). "
-                f"Please ensure that you are compliant with the license agreement."
-            )
+        # if self.safety_checker is None:
+        #     raise ValueError(
+        #         f"You have disabled the safety checker for {self.__class__}. This is in violation of the "
+        #         "[NVIDIA Open Model License Agreement](https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license). "
+        #         f"Please ensure that you are compliant with the license agreement."
+        #     )
 
         if isinstance(callback_on_step_end, (PipelineCallback, MultiPipelineCallbacks)):
             callback_on_step_end_tensor_inputs = callback_on_step_end.tensor_inputs

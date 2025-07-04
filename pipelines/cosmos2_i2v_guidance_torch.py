@@ -14,6 +14,7 @@
 
 import inspect
 from typing import Callable, Dict, List, Optional, Union
+import os
 
 import numpy as np
 import torch
@@ -29,7 +30,9 @@ from diffusers.video_processor import VideoProcessor
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.cosmos.pipeline_output import CosmosPipelineOutput
 
-
+# Add V-JEPA guidance imports
+from utils import init_torch_vjepa, preprocess_video_for_torch_vjepa
+from compute_vjepa_score import calculate_torch_vjepa_loss
 from transformers import AutoVideoProcessor, AutoModel
 from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max_v2
 from diffusers.utils import export_to_video
@@ -174,10 +177,30 @@ def retrieve_latents(
 
 class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
     r"""
-    Pipeline for video-to-world generation using [Cosmos Predict2](https://github.com/nvidia-cosmos/cosmos-predict2).
+    Pipeline for video-to-world generation using [Cosmos Predict2](https://github.com/nvidia-cosmos/cosmos-predict2)
+    with V-JEPA guidance support.
 
     This model inherits from [`DiffusionPipeline`]. Check the superclass documentation for the generic methods
     implemented for all pipelines (downloading, saving, running on a particular device, etc.).
+
+    The pipeline now supports V-JEPA guidance during generation. To configure guidance, set these attributes
+    on the pipeline instance before calling:
+    
+    - guidance_start (int): Start timestep for guidance (default: 750)
+    - guidance_end (int): End timestep for guidance (default: 900)  
+    - guidance_rho_scale (float): Scaling factor for guidance gradients (default: 3.0)
+    - vjepa_context_length (int): Context length for V-JEPA (default: 12)
+    - vjepa_stride (int): Stride for V-JEPA sliding window (default: 2)
+    - vjepa_mode (str): V-JEPA aggregation mode (default: 'max')
+
+    Example:
+        ```python
+        pipe = Cosmos2VideoToWorldPipeline.from_pretrained(model_id)
+        pipe.guidance_start = 800
+        pipe.guidance_end = 950
+        pipe.guidance_rho_scale = 2.5
+        video = pipe(image=image, prompt=prompt)
+        ```
 
     Args:
         text_encoder ([`T5EncoderModel`]):
@@ -228,6 +251,11 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         self.vae_scale_factor_spatial = 2 ** len(self.vae.temperal_downsample) if getattr(self, "vae", None) else 8
         self.video_processor = VideoProcessor(vae_scale_factor=self.vae_scale_factor_spatial)
 
+        # Initialize torch V-JEPA model for guidance
+        print("🚀 Loading torch V-JEPA model for guidance...")
+        self.vjepa_model = init_torch_vjepa()
+        self.vjepa_processor = None  # Not needed for torch version
+
         self.sigma_max = 80.0
         self.sigma_min = 0.002
         self.sigma_data = 1.0
@@ -241,6 +269,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             )
 
     # Copied from diffusers.pipelines.cosmos.pipeline_cosmos_text2world.CosmosTextToWorldPipeline._get_t5_prompt_embeds
+    @torch.no_grad()
     def _get_t5_prompt_embeds(
         self,
         prompt: Union[str, List[str]] = None,
@@ -614,6 +643,25 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
 
         device = self._execution_device
 
+        print(f"🎬 STARTING COSMOS GUIDANCE PIPELINE GENERATION")
+        print(f"   Frames: {num_frames}, Steps: {num_inference_steps}, CFG Scale: {guidance_scale}")
+
+        # Set requires_grad_(False) for all models to save memory
+        self.text_encoder.requires_grad_(False)
+        for p in self.text_encoder.parameters():
+            p.requires_grad = False
+
+        self.transformer.requires_grad_(False)
+        for p in self.transformer.parameters():
+            p.requires_grad = False
+
+        self.vae.requires_grad_(False)
+        for p in self.vae.parameters():
+            p.requires_grad = False
+
+        # Keep V-JEPA model gradients enabled for guidance
+        # Note: We'll manage gradients in the guidance computation itself
+
         if self.safety_checker is not None:
             self.safety_checker.to(device)
             if prompt is not None:
@@ -628,7 +676,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         
         self.safety_checker = None
 
-        if_vis = False
+        if_vis = True
         print_gpu_memory(if_vis,info="===========START===========")
 
         # 2. Define call parameters
@@ -655,8 +703,23 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                 max_sequence_length=max_sequence_length,
             )
             self.text_encoder.to("cpu")
-            # torch.cuda.empty_cache()
+            torch.cuda.empty_cache()
         print_gpu_memory(if_vis,info="===========Loaded Prompt===========")
+
+        # Add guidance configuration - make these configurable attributes
+        guidance_range = [getattr(self, 'guidance_start', -1), getattr(self, 'guidance_end', 80001)]
+        time_travel_range = [-1, -1]
+        
+        # Print guidance configuration
+        print(f"\n🔧 COSMOS GUIDANCE PIPELINE CONFIGURATION:")
+        print(f"   Guidance range: {guidance_range[0]} - {guidance_range[1]}")
+        print(f"   Rho scale: {getattr(self, 'guidance_rho_scale', 3.0)}")
+        print(f"   V-JEPA kernel_size: {getattr(self, 'vjepa_kernel_size', 16)}")
+        print(f"   V-JEPA context_length: {getattr(self, 'vjepa_context_length', 6)}")
+        print(f"   V-JEPA stride: {getattr(self, 'vjepa_stride', 2)}")
+        print(f"   V-JEPA mode: {getattr(self, 'vjepa_mode', 'max')}")
+        print(f"   Total timesteps: {num_inference_steps}")
+        print()
 
         # 4. Prepare timesteps
         sigmas_dtype = torch.float32 if torch.backends.mps.is_available() else torch.float64
@@ -704,14 +767,48 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         sigma_conditioning = torch.tensor(sigma_conditioning, dtype=torch.float32, device=device)
         t_conditioning = sigma_conditioning / (sigma_conditioning + 1)
 
+        # Define transformer forward function for checkpointing
+        def transformer_forward_cond(latent_input, timestep_input, prompt_embeds_input, fps_input, cond_mask_input, padding_mask_input):
+            with torch.enable_grad():
+                output = self.transformer(
+                    hidden_states=latent_input,
+                    timestep=timestep_input,
+                    encoder_hidden_states=prompt_embeds_input,
+                    fps=fps_input,
+                    condition_mask=cond_mask_input,
+                    padding_mask=padding_mask_input,
+                    return_dict=False,
+                )[0]
+            return output
+
+        def transformer_forward_uncond(latent_input, timestep_input, prompt_embeds_input, fps_input, uncond_mask_input, padding_mask_input):
+            with torch.enable_grad():
+                output = self.transformer(
+                    hidden_states=latent_input,
+                    timestep=timestep_input,
+                    encoder_hidden_states=prompt_embeds_input,
+                    fps=fps_input,
+                    condition_mask=uncond_mask_input,
+                    padding_mask=padding_mask_input,
+                    return_dict=False,
+                )[0]
+            return output
+
         # 6. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         self._num_timesteps = len(timesteps)
+        guidance_steps_count = 0
 
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
                 if self.interrupt:
                     continue
+                print(f"🚀 GUIDANCE STEP {i} (t={t.item():.0f})")
+                # Check if guidance should be performed at this timestep
+                perform_guidance = True if (t > guidance_range[0] and t < guidance_range[1]) else False
+                perform_travel = True if (t > time_travel_range[0] and t < time_travel_range[1]) else False
+                guidance_rho_scale = getattr(self, 'guidance_rho_scale', 3.0)
+                n_travel = 1 if perform_travel else 1
 
                 self._current_timestep = t
                 current_sigma = self.scheduler.sigmas[i]
@@ -724,50 +821,173 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                     latents.size(0), -1, latents.size(2), -1, -1
                 )  # [B, 1, T, 1, 1]
 
-                cond_latent = latents * c_in
-                cond_latent = cond_indicator * conditioning_latents + (1 - cond_indicator) * cond_latent
-                cond_latent = cond_latent.to(transformer_dtype)
-                cond_timestep = cond_indicator * t_conditioning + (1 - cond_indicator) * timestep
-                cond_timestep = cond_timestep.to(transformer_dtype)
+                # Enable gradients for latents if guidance is needed
+                if perform_guidance:
+                    latents = latents.detach().clone().requires_grad_(True)
+                    latents.retain_grad()
+                
+                for rep in range(n_travel):
+                    print_gpu_memory(if_vis, "before DiT ================================")
 
-                noise_pred = self.transformer(
-                    hidden_states=cond_latent,
-                    timestep=cond_timestep,
-                    encoder_hidden_states=prompt_embeds,
-                    fps=fps,
-                    condition_mask=cond_mask,
-                    padding_mask=padding_mask,
-                    return_dict=False,
-                )[0]
-                noise_pred = (c_skip * latents + c_out * noise_pred.float()).to(transformer_dtype)
-                noise_pred = cond_indicator * conditioning_latents + (1 - cond_indicator) * noise_pred
+                    cond_latent = latents * c_in
+                    cond_latent = cond_indicator * conditioning_latents + (1 - cond_indicator) * cond_latent
+                    cond_latent = cond_latent.to(transformer_dtype).requires_grad_(True)
+                    cond_timestep = cond_indicator * t_conditioning + (1 - cond_indicator) * timestep
+                    cond_timestep = cond_timestep.to(transformer_dtype)
+     
 
-                print_gpu_memory(if_vis,info="================After Cond Forward===============")
+                    if perform_guidance:
+                        torch.set_grad_enabled(True)
+                        noise_pred = checkpoint(
+                            transformer_forward_cond,
+                            cond_latent,
+                            cond_timestep,
+                            prompt_embeds,
+                            fps,
+                            cond_mask,
+                            padding_mask,
+                            use_reentrant=False
+                        ).requires_grad_(True)
+                    else:
+                        with torch.no_grad():
+                            noise_pred = transformer_forward_cond(
+                                cond_latent,
+                                cond_timestep,
+                                prompt_embeds,
+                                fps,
+                                cond_mask,
+                                padding_mask,
+                            )
 
-                if self.do_classifier_free_guidance:
-                    uncond_latent = latents * c_in
-                    uncond_latent = uncond_indicator * unconditioning_latents + (1 - uncond_indicator) * uncond_latent
-                    uncond_latent = uncond_latent.to(transformer_dtype)
-                    uncond_timestep = uncond_indicator * t_conditioning + (1 - uncond_indicator) * timestep
-                    uncond_timestep = uncond_timestep.to(transformer_dtype)
+                    noise_pred = (c_skip * latents + c_out * noise_pred.float()).to(transformer_dtype)
+                    noise_pred = cond_indicator * conditioning_latents + (1 - cond_indicator) * noise_pred
 
-                    noise_pred_uncond = self.transformer(
-                        hidden_states=uncond_latent,
-                        timestep=uncond_timestep,
-                        encoder_hidden_states=negative_prompt_embeds,
-                        fps=fps,
-                        condition_mask=uncond_mask,
-                        padding_mask=padding_mask,
-                        return_dict=False,
-                    )[0]
-                    noise_pred_uncond = (c_skip * latents + c_out * noise_pred_uncond.float()).to(transformer_dtype)
-                    noise_pred_uncond = (
-                        uncond_indicator * unconditioning_latents + (1 - uncond_indicator) * noise_pred_uncond
-                    )
-                    noise_pred = noise_pred + self.guidance_scale * (noise_pred - noise_pred_uncond)
+                    print_gpu_memory(if_vis,info="================After Cond Forward===============")
 
-                    print_gpu_memory(if_vis,info="================After Uncond Forward===============")
+                    if self.do_classifier_free_guidance:
+                        uncond_latent = latents * c_in
+                        uncond_latent = uncond_indicator * unconditioning_latents + (1 - uncond_indicator) * uncond_latent
+                        uncond_latent = uncond_latent.to(transformer_dtype)
+                        uncond_timestep = uncond_indicator * t_conditioning + (1 - uncond_indicator) * timestep
+                        uncond_timestep = uncond_timestep.to(transformer_dtype)
 
+                        if perform_guidance:
+                            noise_pred_uncond = checkpoint(
+                                transformer_forward_uncond,
+                                uncond_latent,
+                                uncond_timestep,
+                                negative_prompt_embeds,
+                                fps,
+                                uncond_mask,
+                                padding_mask,
+                                use_reentrant=False
+                            ).requires_grad_(True)
+                        else:
+                            with torch.no_grad():
+                                noise_pred_uncond = transformer_forward_uncond(
+                                    uncond_latent,
+                                    uncond_timestep,
+                                    negative_prompt_embeds,
+                                    fps,
+                                    uncond_mask,
+                                    padding_mask,
+                                )
+
+                        noise_pred_uncond = (c_skip * latents + c_out * noise_pred_uncond.float()).to(transformer_dtype)
+                        noise_pred_uncond = (
+                            uncond_indicator * unconditioning_latents + (1 - uncond_indicator) * noise_pred_uncond
+                        )
+                        noise_pred = noise_pred + self.guidance_scale * (noise_pred - noise_pred_uncond)
+
+                        print_gpu_memory(if_vis,info="================After Uncond Forward===============")
+
+                # Apply V-JEPA guidance if enabled
+                if perform_guidance:
+                    guidance_steps_count += 1
+                    print(f"🚀 APPLYING GUIDANCE at step {i} (timestep={t.item():.0f})")
+                    
+                    with torch.set_grad_enabled(True):
+                        # Estimate x0 (original sample) from noise prediction
+                        pred_original_sample = latents - current_sigma * noise_pred
+                        pred_original_sample.retain_grad()
+                        latents_mean = (
+                            torch.tensor(self.vae.config.latents_mean)
+                            .view(1, self.vae.config.z_dim, 1, 1, 1)
+                            .to(pred_original_sample.device, pred_original_sample.dtype)
+                        )
+                        latents_std = (
+                            torch.tensor(self.vae.config.latents_std)
+                            .view(1, self.vae.config.z_dim, 1, 1, 1)
+                            .to(pred_original_sample.device, pred_original_sample.dtype)
+                        )
+                        pred_original_sample = pred_original_sample * latents_std / self.scheduler.config.sigma_data + latents_mean
+                        orig_frame = self.vae.decode(pred_original_sample.to(self.vae.dtype), return_dict=False)[0]
+
+                        # Save visualization if needed
+                        visualize = True
+                        if visualize:
+                            with torch.no_grad():
+                                # Create output directory if it doesn't exist
+                                os.makedirs("./temp/cosmos_guidance", exist_ok=True)
+                                save_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type="np")
+                                export_to_video(save_frame[0], f"./temp/cosmos_guidance/guidance_sample_{rep}_{i}.mp4", fps=16)
+
+                        # Calculate V-JEPA loss using torch implementation
+                        B, C, T, H, W = orig_frame.shape
+                        orig_frame_tensor = orig_frame
+                        
+                        with torch.enable_grad():
+                            # Use configurable V-JEPA parameters 
+                            frames_per_clip = 16  # Fixed size that model was trained with
+                            context_window_size = getattr(self, 'vjepa_context_length', 12)
+                            stride = getattr(self, 'vjepa_stride', 2)
+                            
+                            # Calculate loss with sliding window handled inside the function
+                            loss = calculate_torch_vjepa_loss(
+                                orig_frame_tensor, 
+                                self.vjepa_model,
+                                context_length=context_window_size,
+                                frames_per_clip=frames_per_clip,
+                                stride=stride,
+                                require_grad=True,
+                                mode='max',
+                                return_arr=False,
+                                is_vae_output=True
+                            )
+
+                        print_gpu_memory(if_vis, info="after vjepa ================================")
+                        
+                        # Backpropagate and get gradients
+                        loss.backward()
+                        
+                        # Use the tensor that actually has gradients (pred_original_sample in this case)
+                        if pred_original_sample.grad is not None:
+                            grad = pred_original_sample.grad.clone()
+                            pred_original_sample.grad = None
+                        elif latents.grad is not None:
+                            grad = latents.grad.clone()
+                            latents.grad = None
+                        else:
+                            print("❌ ERROR: No gradients found!")
+                            continue
+
+                        # Calculate rho scaling
+                        grad_norm = grad.norm(2)
+                        rho = 1 / grad_norm
+
+                        print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Rho={rho.item():.6f}, Grad_norm={grad.norm(2).item():.4f}, Final_scale={guidance_rho_scale * rho.item():.4f}')
+
+                        if perform_travel:
+                            # Time travel logic (currently disabled)
+                            pass
+                        else:
+                            # Update latents with guidance
+                            with torch.no_grad():
+                                latents = latents - guidance_rho_scale * grad
+
+                    torch.cuda.empty_cache()
+
+                # Compute the previous noisy sample x_t -> x_t-1
                 noise_pred = (latents - noise_pred) / current_sigma
                 latents = self.scheduler.step(noise_pred, t, latents, return_dict=False)[0]
 
@@ -791,33 +1011,34 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         self._current_timestep = None
 
         if not output_type == "latent":
-            latents_mean = (
-                torch.tensor(self.vae.config.latents_mean)
-                .view(1, self.vae.config.z_dim, 1, 1, 1)
-                .to(latents.device, latents.dtype)
-            )
-            latents_std = (
-                torch.tensor(self.vae.config.latents_std)
-                .view(1, self.vae.config.z_dim, 1, 1, 1)
-                .to(latents.device, latents.dtype)
-            )
-            latents = latents * latents_std / self.scheduler.config.sigma_data + latents_mean
-            video = self.vae.decode(latents.to(self.vae.dtype), return_dict=False)[0]
+            with torch.no_grad():
+                latents_mean = (
+                    torch.tensor(self.vae.config.latents_mean)
+                    .view(1, self.vae.config.z_dim, 1, 1, 1)
+                    .to(latents.device, latents.dtype)
+                )
+                latents_std = (
+                    torch.tensor(self.vae.config.latents_std)
+                    .view(1, self.vae.config.z_dim, 1, 1, 1)
+                    .to(latents.device, latents.dtype)
+                )
+                latents = latents * latents_std / self.scheduler.config.sigma_data + latents_mean
+                video = self.vae.decode(latents.to(self.vae.dtype), return_dict=False)[0]
 
-            if self.safety_checker is not None:
-                self.safety_checker.to(device)
-                video = self.video_processor.postprocess_video(video, output_type="np")
-                video = (video * 255).astype(np.uint8)
-                video_batch = []
-                for vid in video:
-                    vid = self.safety_checker.check_video_safety(vid)
-                    video_batch.append(vid)
-                video = np.stack(video_batch).astype(np.float32) / 255.0 * 2 - 1
-                video = torch.from_numpy(video).permute(0, 4, 1, 2, 3)
-                video = self.video_processor.postprocess_video(video, output_type=output_type)
-                self.safety_checker.to("cpu")
-            else:
-                video = self.video_processor.postprocess_video(video, output_type=output_type)
+                if self.safety_checker is not None:
+                    self.safety_checker.to(device)
+                    video = self.video_processor.postprocess_video(video, output_type="np")
+                    video = (video * 255).astype(np.uint8)
+                    video_batch = []
+                    for vid in video:
+                        vid = self.safety_checker.check_video_safety(vid)
+                        video_batch.append(vid)
+                    video = np.stack(video_batch).astype(np.float32) / 255.0 * 2 - 1
+                    video = torch.from_numpy(video).permute(0, 4, 1, 2, 3)
+                    video = self.video_processor.postprocess_video(video, output_type=output_type)
+                    self.safety_checker.to("cpu")
+                else:
+                    video = self.video_processor.postprocess_video(video.detach(), output_type=output_type)
         else:
             video = latents
 

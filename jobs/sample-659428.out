@@ -1,0 +1,808 @@
+Fri Jul  4 17:37:46 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.133.20             Driver Version: 570.133.20     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H200                    On  |   00000000:59:00.0 Off |                    0 |
+| N/A   39C    P0             76W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H200                    On  |   00000000:5A:00.0 Off |                    0 |
+| N/A   38C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H200                    On  |   00000000:72:00.0 Off |                    0 |
+| N/A   37C    P0             76W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H200                    On  |   00000000:73:00.0 Off |                    0 |
+| N/A   36C    P0             77W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H200                    On  |   00000000:8B:00.0 Off |                    0 |
+| N/A   38C    P0             79W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H200                    On  |   00000000:8C:00.0 Off |                    0 |
+| N/A   38C    P0             80W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H200                    On  |   00000000:A4:00.0 Off |                    0 |
+| N/A   37C    P0             75W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H200                    On  |   00000000:A5:00.0 Off |                    0 |
+| N/A   38C    P0             78W /  700W |       0MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+Running batch sample script env activated
+Discovered 4 models: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+activated vbench environment
+Evaluating dimension: subject_consistency for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+Evaluating dimension: temporal_flickering for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+Evaluating dimension: aesthetic_quality for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+Evaluating dimension: dynamic_degree for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+Evaluating dimension: imaging_quality for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+Evaluating dimension: motion_smoothness for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:37:58_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:37:58_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:37:58_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:37:58_full_info.json
+Loading [networks.AMT-S.Model] from [/home/yjianhao/.cache/vbench/amt_model/amt-s.pth]...
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:37:58_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:37:58_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:37:58_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:37:58_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:37:58_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:37:58_full_info.json
+Loading pretrained model MUSIQ from /home/yjianhao/.cache/vbench/pyiqa_model/musiq_spaq_ckpt-358bb6af.pth
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:37:58_eval_results.json
+done
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:37:58_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:37:58_full_info.json
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:37:58_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:37:58_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:37:58_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:37:58_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:37:58_eval_results.json
+done
+Evaluating dimension: subject_consistency for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+Evaluating dimension: temporal_flickering for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+Evaluating dimension: aesthetic_quality for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+Evaluating dimension: dynamic_degree for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+Evaluating dimension: imaging_quality for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+Evaluating dimension: motion_smoothness for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:41:00_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:41:00_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:41:00_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:41:00_full_info.json
+Loading [networks.AMT-S.Model] from [/home/yjianhao/.cache/vbench/amt_model/amt-s.pth]...
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:41:00_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:41:00_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:41:00_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:41:00_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:41:00_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:41:00_full_info.json
+Loading pretrained model MUSIQ from /home/yjianhao/.cache/vbench/pyiqa_model/musiq_spaq_ckpt-358bb6af.pth
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:41:00_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:41:00_full_info.json
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:41:00_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:41:00_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:41:00_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:41:00_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:41:00_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:41:00_eval_results.json
+done
+Evaluating dimension: subject_consistency for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+Evaluating dimension: temporal_flickering for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+Evaluating dimension: aesthetic_quality for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+Evaluating dimension: dynamic_degree for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+Evaluating dimension: imaging_quality for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+Evaluating dimension: motion_smoothness for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:43:57_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:43:57_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:43:57_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:43:57_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:43:57_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:43:57_full_info.json
+Loading [networks.AMT-S.Model] from [/home/yjianhao/.cache/vbench/amt_model/amt-s.pth]...
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:43:57_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:43:57_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:43:57_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:43:57_full_info.json
+Loading pretrained model MUSIQ from /home/yjianhao/.cache/vbench/pyiqa_model/musiq_spaq_ckpt-358bb6af.pth
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:43:57_eval_results.json
+done
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:43:57_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:43:57_full_info.json
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:43:57_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:43:57_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:43:57_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:43:57_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:43:57_eval_results.json
+done
+Evaluating dimension: subject_consistency for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+Evaluating dimension: temporal_flickering for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+Evaluating dimension: aesthetic_quality for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+Evaluating dimension: dynamic_degree for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+Evaluating dimension: imaging_quality for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+Evaluating dimension: motion_smoothness for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:46:49_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:46:49_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:46:49_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:46:49_full_info.json
+Loading [networks.AMT-S.Model] from [/home/yjianhao/.cache/vbench/amt_model/amt-s.pth]...
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:46:49_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:46:49_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:46:49_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:46:49_full_info.json
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:46:49_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:46:49_full_info.json
+Loading pretrained model MUSIQ from /home/yjianhao/.cache/vbench/pyiqa_model/musiq_spaq_ckpt-358bb6af.pth
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/temporal_flickering/results_2025-07-04-17:46:49_eval_results.json
+done
+start evaluation
+Evaluation meta data saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:46:49_full_info.json
+cur_full_info_path: ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:46:49_full_info.json
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/subject_consistency/results_2025-07-04-17:46:49_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/aesthetic_quality/results_2025-07-04-17:46:49_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/dynamic_degree/results_2025-07-04-17:46:49_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/imaging_quality/results_2025-07-04-17:46:49_eval_results.json
+done
+Evaluation results saved to ../video_guidance/results/vbench/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/motion_smoothness/results_2025-07-04-17:46:49_eval_results.json
+done
+Generating test files for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+CSV file '/home/yjianhao/project/video_guidance/temp/guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna.csv' has been created with 72 video entries.
+Generating test files for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+CSV file '/home/yjianhao/project/video_guidance/temp/guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna.csv' has been created with 72 video entries.
+Generating test files for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+CSV file '/home/yjianhao/project/video_guidance/temp/guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna.csv' has been created with 72 video entries.
+Generating test files for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+CSV file '/home/yjianhao/project/video_guidance/temp/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna.csv' has been created with 72 video entries.
+Activated videophy environment
+Running inference for model: guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna
+Running inference for model: guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna
+Running inference for model: guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna
+Running inference for model: guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna
+install flash-attn first.
+install flash-attn first.
+install flash-attn first.
+install flash-attn first.
+install flash-attn first.
+install flash-attn first.
+install flash-attn first.
+install flash-attn first.
+Model Loaded
+Model Loaded
+Model Loaded
+Model Loaded
+Model Loaded
+Model Loaded
+Model Loaded
+Model Loaded
+5
+4
+4
+4
+4
+5
+4
+5
+5
+5
+5
+5
+4
+4
+4
+4
+5
+5
+4
+5
+5
+5
+4
+4
+5
+5
+4
+4
+5
+4
+5
+5
+4
+4
+4
+5
+4
+5
+5
+5
+5
+4
+5
+5
+4
+5
+5
+5
+5
+5
+5
+4
+5
+4
+3
+4
+4
+5
+5
+5
+5
+5
+5
+5
+4
+5
+5
+4
+5
+4
+4
+5
+4
+5
+5
+5
+5
+5
+4
+4
+4
+5
+4
+5
+4
+5
+4
+4
+5
+4
+4
+5
+4
+5
+5
+4
+5
+5
+3
+5
+4
+5
+5
+4
+5
+5
+4
+4
+5
+4
+5
+4
+5
+4
+4
+5
+4
+4
+4
+5
+5
+5
+5
+5
+5
+4
+5
+5
+5
+5
+4
+4
+5
+4
+4
+5
+5
+5
+4
+5
+4
+5
+4
+5
+4
+4
+4
+3
+4
+5
+4
+5
+4
+5
+3
+5
+4
+4
+3
+4
+4
+4
+4
+5
+3
+4
+4
+4
+4
+5
+5
+3
+4
+5
+4
+5
+4
+4
+4
+4
+4
+4
+4
+4
+3
+5
+4
+3
+3
+5
+5
+5
+5
+5
+3
+5
+5
+3
+5
+5
+4
+4
+3
+4
+5
+3
+5
+3
+5
+5
+3
+5
+5
+5
+4
+4
+4
+4
+4
+4
+4
+5
+3
+5
+4
+5
+3
+4
+4
+4
+5
+4
+5
+5
+4
+5
+5
+3
+4
+4
+5
+4
+4
+3
+5
+4
+3
+4
+3
+4
+5
+5
+4
+4
+5
+4
+5
+4
+5
+4
+4
+4
+5
+5
+5
+5
+5
+4
+4
+4
+3
+3
+4
+5
+5
+3
+5
+5
+5
+5
+3
+4
+4
+5
+5
+3
+3
+5
+4
+4
+5
+4
+4
+5
+4
+5
+5
+4
+5
+5
+5
+5
+4
+3
+5
+4
+4
+5
+5
+4
+5
+5
+5
+5
+5
+5
+4
+4
+5
+5
+4
+4
+5
+5
+4
+4
+4
+4
+4
+4
+4
+5
+5
+4
+5
+4
+5
+4
+4
+4
+4
+4
+5
+5
+4
+4
+4
+5
+5
+5
+5
+5
+5
+5
+3
+4
+5
+4
+5
+3
+5
+4
+5
+5
+4
+5
+4
+5
+4
+5
+4
+5
+4
+5
+5
+4
+4
+5
+4
+4
+5
+5
+4
+4
+5
+5
+5
+4
+5
+3
+4
+5
+5
+4
+5
+4
+4
+5
+4
+4
+4
+5
+5
+5
+5
+5
+5
+4
+4
+5
+4
+5
+5
+4
+5
+4
+5
+4
+5
+5
+5
+5
+5
+5
+5
+4
+5
+5
+5
+5
+4
+5
+4
+3
+5
+5
+4
+4
+4
+4
+4
+5
+3
+4
+4
+5
+4
+4
+4
+3
+4
+5
+3
+5
+5
+5
+4
+5
+3
+5
+5
+5
+4
+3
+5
+5
+4
+4
+5
+3
+5
+3
+5
+4
+5
+4
+4
+4
+4
+5
+5
+5
+5
+4
+5
+4
+5
+5
+4
+4
+3
+5
+5
+4
+4
+5
+4
+3
+4
+5
+3
+4
+4
+3
+5
+3
+5
+5
+4
+5
+3
+3
+4
+4
+4
+5
+4
+4
+5
+4
+4
+5
+4
+4
+5
+4
+4
+3
+4
+5
+5
+4
+4
+4
+4
+4
+5
+5
+3
+3
+4
+4
+5
+3
+5
+5
+4
+5
+5
+5
+4
+4
+4
+4
+2
+4
+5
+4
+3
+3
+5
+4
+5
+4
+5
+5
+4
+4
+4
+4
+5
+5
+3
+5
+4
+5

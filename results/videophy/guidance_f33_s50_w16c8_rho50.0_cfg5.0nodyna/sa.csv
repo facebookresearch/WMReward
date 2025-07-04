@@ -1,0 +1,73 @@
+,caption,videopath,score
+0,a sheep bending down to drink water from a river,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a sheep bending down to drink water from a river.mp4,5.0
+1,a truck slowing down to stop,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a truck slowing down to stop.mp4,3.0
+2,a horse galloping across an open field,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a horse galloping across an open field.mp4,5.0
+3,a cow bending down to drink water from a river,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a cow bending down to drink water from a river.mp4,5.0
+4,a bird flying over a snowy forest,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bird flying over a snowy forest.mp4,4.0
+5,a bicycle gliding through a snowy field,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bicycle gliding through a snowy field.mp4,5.0
+6,an airplane taking off,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/an airplane taking off.mp4,3.0
+7,an airplane landing smoothly on a runway,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/an airplane landing smoothly on a runway.mp4,3.0
+8,a horse running to join a herd of its kind,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a horse running to join a herd of its kind.mp4,4.0
+9,an elephant running to join a herd of its kind,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/an elephant running to join a herd of its kind.mp4,4.0
+10,a person giving a presentation to a room full of colleagues,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a person giving a presentation to a room full of colleagues.mp4,4.0
+11,a cow chewing cud while resting in a tranquil barn,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a cow chewing cud while resting in a tranquil barn.mp4,5.0
+12,a car stuck in traffic during rush hour,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a car stuck in traffic during rush hour.mp4,4.0
+13,a bear sniffing the air for scents of food,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bear sniffing the air for scents of food.mp4,4.0
+14,a dog drinking water,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a dog drinking water.mp4,5.0
+15,a train crossing over a tall bridge,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a train crossing over a tall bridge.mp4,4.0
+16,a motorcycle accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a motorcycle accelerating to gain speed.mp4,4.0
+17,a giraffe taking a peaceful walk,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a giraffe taking a peaceful walk.mp4,5.0
+18,a person playing guitar,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a person playing guitar.mp4,4.0
+19,a bear catching a salmon in its powerful jaws,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bear catching a salmon in its powerful jaws.mp4,4.0
+20,a motorcycle gliding through a snowy field,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a motorcycle gliding through a snowy field.mp4,5.0
+21,a horse taking a peaceful walk,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a horse taking a peaceful walk.mp4,4.0
+22,a bear climbing a tree,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bear climbing a tree.mp4,4.0
+23,a truck turning a corner,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a truck turning a corner.mp4,3.0
+24,a bird building a nest from twigs and leaves,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bird building a nest from twigs and leaves.mp4,4.0
+25,a cat running happily,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a cat running happily.mp4,5.0
+26,a cat drinking water,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a cat drinking water.mp4,5.0
+27,a car accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a car accelerating to gain speed.mp4,4.0
+28,an elephant taking a peaceful walk,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/an elephant taking a peaceful walk.mp4,4.0
+29,a bicycle leaning against a tree,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bicycle leaning against a tree.mp4,4.0
+30,a bus accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bus accelerating to gain speed.mp4,4.0
+31,a sheep running to join a herd of its kind,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a sheep running to join a herd of its kind.mp4,4.0
+32,a dog enjoying a peaceful walk,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a dog enjoying a peaceful walk.mp4,5.0
+33,a dog running happily,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a dog running happily.mp4,5.0
+34,a motorcycle slowing down to stop,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a motorcycle slowing down to stop.mp4,3.0
+35,a bicycle slowing down to stop,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bicycle slowing down to stop.mp4,3.0
+36,a truck anchored in a tranquil bay,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a truck anchored in a tranquil bay.mp4,4.0
+37,an airplane accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/an airplane accelerating to gain speed.mp4,4.0
+38,a dog playing in park,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a dog playing in park.mp4,5.0
+39,a car turning a corner,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a car turning a corner.mp4,3.0
+40,a bird soaring gracefully in the sky,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bird soaring gracefully in the sky.mp4,5.0
+41,a cat playing in park,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a cat playing in park.mp4,5.0
+42,a cat grooming itself meticulously with its tongue,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a cat grooming itself meticulously with its tongue.mp4,4.0
+43,a horse bending down to drink water from a river,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a horse bending down to drink water from a river.mp4,5.0
+44,an airplane soaring through a clear blue sky,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/an airplane soaring through a clear blue sky.mp4,5.0
+45,a zebra bending down to drink water from a river,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a zebra bending down to drink water from a river.mp4,5.0
+46,a boat accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a boat accelerating to gain speed.mp4,4.0
+47,a person washing the dishes,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a person washing the dishes.mp4,4.0
+48,a bus stuck in traffic during rush hour,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bus stuck in traffic during rush hour.mp4,4.0
+49,a cow running to join a herd of its kind,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a cow running to join a herd of its kind.mp4,4.0
+50,a boat slowing down to stop,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a boat slowing down to stop.mp4,2.0
+51,a train accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a train accelerating to gain speed.mp4,4.0
+52,a person swimming in ocean,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a person swimming in ocean.mp4,5.0
+53,a giraffe running to join a herd of its kind,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a giraffe running to join a herd of its kind.mp4,4.0
+54,a bicycle accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bicycle accelerating to gain speed.mp4,3.0
+55,a bus turning a corner,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bus turning a corner.mp4,3.0
+56,a boat sailing smoothly on a calm lake,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a boat sailing smoothly on a calm lake.mp4,5.0
+57,a motorcycle turning a corner,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a motorcycle turning a corner.mp4,4.0
+58,a person walking in the snowstorm,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a person walking in the snowstorm.mp4,5.0
+59,a truck stuck in traffic during rush hour,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a truck stuck in traffic during rush hour.mp4,4.0
+60,a giraffe bending down to drink water from a river,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a giraffe bending down to drink water from a river.mp4,5.0
+61,a motorcycle cruising along a coastal highway,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a motorcycle cruising along a coastal highway.mp4,5.0
+62,a sheep taking a peaceful walk,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a sheep taking a peaceful walk.mp4,4.0
+63,a bear hunting for prey,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a bear hunting for prey.mp4,4.0
+64,a zebra running to join a herd of its kind,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a zebra running to join a herd of its kind.mp4,4.0
+65,an elephant spraying itself with water using its trunk to cool down,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/an elephant spraying itself with water using its trunk to cool down.mp4,4.0
+66,a zebra taking a peaceful walk,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a zebra taking a peaceful walk.mp4,5.0
+67,a person drinking coffee in a cafe,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a person drinking coffee in a cafe.mp4,5.0
+68,a car slowing down to stop,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a car slowing down to stop.mp4,3.0
+69,a train speeding down the tracks,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a train speeding down the tracks.mp4,5.0
+70,a truck accelerating to gain speed,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a truck accelerating to gain speed.mp4,4.0
+71,a person eating a burger,/home/yjianhao/project/video_guidance/generated_videos/subject_consistency/guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna/a person eating a burger.mp4,5.0

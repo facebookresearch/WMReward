@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_based
 from PIL import Image
 import shutil
+import cv2
 
 # Add the vjepa2 project root to path (not just src)
 sys.path.append('/home/yjianhao/project/vjepa2')
@@ -45,6 +46,191 @@ def build_pt_video_transform(img_size):
         video_transforms.Normalize(mean=IMAGENET_DEFAULT_MEAN, std=IMAGENET_DEFAULT_STD),
     ])
     return eval_transform
+
+def preprocess_video_for_analysis(video_path, target_size=(256, 256), target_frames=None, remove_black_edges=True):
+    """
+    Preprocess video to handle different resolutions, frame rates, and black edges
+    """
+    # Load video with opencv for better control
+    cap = cv2.VideoCapture(video_path)
+    frames = []
+    
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        # Convert BGR to RGB
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frames.append(frame_rgb)
+    
+    cap.release()
+    
+    if len(frames) == 0:
+        raise ValueError(f"No frames found in video: {video_path}")
+    
+    # Remove black edges if needed
+    if remove_black_edges:
+        frames = remove_black_borders(frames)
+    
+    # Resize frames
+    processed_frames = []
+    for frame in frames:
+        # Convert to PIL for resizing
+        pil_frame = Image.fromarray(frame)
+        resized_frame = pil_frame.resize(target_size, Image.Resampling.LANCZOS)
+        processed_frames.append(np.array(resized_frame))
+    
+    # Handle frame rate differences by resampling to target number of frames
+    if target_frames and len(processed_frames) != target_frames:
+        processed_frames = resample_frames(processed_frames, target_frames)
+    
+    return processed_frames
+
+def remove_black_borders(frames, threshold=10):
+    """
+    Remove black borders from video frames
+    """
+    if len(frames) == 0:
+        return frames
+    
+    # Use first frame to detect borders
+    first_frame = frames[0]
+    h, w = first_frame.shape[:2]
+    
+    # Find non-black regions (pixels above threshold)
+    gray = np.mean(first_frame, axis=2) if len(first_frame.shape) == 3 else first_frame
+    non_black = gray > threshold
+    
+    # Find bounding box of non-black region
+    rows = np.any(non_black, axis=1)
+    cols = np.any(non_black, axis=0)
+    
+    if not np.any(rows) or not np.any(cols):
+        # If all black, return original
+        return frames
+    
+    top, bottom = np.where(rows)[0][[0, -1]]
+    left, right = np.where(cols)[0][[0, -1]]
+    
+    # Crop all frames to remove black borders
+    cropped_frames = []
+    for frame in frames:
+        cropped = frame[top:bottom+1, left:right+1]
+        cropped_frames.append(cropped)
+    
+    return cropped_frames
+
+def resample_frames(frames, target_frames):
+    """
+    Resample frames to target number using linear interpolation
+    """
+    current_frames = len(frames)
+    if current_frames == target_frames:
+        return frames
+    
+    # Create indices for resampling
+    indices = np.linspace(0, current_frames - 1, target_frames)
+    resampled_frames = []
+    
+    for idx in indices:
+        if idx == int(idx):
+            # Exact frame
+            resampled_frames.append(frames[int(idx)])
+        else:
+            # Interpolate between two frames
+            idx1, idx2 = int(np.floor(idx)), int(np.ceil(idx))
+            weight = idx - idx1
+            
+            frame1 = frames[idx1].astype(np.float32)
+            frame2 = frames[idx2].astype(np.float32)
+            interpolated = ((1 - weight) * frame1 + weight * frame2).astype(np.uint8)
+            resampled_frames.append(interpolated)
+    
+    return resampled_frames
+
+def create_video_strip(video_np, num_frames_to_show=8):
+    """Create a horizontal strip of video frames"""
+    total_frames = len(video_np)
+    if num_frames_to_show >= total_frames:
+        frame_indices = list(range(total_frames))
+    else:
+        # Select evenly spaced frames
+        frame_indices = np.linspace(0, total_frames-1, num_frames_to_show, dtype=int)
+    
+    # Get selected frames and concatenate horizontally
+    selected_frames = [video_np[i] for i in frame_indices]
+    video_strip = np.concatenate(selected_frames, axis=1)  # Concatenate along width
+    
+    return video_strip, frame_indices
+
+def create_comprehensive_plot(video_data_list, model_name, context_length, save_path):
+    """
+    Create a comprehensive plot showing multiple videos and their loss curves
+    video_data_list: list of tuples (video_name, video_np, loss_arr, score)
+    """
+    num_videos = len(video_data_list)
+    
+    # Create figure with video strips on top and loss curves below
+    fig = plt.figure(figsize=(16, 4 + 3 * num_videos))
+    
+    # Create grid: video strips take 2/3 height, loss plots take 1/3
+    gs = fig.add_gridspec(num_videos + 1, 1, height_ratios=[2] * num_videos + [3])
+    
+    # Colors for different videos
+    colors = ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'gray']
+    
+    # Plot video strips
+    for i, (video_name, video_np, loss_arr, score) in enumerate(video_data_list):
+        ax_video = fig.add_subplot(gs[i, 0])
+        
+        # Create video strip
+        video_strip, frame_indices = create_video_strip(video_np, num_frames_to_show=8)
+        
+        ax_video.imshow(video_strip)
+        ax_video.set_title(f'{video_name} (Score: {score:.4f})', fontsize=12, fontweight='bold')
+        ax_video.set_xticks([])
+        ax_video.set_yticks([])
+        
+        # Add frame numbers
+        frame_width = video_strip.shape[1] // len(frame_indices)
+        for j, frame_idx in enumerate(frame_indices):
+            x_pos = (j + 0.5) * frame_width
+            ax_video.text(x_pos, video_strip.shape[0] + 10, f'F{frame_idx}', 
+                         ha='center', va='bottom', fontsize=8)
+    
+    # Plot all loss curves together
+    ax_loss = fig.add_subplot(gs[-1, 0])
+    
+    for i, (video_name, video_np, loss_arr, score) in enumerate(video_data_list):
+        # Convert loss_arr to numpy if needed
+        if torch.is_tensor(loss_arr):
+            loss_arr_np = loss_arr.cpu().numpy().flatten()
+        else:
+            loss_arr_np = np.array(loss_arr)
+        
+        color = colors[i % len(colors)]
+        ax_loss.plot(loss_arr_np, color=color, linewidth=2, 
+                    label=f'{video_name} (Score: {score:.4f})', marker='o', markersize=3)
+    
+    ax_loss.set_title(f'PyTorch V-JEPA Loss Comparison ({model_name.upper()}, Context={context_length})', 
+                     fontsize=14, fontweight='bold')
+    ax_loss.set_xlabel('Timestep', fontsize=12)
+    ax_loss.set_ylabel('Loss', fontsize=12)
+    ax_loss.grid(True, alpha=0.3)
+    ax_loss.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    
+    # Add model info
+    info_text = f'Model: {model_name.upper()}\nContext Length: {context_length}\nTotal Videos: {num_videos}'
+    ax_loss.text(0.02, 0.98, info_text, 
+                transform=ax_loss.transAxes, fontsize=10, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='lightcyan', alpha=0.8))
+    
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    
+    print(f"Comprehensive plot saved: {save_path}")
 
 def get_sliding_window_score_torch(video, model, processor, kernel_size, context_window_size, stride=2, return_form='arr', mode='max', require_grad=False):
     """
@@ -152,48 +338,174 @@ def get_sliding_window_score_torch(video, model, processor, kernel_size, context
         else:
             return final_loss
 
-# Initialize PyTorch VJEPA model
-img_size = 256  # Use 256 like in the original debug_loss.py
-pt_model_path = "/home/yjianhao/project/vjepa2/checkpoints/vitg-256.pt"  # Adjust path as needed
+# Define models and context lengths to test
+models_to_test = {
+    'vitg': "/home/yjianhao/project/vjepa2/checkpoints/vitg-384.pt",
+    'vith': "/home/yjianhao/project/quentinecode/vjepa2/vit-h-open/vith.pt",
+    # Add more PyTorch models here if available
+    # 'vitg-384': "/home/yjianhao/project/vjepa2/checkpoints/vitg-384.pt",
+}
 
-model = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=64)
-model.cuda().eval()
+context_lengths_to_test = [2, 4, 6, 8, 10]
 
-# Load pretrained weights (you'll need to download/have the checkpoint)
-load_pretrained_vjepa_pt_weights(model, pt_model_path)
+# Initialize common parameters
+img_size = 256
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Build PyTorch preprocessing transform
-processor = build_pt_video_transform(img_size=img_size)
+# Define test groups
+test_groups = {
+    'pyramid_videos': {
+        'videos': [
+            "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/valid_00.mp4", 
+            "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/temporal_disorder_00.mp4",
+            "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/invalid_phase_shifting_00.mp4",
+            "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/invalid_sphere_fusion_00.mp4",
+            "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/invalid_teleporting_spheres_00.mp4"
+        ],
+        'use_diffusers_loader': True,  # Use existing load_video function
+        'target_frames': None
+    },
+    'guidance_videos': {
+        'videos': [
+            "/home/yjianhao/project/video_guidance/base.mp4",
+            "/home/yjianhao/project/video_guidance/generated.mp4"
+        ],
+        'use_diffusers_loader': False,  # Use custom preprocessing
+        'target_frames': 64  # Target number of frames
+    }
+}
 
-raw_paths = ["/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/valid_00.mp4", 
-        "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/temporal_disorder_00.mp4",
-        "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/invalid_phase_shifting_00.mp4",
-        "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/invalid_sphere_fusion_00.mp4",
-        "/home/yjianhao/project/EvalVideoPhy/data/pyramid_videos/subgroup_005/invalid_teleporting_spheres_00.mp4"]
-
-for raw_path in raw_paths:
-    video = load_video(raw_path)
-
-    # video is a list of PIL.Image.Image objects
-    video_np = np.stack([np.array(frame.resize((256, 256))) for frame in video], axis=0)
-    print(video_np.shape)
-
-    # Use the clean PyTorch-native function
-    score, loss_arr = get_sliding_window_score_torch(video, model, processor, kernel_size=16, context_window_size=10, stride=2, return_form='arr')
-    print(f"Score: {score}")
-
-    dir_name = "./debug/pyramid2_pytorch"
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name, exist_ok=True)
+# Loop through test groups, models and context lengths
+for group_name, group_config in test_groups.items():
+    print(f"\n{'='*80}")
+    print(f"TESTING GROUP: {group_name.upper()}")
+    print(f"Videos: {len(group_config['videos'])}")
+    print(f"{'='*80}")
     
-    save_path = f"{dir_name}/{raw_path.split('/')[-1].split('.')[0]}.mp4"
-    shutil.copy2(raw_path, save_path)
-    plt.figure(figsize=(6,6))
-    plt.plot(loss_arr)
+    for model_name, model_path in models_to_test.items():
+        print(f"\n{'='*60}")
+        print(f"Testing PyTorch model: {model_name} on {group_name}")
+        print(f"Checkpoint: {model_path}")
+        print(f"{'='*60}")
+        
 
-    # Set title and labels
-    plt.xlabel('timestep')
-    plt.ylabel('Loss')
-    # Save the plot locally
-    plt.savefig(f"{dir_name}/loss_{raw_path.split('/')[-1].split('.')[0]}.png")
-    plt.close()  # Close the figure to free memory
+        model = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=64)
+        model.to(device).eval()
+        
+        # Load pretrained weights
+        load_pretrained_vjepa_pt_weights(model, model_path)
+        
+        # Build PyTorch preprocessing transform
+        processor = build_pt_video_transform(img_size=img_size)
+        
+        print(f"Successfully loaded {model_name}")
+
+        
+        for context_length in context_lengths_to_test:
+            print(f"\n--- Testing {model_name} with context_length={context_length} on {group_name} ---")
+            
+            # Create organized output directory
+            dir_name = f"./debug/pyramid_comparison/{group_name}/{model_name}_context{context_length}"
+            if not os.path.exists(dir_name):
+                os.makedirs(dir_name, exist_ok=True)
+            
+            # Collect data for comprehensive plot
+            video_data_list = []
+            
+            for raw_path in group_config['videos']:
+                try:
+                    # Load video based on group configuration
+                    if group_config['use_diffusers_loader']:
+                        # Use existing diffusers loader for pyramid videos
+                        video = load_video(raw_path)
+                        video_np = np.stack([np.array(frame.resize((256, 256))) for frame in video], axis=0)
+                    else:
+                        # Use custom preprocessing for guidance videos
+                        video_np = preprocess_video_for_analysis(
+                            raw_path, 
+                            target_size=(256, 256),
+                            target_frames=group_config['target_frames'],
+                            remove_black_edges=True
+                        )
+                        video_np = np.array(video_np)
+                    
+                    print(f"Video shape: {video_np.shape}")
+
+                    # Use the clean PyTorch-native function
+                    score, loss_arr = get_sliding_window_score_torch(
+                        video_np, model, processor, 
+                        kernel_size=16, 
+                        context_window_size=context_length,  # Use the current context length
+                        stride=2, 
+                        return_form='arr'
+                    )
+                    print(f"Score: {score}")
+
+                    # Get video name for processing
+                    video_name = raw_path.split('/')[-1].split('.')[0]
+                    
+                    # Add to comprehensive plot data
+                    video_data_list.append((video_name, video_np, loss_arr, score))
+                    
+                    # Create individual video strip for visualization
+                    video_strip, frame_indices = create_video_strip(video_np, num_frames_to_show=8)
+                    
+                    # Create individual subplot figure
+                    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), gridspec_kw={'height_ratios': [1, 1]})
+                    
+                    # Plot video frames on top
+                    ax1.imshow(video_strip)
+                    ax1.set_title(f'Video Frames: {video_name} ({group_name})')
+                    ax1.set_xlabel('Frame Sequence')
+                    ax1.set_ylabel('Height')
+                    ax1.set_xticks([])
+                    ax1.set_yticks([])
+                    
+                    # Add frame numbers as labels
+                    frame_width = video_strip.shape[1] // len(frame_indices)
+                    for i, frame_idx in enumerate(frame_indices):
+                        x_pos = (i + 0.5) * frame_width
+                        ax1.text(x_pos, video_strip.shape[0] + 10, f'F{frame_idx}', 
+                                ha='center', va='bottom', fontsize=8)
+                    
+                    # Plot loss curve on bottom
+                    ax2.plot(loss_arr, 'b-', linewidth=2)
+                    ax2.set_title(f'PyTorch V-JEPA Loss Over Time ({model_name.upper()}, Context={context_length}, {group_name})')
+                    ax2.set_xlabel('Timestep')
+                    ax2.set_ylabel('Loss')
+                    ax2.grid(True, alpha=0.3)
+                    
+                    # Add comprehensive annotation
+                    info_text = f'Model: {model_name.upper()}\nContext: {context_length}\nGroup: {group_name}\nScore: {score:.4f}'
+                    ax2.text(0.02, 0.98, info_text, 
+                             transform=ax2.transAxes, fontsize=10, verticalalignment='top',
+                             bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
+                    
+                    plt.tight_layout()
+                    
+                    # Save the individual combined plot
+                    plot_filename = f"combined_{model_name}_ctx{context_length}_{video_name}.png"
+                    plt.savefig(f"{dir_name}/{plot_filename}", 
+                                dpi=150, bbox_inches='tight')
+                    plt.close()  # Close to free memory
+                    
+                    print(f"Saved individual: {plot_filename}")
+                    
+                except Exception as e:
+                    video_name = raw_path.split('/')[-1].split('.')[0]
+                    print(f"Error processing {video_name} with {model_name} context={context_length}: {e}")
+                    continue
+            
+            # Generate comprehensive plot for all videos in this model/context combination
+            if video_data_list:
+                comprehensive_filename = f"COMPREHENSIVE_{model_name}_ctx{context_length}_{group_name}_all_videos.png"
+                comprehensive_path = f"{dir_name}/{comprehensive_filename}"
+                create_comprehensive_plot(video_data_list, f"{model_name} ({group_name})", context_length, comprehensive_path)
+            else:
+                print(f"No valid data for comprehensive plot: {model_name} context={context_length} {group_name}")
+
+print(f"\n{'='*60}")
+print("PyTorch testing complete! Results saved in ./debug/pyramid_comparison/")
+print("Folder structure: {group_name}/{model_name}_context{context_length}/")
+print("Test groups: pyramid_videos, guidance_videos")
+print(f"{'='*60}")

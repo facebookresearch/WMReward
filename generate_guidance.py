@@ -19,7 +19,7 @@ pipe.enable_model_cpu_offload()
 # pipe.vae.enable_slicing()
 # pipe.vae.enable_gradient_checkpointing()
 
-generator = torch.Generator(device="cuda").manual_seed(42)
+generator = torch.Generator(device="cuda").manual_seed(4)
 # prompt = "A cat and a dog baking a cake together in a kitchen. The cat is carefully measuring flour, while the dog is stirring the batter with a wooden spoon. The kitchen is cozy, with sunlight streaming through the window."
 # prompt="a truck accelerating to gain speed"
 # prompt = "A robot arm moving towards a red cube"

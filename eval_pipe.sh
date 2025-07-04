@@ -10,7 +10,11 @@ EXPS=(
     # "guidance_f33_s50_w16c8_rho1.0_cfg5.0torch"
     # "vanilla_f33_s50_cfg5.0_0701_2103"
     # "vanilla_f33_s50_cfg5.0"
-    "guidance_f33_s50_w16c8_rho10.0_cfg5.0torch"
+    # "guidance_f33_s50_w16c8_rho10.0_cfg5.0torch"
+    "guidance_f33_s50_w16c8_rho1.0_cfg5.0nodyna"
+    "guidance_f33_s50_w16c8_rho5.0_cfg5.0nodyna"
+    "guidance_f33_s50_w16c8_rho10.0_cfg5.0nodyna"
+    "guidance_f33_s50_w16c8_rho50.0_cfg5.0nodyna"
 )
 GENERATED_VIDEOS_DIR="../video_guidance/generated_videos/$PROMPT"
 MODELS=("${EXPS[@]}")

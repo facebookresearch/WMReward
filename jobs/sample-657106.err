@@ -1,0 +1,480 @@
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
+
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A[A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:00<00:01,  2.37it/s]Loading pipeline components...:  40%|████      | 2/5 [00:00<00:01,  2.24it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:10,  2.57s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:10,  2.57s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:11,  2.82s/it][ALoading pipeline components...:  20%|██        | 1/5 [00:03<00:15,  3.89s/it]Loading pipeline components...:  40%|████      | 2/5 [00:04<00:05,  1.71s/it]Loading pipeline components...:  60%|██████    | 3/5 [00:05<00:04,  2.23s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  20%|██        | 1/5 [00:06<00:24,  6.23s/it]
+Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:09,  3.20s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:09,  3.23s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:07<00:10,  3.63s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.19s/it][ALoading pipeline components...:  40%|████      | 2/5 [00:07<00:09,  3.27s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.53s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:09<00:06,  3.12s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:09<00:06,  3.28s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:02,  1.43s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:03<00:13,  3.32s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:13<00:03,  3.42s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:02,  2.09s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:13<00:03,  3.38s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:14<00:10,  5.37s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:06<00:10,  3.38s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.99s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.84s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:15<00:04,  5.00s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:14<00:14, 14.36s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  3.21s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  3.21s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:16<01:05, 16.27s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  3.39s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  3.34s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:16<01:07, 16.93s/it]Loading pipeline components...:  60%|██████    | 3/5 [00:17<00:13,  6.93s/it]Loading pipeline components...:  60%|██████    | 3/5 [00:17<00:09,  4.77s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  7.45s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  8.49s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:18<00:15,  7.51s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:18<00:05,  5.12s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.10s/it][ALoading pipeline components...:  60%|██████    | 3/5 [00:20<00:11,  5.66s/it]
+Loading checkpoint shards:  60%|██████    | 3/5 [00:12<00:08,  4.35s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:20<00:20, 20.62s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:20<00:00,  3.90s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:20<00:00,  4.13s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:20<00:31, 10.44s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  80%|████████  | 4/5 [00:21<00:04,  4.08s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  60%|██████    | 3/5 [00:21<00:13,  6.51s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:22<00:00,  9.75s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:22<00:00, 11.38s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:23<01:32, 23.00s/it]
+Loading checkpoint shards:  80%|████████  | 4/5 [00:15<00:03,  3.82s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:09,  3.11s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.23s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.49s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:25<00:20, 10.00s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:08<00:06,  3.23s/it][ALoading pipeline components...:  40%|████      | 2/5 [00:27<00:36, 12.20s/it]Loading pipeline components...:  80%|████████  | 4/5 [00:27<00:06,  6.23s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:12<00:12, 12.80s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:14<00:00,  6.08s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:14<00:00,  7.09s/it]
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:07,  1.82s/it]
+[ALoading pipeline components...: 100%|██████████| 5/5 [00:29<00:00,  8.24s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:29<00:00,  5.92s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  80%|████████  | 4/5 [00:13<00:03,  3.66s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.44s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.72s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.88s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:32<00:10, 10.11s/it]
+Loading checkpoint shards:  50%|█████     | 1/2 [00:12<00:12, 12.30s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:16<00:16, 16.47s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:13<00:00,  5.78s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:13<00:00,  6.77s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:34<00:00,  7.25s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:34<00:00,  6.99s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.49s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.07s/it]
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  7.54s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  8.89s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:35<00:09,  9.30s/it]/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  60%|██████    | 3/5 [00:09<00:07,  3.72s/it][ALoading pipeline components...: 100%|██████████| 5/5 [00:37<00:00,  6.87s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:37<00:00,  7.56s/it]
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:10<00:10, 10.52s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  4.95s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.79s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  8.13s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  7.87s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  80%|████████  | 4/5 [00:13<00:03,  3.51s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:15<00:15, 15.62s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.59s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.82s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:41<00:09,  9.01s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  6.94s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  8.25s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  9.07s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  8.43s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  6.47s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  8.53s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:23<00:23, 23.74s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:25<00:00, 10.58s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:25<00:00, 12.56s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:46<00:15, 15.59s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.54it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.99s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:08<00:06,  3.32s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:15<00:04,  4.70s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:21<00:00,  5.14s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:21<00:00,  4.25s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [01:07<00:00, 17.66s/it]Loading pipeline components...: 100%|██████████| 5/5 [01:07<00:00, 13.48s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  20%|██        | 1/5 [00:00<00:02,  1.36it/s]Loading pipeline components...:  40%|████      | 2/5 [00:00<00:01,  2.65it/s]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:03,  1.01it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:05,  1.38s/it][ALoading pipeline components...:  40%|████      | 2/5 [00:03<00:04,  1.52s/it]
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.73s/it][ALoading pipeline components...:  20%|██        | 1/5 [00:03<00:14,  3.64s/it]Loading pipeline components...:  60%|██████    | 3/5 [00:03<00:02,  1.27s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:04<00:06,  2.25s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:05,  1.46s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:08,  2.80s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.48s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:10<00:10, 10.37s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  4.70s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.55s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:11<00:45, 11.38s/it]
+Loading checkpoint shards:  40%|████      | 2/5 [00:08<00:13,  4.66s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:11<00:09,  4.59s/it][ALoading pipeline components...:  40%|████      | 2/5 [00:14<00:19,  6.36s/it]
+Loading checkpoint shards:  80%|████████  | 4/5 [00:13<00:03,  3.45s/it][ALoading pipeline components...:  60%|██████    | 3/5 [00:15<00:07,  3.87s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:15<00:15, 15.49s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.67it/s][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.63s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.96s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:15<00:13,  6.50s/it]
+Loading checkpoint shards:  80%|████████  | 4/5 [00:16<00:05,  5.22s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:11<00:08,  4.12s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.29s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  7.59s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  8.78s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:17<01:11, 17.82s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:03,  1.56s/it][ALoading pipeline components...:  80%|████████  | 4/5 [00:19<00:05,  5.43s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:18<00:18, 18.48s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:06,  1.69s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:15<00:03,  3.80s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:19<00:00,  4.62s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:19<00:00,  3.92s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:19<01:19, 19.82s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.60s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.18s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:17<00:00,  3.44s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:21<00:07,  7.39s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:21<00:00,  9.20s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:21<00:00, 10.59s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:22<00:16,  8.18s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.57s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.49s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:22<00:05,  5.30s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:22<00:00,  4.54s/it]
+
+Loading checkpoint shards:  40%|████      | 2/5 [00:05<00:08,  2.70s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:  80%|████████  | 4/5 [00:25<00:06,  6.39s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.74it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:08<00:05,  2.88s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:10<00:02,  2.55s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.58s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  1.97s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.23s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:29<00:41, 13.98s/it]
+Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:03,  1.75s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:10<00:10, 10.94s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.38s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:33<00:33, 33.28s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.09s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:11<00:00,  5.97s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:33<00:00,  9.02s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:33<00:00,  6.74s/it]
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:14<00:14, 14.71s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  6.89s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  8.07s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  9.20s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.14s/it]
+
+Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.33s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.08s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.75s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.16s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:35<00:21, 10.68s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:35<00:00, 15.13s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:35<00:00, 17.85s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:35<02:23, 35.97s/it]Loading pipeline components...:  80%|████████  | 4/5 [00:36<00:06,  6.90s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:37<00:00,  7.40s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:32<00:32, 32.29s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:33<00:00, 13.83s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:33<00:00, 16.60s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:38<00:33, 16.55s/it]/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  60%|██████    | 3/5 [00:38<00:20, 10.31s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.90it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:01,  2.06it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.23s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.39s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:21<00:21, 21.57s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:03,  1.55s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:23<00:00, 10.04s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:23<00:00, 11.78s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:43<01:06, 22.13s/it]
+Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:04,  2.09s/it][ALoading pipeline components...:  60%|██████    | 3/5 [00:44<00:24, 12.43s/it]
+Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.94s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.92s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:08<00:00,  1.72s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:47<00:00,  9.66s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:47<00:00,  9.45s/it]
+
+Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.96s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.69s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.39s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:50<00:10, 10.92s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:50<00:00,  7.18s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:50<00:00, 10.16s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:51<00:00,  7.61s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:51<00:00, 10.32s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  20%|██        | 1/5 [00:00<00:02,  1.43it/s]
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.75it/s][ALoading pipeline components...:  20%|██        | 1/5 [00:00<00:03,  1.29it/s]Loading pipeline components...:  20%|██        | 1/5 [00:00<00:03,  1.16it/s]Loading pipeline components...:  20%|██        | 1/5 [00:00<00:02,  1.34it/s]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:03,  1.08it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:01<00:02,  1.11it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:02<00:01,  1.11it/s][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:03<00:00,  1.36it/s][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.71it/s][ALoading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.47it/s]
+Loading pipeline components...:  20%|██        | 1/5 [00:03<00:14,  3.64s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  20%|██        | 1/5 [00:04<00:16,  4.17s/it]Loading pipeline components...:  40%|████      | 2/5 [00:04<00:06,  2.03s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:04<00:17,  4.40s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:04<00:17,  4.40s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:07<00:10,  3.51s/it][ALoading pipeline components...:  40%|████      | 2/5 [00:09<00:15,  5.24s/it]
+Loading checkpoint shards:  40%|████      | 2/5 [00:09<00:15,  5.15s/it][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.34it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:09<00:06,  3.08s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:11<00:17,  5.99s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:12<00:08,  4.37s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:11<00:02,  2.63s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:13<00:13, 13.76s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:07,  2.59s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:14<00:03,  3.26s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:12<00:00,  2.11s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:12<00:00,  2.60s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:14<00:10,  5.15s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  2.86s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:16<00:00,  3.24s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:16<01:05, 16.49s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  80%|████████  | 4/5 [00:16<00:04,  4.24s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  7.49s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:16<00:00,  8.43s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:17<01:08, 17.14s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:08<00:06,  3.17s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:03,  1.19it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:04,  1.58s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:17<00:17, 17.08s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.40s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:20<00:14,  7.35s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:03,  1.62s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:21<00:21, 21.20s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  8.14s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  9.49s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:22<00:15,  8.00s/it]
+Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.60s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.91s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.86s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:23<00:19,  9.52s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:22<00:00,  9.61s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:22<00:00, 11.35s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:23<00:41, 13.94s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.48s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.49s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:24<00:14,  7.25s/it]
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.52it/s][ALoading pipeline components...:  80%|████████  | 4/5 [00:25<00:05,  5.12s/it]
+Loading checkpoint shards:  50%|█████     | 1/2 [00:21<00:21, 21.35s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.85s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:22<00:00,  9.66s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:22<00:00, 11.42s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:27<00:07,  7.99s/it]Loading pipeline components...:  80%|████████  | 4/5 [00:27<00:07,  7.02s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.55it/s][ALoading pipeline components...: 100%|██████████| 5/5 [00:28<00:00,  4.95s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:28<00:00,  5.72s/it]
+
+Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.88s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:28<00:07,  7.61s/it][ALoading pipeline components...: 100%|██████████| 5/5 [00:29<00:00,  4.75s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:29<00:00,  5.96s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:01,  1.83s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.25s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.49s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.58s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:31<00:07,  7.73s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:31<00:00,  5.88s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:31<00:00,  6.26s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:32<00:23, 11.97s/it]
+Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.32s/it][ALoading pipeline components...: 100%|██████████| 5/5 [00:34<00:00,  6.18s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:34<00:00,  6.94s/it]
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:17<00:17, 17.68s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  7.76s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  9.25s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  9.01s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.06s/it]
+
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+Loading checkpoint shards:  80%|████████  | 4/5 [00:07<00:02,  2.00s/it][AINFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:19<00:19, 19.31s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:20<00:00,  8.45s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:20<00:00, 10.08s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:36<00:56, 18.73s/it]
+Loading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.77s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:09<00:00,  1.86s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:37<00:00,  8.43s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:37<00:00,  7.44s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:  80%|████████  | 4/5 [00:38<00:09,  9.94s/it]Loading pipeline components...:  60%|██████    | 3/5 [00:38<00:22, 11.01s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  80%|████████  | 4/5 [00:39<00:06,  6.96s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  7.88s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:17<00:17, 17.24s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  7.77s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:18<00:00,  9.20s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  9.38s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  8.46s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:13<00:13, 13.65s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  7.99s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  8.84s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:56<00:00, 12.53s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:56<00:00, 11.29s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]Loading pipeline components...:   0%|          | 0/5 [00:00<?, ?it/s]
+
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][ALoading pipeline components...:  20%|██        | 1/5 [00:00<00:02,  1.56it/s]Loading pipeline components...:  40%|████      | 2/5 [00:00<00:00,  3.02it/s]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.43s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.43s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:10,  2.69s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:02<00:09,  2.39s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.07s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:04<00:06,  2.28s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.50s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:05<00:01,  1.13s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.20it/s][ALoading checkpoint shards: 100%|██████████| 5/5 [00:06<00:00,  1.21s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:06<00:25,  6.26s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:06<00:11,  3.99s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:03,  1.17it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:07<00:11,  3.93s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:08<00:14,  4.78s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:08<00:05,  2.62s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:06,  3.23s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.17s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:06,  2.05s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:10<00:08,  4.20s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  1.67s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:10<00:00,  2.14s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:11<00:09,  4.78s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:12<00:03,  3.01s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:15<00:00,  2.73s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:15<00:00,  3.05s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:15<00:23,  7.75s/it]Loading pipeline components...:  60%|██████    | 3/5 [00:16<00:09,  4.77s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:09<00:07,  3.74s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:18<00:18, 18.33s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:18<00:05,  5.59s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:18<00:18, 18.71s/it][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:11<00:03,  3.17s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:20<00:00,  8.49s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:20<00:00, 10.03s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:20<01:21, 20.28s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:20<00:00,  9.10s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:20<00:00, 10.49s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:21<00:31, 10.60s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.90s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:14<00:00,  2.85s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:21<00:17,  8.84s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:03,  1.13it/s][ALoading pipeline components...:  40%|████      | 2/5 [00:22<00:29,  9.93s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:23<00:00,  5.19s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:23<00:00,  4.64s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:23<01:33, 23.39s/it]
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.24s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.82s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:14<00:14, 14.79s/it][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:03<00:05,  1.91s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:06<00:04,  2.20s/it][A
+Loading checkpoint shards:  50%|█████     | 1/2 [00:27<00:27, 27.55s/it][A
+Loading checkpoint shards:  60%|██████    | 3/5 [00:05<00:03,  1.85s/it][A
+Loading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  7.45s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:17<00:00,  8.55s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:28<00:09,  9.43s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:29<00:00, 12.30s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:29<00:00, 14.59s/it]
+Loading pipeline components...:  20%|██        | 1/5 [00:29<01:57, 29.43s/it]
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s][A
+Loading checkpoint shards:  80%|████████  | 4/5 [00:08<00:02,  2.41s/it][A
+Loading checkpoint shards:  20%|██        | 1/5 [00:00<00:02,  1.72it/s][A
+Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.13s/it][ALoading pipeline components...: 100%|██████████| 5/5 [00:32<00:00,  7.39s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:32<00:00,  6.50s/it]
+
+Loading checkpoint shards:  80%|████████  | 4/5 [00:09<00:02,  2.73s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.67s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.38s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:33<00:22, 11.17s/it]/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  60%|██████    | 3/5 [00:04<00:03,  1.63s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.33s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:11<00:00,  2.22s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:34<00:07,  7.22s/it]
+Loading checkpoint shards:  50%|█████     | 1/2 [00:13<00:13, 13.15s/it][ALoading pipeline components...: 100%|██████████| 5/5 [00:34<00:00,  5.23s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:34<00:00,  6.99s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:35<00:07,  7.73s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:14<00:00,  5.92s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:14<00:00,  7.01s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:35<00:10, 10.94s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.16s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  5.30s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:35<00:00,  7.17s/it]
+
+Loading checkpoint shards:  80%|████████  | 4/5 [00:06<00:01,  1.78s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:29<00:29, 29.90s/it][A
+Loading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.38s/it][ALoading checkpoint shards: 100%|██████████| 5/5 [00:07<00:00,  1.40s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:36<00:20, 10.29s/it]
+Loading checkpoint shards: 100%|██████████| 2/2 [00:30<00:00, 12.74s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:30<00:00, 15.32s/it]
+Loading pipeline components...:  60%|██████    | 3/5 [00:36<00:25, 12.99s/it]/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:  80%|████████  | 4/5 [00:37<00:06,  6.99s/it]/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:  80%|████████  | 4/5 [00:38<00:09,  9.12s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:38<00:00,  5.20s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:38<00:00,  7.79s/it]
+Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  6.32s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:39<00:00,  7.88s/it]
+
+Loading checkpoint shards:  50%|█████     | 1/2 [00:23<00:23, 23.91s/it][A/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:24<00:00, 10.32s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:24<00:00, 12.36s/it]
+Loading pipeline components...:  80%|████████  | 4/5 [00:40<00:12, 12.24s/it]
+Loading checkpoint shards:  50%|█████     | 1/2 [00:18<00:18, 18.55s/it][ALoading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  8.64s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:42<00:00,  8.56s/it]
+
+Loading checkpoint shards: 100%|██████████| 2/2 [00:19<00:00,  8.34s/it][ALoading checkpoint shards: 100%|██████████| 2/2 [00:19<00:00,  9.87s/it]
+Loading pipeline components...:  40%|████      | 2/5 [00:43<01:03, 21.31s/it]/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt
+Loading pipeline components...:  60%|██████    | 3/5 [00:45<00:25, 12.67s/it]Loading pipeline components...:  80%|████████  | 4/5 [00:46<00:07,  7.95s/it]Loading pipeline components...: 100%|██████████| 5/5 [00:46<00:00,  9.27s/it]
+/home/yjianhao/miniconda3/envs/vg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+INFO:root:Loading pretrained model from ./vit-h-open/vith.pt

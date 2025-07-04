@@ -1,0 +1,599 @@
+A Segway maneuvers around a group of stationary pedestrians, maintaining a safe distance and clear path.
+A badminton shuttlecock is served underhand, traveling across the net and landing within the service box.
+A bag of oranges falls from a conveyor belt and scatters on the floor.
+A baker pats a dough ball flat in a bowl, before using a spoon to press in edges and make a pie crust.
+A baker rolls out a sheet of dough on a floured countertop using a rolling pin, stretching it to a uniform thickness.
+A balloon is popped by being over-inflated, causing it to burst with a loud noise and rapid deflation.
+A baseball bat smashes a glass bottle, sending shards flying in all directions.
+A baseball is struck by a bat, causing a visible scuff mark on the ball's surface.
+A baseball is thrown with great force; it hits a brick wall and leaves a visible mark.
+A baseball player throws a ball overhead; it passes through a hoop.
+A baseball player throws a fastball; the ball leaves their hand and travels towards the catcher's mitt.
+A basketball is dribbled hard against a wall, bouncing back to the player.
+A basketball, slightly deflated, is dribbled, resulting in a lower and less consistent bounce.
+A batsman hits a six, the ball clearing the boundary rope.
+A batter hits a fastball, the ball cracking off the bat and landing cleanly in the outfield.
+A billiard ball is struck and rolls across a felt-covered pool table, hitting another ball.
+A blunt pencil pokes a hole into a soft clay sculpture, leaving a visible indentation.
+A bobsled is launched from the start ramp, gaining substantial speed in a short distance.
+A bobsled is seen jumping a small ramp during the course, showcasing its airborne trajectory.
+A bobsled overturns during a turn, coming to rest on its side in the snow.
+A bodysurfer dives headfirst into a wave, emerging from the whitewater several seconds later.
+A bodysurfer utilizes the lip of the wave to perform a slide, visible on the wave.
+A bottle cap is rolled up a smooth, polished stone surface, reflecting light as it rolls back down.
+A bowler uses a two-handed approach, releasing the ball with a powerful follow-through, causing a strike.
+A bowler's run-up, followed by the delivery of the ball.
+A bowling ball is pushed off a table, rolling across a polished wooden floor.
+A bowling ball rolls down a polished wooden lane, hitting the pins at the end.
+A box is wrapped with various pieces of patterned wrapping paper to create a patchwork effect.
+A box of tools, placed flat, remains on a sloping workbench, due to its shape and weight.
+A brick is pushed at the very edge of a wall, rocking perilously before its position is steady once more.
+A bubble gum bubble is blown and then punctured using a finger.
+A bubble gum bubble is blown into a light breeze, causing it to drift across a grassy field.
+A bucket filled with water tips over, and the water splashes and spills onto the ground.
+A bulldozer clears debris from a construction site, moving it into a dumpster.
+A bulldozer pulls a heavy load attached with a chain, moving it across the ground.
+A bulldozer pushes sand to create a berm, changing the landscape.
+A bungee cord connects to a harness and then the jumper leaps from a high platform, showcasing the full range of motion.
+A bungee cord snaps back after a jump, impacting the ground with visible force; no human is present in this shot.
+A burning candle produces a small amount of smoke near its wick.
+A canoeist uses a single-bladed paddle to propel their canoe across a lake, the paddle's movement visible against the still water.
+A car body panel is welded to a frame, the welder expertly guiding the torch to create a smooth and strong weld.
+A car crashes into a stack of cardboard boxes, sending the boxes flying in all directions.
+A car's hood, propped open with a stick, is lifted from the other side; the stick comes loose and the hood begins to fall
+A car's hood, propped open with a stick, is lifted from the other side; the stick comes loose and the hood begins to fall.
+A chef pushes a pizza spinning on a tray with their hand before placing it in the oven.
+A chemist pours a clear liquid from a beaker into a test tube, carefully avoiding spills.
+A child bounces repeatedly in the same spot on a bouncy castle, creating a small dip in the fabric.
+A child folds a piece of origami paper into a simple crane, with visible creases appearing.
+A child jumps from a small platform onto a bouncy castle, increasing the height and force of their bounce.
+A child kicks a soccer ball against a brick wall; the ball bounces back.
+A child pours colorful beads from a plastic container into a glass jar until they overflow, scattering on the floor.
+A child pushes a stack of books off a desk; the books fall in a chaotic pile.
+A child pushes a toy block off a table, and it falls to the floor, bouncing once.
+A child pushes a toy car across a carpeted floor; the car rolls a short distance before stopping.
+A child pushes a toy car onto a ramp, and it rolls down.
+A child runs and catches a brightly colored frisbee, stopping abruptly with the frisbee in hand.
+A child somersaults on a large bouncy castle, their body rotating fully in the air.
+A child swings a toy hammer, hitting a plastic toy, causing it to fall.
+A child throwing a dart; the dart misses the dartboard completely.
+A child throws a basketball underhand, showing the ball's low trajectory and impact with the floor.
+A child throws a lightweight discus, its slow trajectory easily visible in the air.
+A child uses a small spade to dig a hole in a sandbox, creating a small crater.
+A child uses a small stick to create details in the snowman's face, like dimples.
+A child walks through freshly fallen snow, their boots kicking up small clouds of powder.
+A child's kite drifts down from the sky, caught on a nearby tree.
+A child's playdough ball is rolled flat on a table, changing shape before being sculpted.
+A child's toy hammer smashes a small plastic egg, breaking it open.
+A chisel is used to create a decorative border on a stone slab, revealing a precise pattern.
+A chopstick pokes a hole in a piece of soft cheese, pushing the cheese in and slightly sideways.
+A circular saw cuts through a block of foam, leaving a clean, relatively smooth cut.
+A circular saw cuts through a piece of laminated wood, the different layers are cleanly separated.
+A circular saw is used to cut a thick branch off a tree, leaving a clean cut surface.
+A clay pot falls from a shelf and hits the tiled floor, breaking into pieces, and coming to rest.
+A cleaning agent is used on a dirty whiteboard, then wiped with a dry cloth, removing marker.
+A climber adjusts their climbing harness, securing the straps and buckles.
+A climber adjusts their climbing shoes before beginning the ascent.
+A climber adjusts their harness and gear at the base of a frozen glacier.
+A climber carefully removes an ice screw from the ice, pulling it straight out without damaging the ice around it.
+A climber descends a rope using a friction device, gradually lowering themselves to the ground.
+A climber falls, the rope catching them, and the impact visible on the belaying device.
+A climber meticulously checks their climbing equipment before beginning their ascent.
+A climber removes a nut protection from a crack in the rock, using specialized tools.
+A climber uses a rope and a harness to safely descend a steep, rocky slope.
+A climber uses front-pointing ice axes to ascend a steep ice formation, the axes leaving visible marks.
+A climber uses their hands and feet to traverse a wide, horizontal rock face.
+A close-up shot of a paddle making contact with the ping pong ball, showing the impact.
+A close-up shows a javelin thrower's hand releasing the javelin, then tracking the javelin's flight.
+A close-up view of a pencil being sharpened by a rotary pencil sharpener, revealing the wood shavings.
+A coin is flipped high, then tumbles end-over-end, landing tails up on a concrete floor.
+A coin is flung into the air and caught in a metal cup.
+A coin spins on a flat surface, coming to rest on heads.
+A comparison of two needles, one easy to thread and one difficult to thread, and the process of threading each is shown.
+A comparison shot shows two different types of yarn being spun—one thick, one thin.
+A competitor approaches the runway, accelerates, jumps, and lands with their legs spread wide.
+A construction worker folds a blueprint meticulously before placing it in a protective sleeve.
+A construction worker hammers a metal stake into the ground, the stake bending slightly under the force.
+A construction worker uses a socket wrench to turn a large bolt on a metal beam, the wrench exerting significant force.
+A construction worker uses a suction cup to lift a heavy glass panel with a small picture adhered to it; the picture remains affixed.
+A craftsman delicately shapes a piece of soapstone with a small chisel, producing fine shavings.
+A crane gently lifts a pallet of bricks, the bricks remain stacked.
+A crane's claw gently nudges a large container, causing it to shift a few centimeters.
+A crumpled newspaper is unfolded, revealing the headline and various articles.
+A curler releases a stone without a sweep, showing a direct path and velocity.
+A cyclist leans into a turn on a snowy road, their bike tires gripping the packed snow.
+A cylindrical metal container rolls down a grassy hill, stopping near a small bush.
+A cylindrical object is rolled across a patterned carpet, its rotation gradually slowing.
+A dandelion seed head releases numerous seeds, each floating individually on the breeze.
+A dart lands on the wire separating two numbers on the dartboard, the player scores lower.
+A detective peels back a layer of wallpaper, revealing a hidden compartment containing a small, metal box.
+A dirty mop is rinsed in a sink filled with soapy water, the dirt visibly washing away.
+A discus hits a large wooden target with a clear impact mark.
+A discus is thrown from a raised platform, landing sharply in the soft sand of a beach, creating a visible impact crater.
+A discus is thrown with an overhand motion, traveling a significant distance before landing in the soft sand.
+A discus thrower with a unique throwing style releases the discus; its flight path is captured from a side angle.
+A dog playfully bats at a balloon, causing it to pop against a nearby fence.
+A drop kick sends a water balloon arcing through the air; the balloon bursts upon impact with the ground.
+A farmer harvests raspberries, gently picking them from the bushes and placing them into a container.
+A farmer pours corn kernels from a wheelbarrow into a large bin until they overflow, creating a mound of corn.
+A farmer uses a ladder to reach high branches, carefully picking a bunch of ripe bananas, the stems snapping.
+A feather is poked with a toothpick; the feather shifts only slightly.
+A fidget spinner rotates quickly, then friction brings it to a standstill.
+A fielder catches a cricket ball, holding it securely in their glove.
+A finger pokes a hole in a soft clay sculpture, leaving a distinct indentation.
+A finger pokes a small stuffed animal hanging from a bedpost, causing it to fall to the floor.
+A flat piece of Styrofoam rests on a ramp of plywood, its flat base creating friction.
+A folded towel is unfolded on a beach chair, the fabric smooth and wrinkle-free.
+A foot pushes a door open a crack; the door swings inward a few inches.
+A garden hose is bent sharply at multiple points, showing the kinks in the hose.
+A gardener plants a flower bulb in loose soil, covering it with a layer of mulch.
+A glass bottle with a metal clamp-like closure is opened by unscrewing the clamping mechanism.
+A glass globe is spun on its base, continuing to rotate steadily and smoothly.
+A glass is wiped dry with a tea towel, visible water droplets disappearing.
+A glass jar with a metal screw-on lid is opened with a twisting motion; the lid comes off cleanly.
+A golf club strikes a golf ball, sending it rolling across a manicured green toward the hole.
+A golfer addresses the ball, takes a backswing, and hits the ball, sending it arcing high into the air.
+A golfer chips the ball onto the green, the ball rolling smoothly towards the hole.
+A golfer swings a golf club, hitting a golf ball that rolls across the green.
+A grapefruit is peeled with a knife, the thick rind separating cleanly from the fruit.
+A group of gymnasts perform a synchronized tumbling run across the floor, each performing a similar sequence of rolls and flips.
+A gymnast drops from the parallel bars and lands safely on the mat below.
+A gymnast executes a double backflip into a foam pit, becoming fully submerged upon landing.
+A gymnast executes a series of complex hand and leg movements on the pommel horse, demonstrating precise coordination.
+A gymnast performs a back handspring, landing cleanly on their feet on a padded floor.
+A gymnast performs a sideways leap across a balance beam.
+A gymnast performs a transition from a front support to a back support on the pommel horse.
+A gymnast stands on a balance beam, then performs a forward roll, landing smoothly.
+A gymnast stretches a long gymnastic ribbon, extending it into a thin line.
+A gymnast’s hands slip on the pommel horse, causing a brief loss of balance before regaining control.
+A hairdryer is moved quickly over the hair, showing minimal time spent on each section.
+A hairdryer rests on a bathroom counter, plugged into an outlet, with a comb and brush nearby.
+A hammer is thrown and bounces once before stopping; the bounce and final resting position are clearly seen.
+A hammer is thrown, landing in a grassy field, leaving a small crater in the turf.
+A hammer strikes a concrete block, causing it to crack and break apart.
+A hammer, thrown with considerable force, bounces off a concrete wall, leaving a visible mark.
+A hand holds a bottle of beer upright, pouring it into a mug until it's full.
+A hand pushes a basketball, causing it to spin before rolling across a court.
+A hand pushes a large ceramic vase near the edge of a table; it tilts sharply but remains upright.
+A hand rips a sheet of printer paper in half, creating a jagged tear.
+A hand-held spindle filled with yarn is shown; the process of yarn spinning is complete.
+A heavy bowling pin is nudged with the tip of a bowling ball, causing it to fall.
+A heavy discus is thrown, making a heavy thud when it lands in loose gravel.
+A heavy metal toolbox is pushed off a workbench; it falls with a loud clang.
+A heavy steel beam, resting on two supports, is lifted at one end by a crane until the beam begins to rotate and slides off the supports.
+A heavy weight is pushed a few centimeters with a bar  the weight moves slightly and makes a small metallic sound  only the movement is relevant for the visual prompt  .
+A heavy weight is pushed a few centimeters with a bar; the weight moves slightly and makes a small metallic sound (only the movement is relevant for the visual prompt).
+A heavy-duty carabiner is clipped to a climbing harness using a girth hitch, the rope clearly wrapping around the carabiner.
+A hedge trimmer is used to shape a tall, dense privet hedge, the blades visibly cutting through the leaves and stems.
+A hiker stuffs a water bottle into a side pocket of their backpack, the fabric stretching slightly.
+A horseshoe is tossed, landing around a metal stake.
+A hose sprays water onto a burning pile of tires, extinguishing the flames and creating steam.
+A hoverboard rider performs a 360-degree spin on a polished wooden floor.
+A hoverboard stops instantly when a remote control is pressed.
+A hoverboard with flashing LED lights drives through a dark tunnel with reflective walls.
+A hula hoop is spun around a dog's body, the hoop tracing the outline of the dog as it moves.
+A hunter draws a bow, aiming at a three-dimensional deer target, the arrow penetrating the foam body.
+A javelin is thrown and pierces through a thin wooden board, breaking it cleanly.
+A javelin thrown from a high vantage point lands in a rocky outcrop below, with visible dust.
+A jetski moves quickly through a narrow channel between two rocky outcrops.
+A juggler attempts to juggle five balls, dropping two and continuing with the remaining three.
+A jump rope is laid on the ground in a circular pattern after use.
+A kayaker lifts their paddle out of the water, showing the surface tension of the water clinging to the blade.
+A kickball is kicked with force, striking a brick wall and leaving a noticeable scuff mark.
+A kite with a camera attached descends gently, lowered by a person pulling the string.
+A kite, shaped like a dragon, flies through a narrow gap between two buildings.
+A knife is thrown underwater, sinking to the bottom of a clear pool with visible movement.
+A knife spins through the air before embedding itself in a corkboard, leaving a visible mark.
+A landscaper uses a chain saw to cut down a small tree, the tree falling to the ground.
+A large ice sculpture is being worked on, with visible cuts and chips removed using various carving tools.
+A large metal sculpture is being welded together, the sparks illuminating the dark workshop.
+A large pumpkin is placed on a small, flimsy stool; the stool breaks, and the pumpkin rolls onto the ground.
+A large stack of papers is pushed near the edge of a desk, almost tumbling to the floor but remaining standing.
+A large stone rolls down a hillside, leaving a visible path in the dirt.
+A large, circular mirror is slightly poked, causing a minor shift in its reflected image, though it does not spin.
+A large, clear balloon is inflated with air, showing the internal pressure causing the balloon to stretch.
+A large, flat piece of slate rests on a steeply angled rock face, held firm by friction.
+A large, orange plastic egg is rolled up a plastic slide, then rolls down, ending at the bottom.
+A large, thick wooden beam is broken in two with a powerful overhead axe swing, showing a clean, straight break.
+A large, wet canvas is twisted to remove excess paint, leaving drips down the side.
+A leaf blower is pointed at a patch of leaves on a lawn; the leaves are forcefully displaced in a specific direction.
+A lemon is cut in half then each half is peeled, revealing the inner flesh and seeds.
+A librarian pushes a book off a high shelf, causing it to fall open onto the floor.
+A librarian stuffs books neatly onto a shelf, the shelf filling up with books.
+A lit candle on a wooden table is extinguished by a quick puff of air.
+A long jump is captured from a low angle, the jumper's body creating a distinct parabolic curve.
+A long jumper demonstrates a flawed technique, resulting in a short distance and an unbalanced landing.
+A luger crosses the finish line, the sled coming to a controlled stop.
+A luger's sled impacts a small snowbank at the edge of the track, causing a slight spray of snow.
+A mechanic pours oil from a can into a car's engine until it overflows, dripping down the engine block.
+A mechanic pulls apart two connected metal pipes using a wrench, creating two separate sections.
+A mechanic uses a utility knife to quickly sharpen a pencil's end.
+A mechanical bull with a damaged motor jerks and stutters erratically as a rider attempts to stay on.
+A metal die is rolled across a felt-covered table, coming to rest on a number six.
+A metal pipe smashes a pumpkin, causing its insides to spill out.
+A metallic hurdle is struck by a hurdler's foot, creating a visible metallic clang.
+A mountain biker pedals uphill through deep snow, their tires leaving visible tracks.
+A package is secured to a Segway's platform; the Segway travels a short distance, delivering the package.
+A paint roller applies a coat of beige paint to a textured wall, showing the paint filling in the textures.
+A paint roller is used to apply a coat of brown paint to a section of a wooden staircase, showing the paint being spread evenly along the stairs.
+A paint roller, dipped in green paint, is used to cover a section of a metal fence, creating a uniform green coat.
+A paintbrush lightly touches a still-wet watercolor painting, leaving a barely visible impression on the surface.
+A pair of garden shears cuts through a thick stem of a plant, making a clean division.
+A pair of jeans are folded in half lengthwise, then folded again into thirds, creating a compact rectangle.
+A paraglider lands on a beach, their feet touching the sand as the wing deflates.
+A paraglider soars above a valley, the wing's movement showing the interaction with air currents.
+A parasail is being inflated and prepared by crew, showing the process of inflation and the parachute's texture.
+A parasailer is launched from a motorboat, the parachute deploying fully and lifting them into the air.
+A parasailer, harnessed to a bright orange parachute, is pulled along a calm ocean surface by a speedboat.
+A person ascends a thick rope using a climbing harness and ascenders, their hands moving steadily upwards.
+A person attaches a key to a key ring with a split ring.
+A person attempts to maintain balance on a mechanical bull that is bucking and spinning rapidly .
+A person attempts to maintain balance on a mechanical bull that is bucking and spinning rapidly.
+A person attempts to maintain balance on a mechanical bull that is bucking and spinning rapidly. .
+A person blows a bubble gum bubble while sitting on a park bench, the bubble floating away.
+A person blows out a candle from a distance, resulting in a small puff of smoke near the extinguished flame.
+A person blows smoke rings into the air, the rings briefly visible before dissipating.
+A person bounces on a trampoline near sand, kicking up sand with each jump.
+A person bounces to a specific rhythm on a trampoline, their body movement clearly timed to a beat.
+A person bounces vigorously on a trampoline, causing the springs to visibly extend and retract.
+A person buries a glass bottle in a rocky area by carefully removing rocks and replacing them on top.
+A person carefully hand-stitches a tear in a woolen garment, using a matching colored thread.
+A person carefully lifts a cardboard box filled with books; the books remain stacked and the box doesn't tilt.
+A person carries a heavy bucket while wading through chest-deep water.
+A person carves an ice cube into a perfect sphere using a specialized rotary tool and a steady hand.
+A person cleans mud off their boots with a brush, removing visible clumps of mud.
+A person does a somersault, rolling onto their back and immediately getting up.
+A person drop kicks a pumpkin across a cobblestone street, the pumpkin rolling before stopping.
+A person drops a stitch while knitting, the dropped loop clearly visible.
+A person executes a unicycle turn, leaning into the turn while using the pedals for control.
+A person expertly rides a Segway down a ramp, performing a controlled jump before landing smoothly.
+A person falls and performs an involuntary somersault to recover their balance on ice.
+A person flips their hair over and uses a hairdryer to lift the roots, giving their hair more volume.
+A person folds a damp cloth napkin, smoothing out wrinkles to make a flat rectangle.
+A person folds a gift certificate, placing it into a decorative envelope.
+A person folds a neatly ironed shirt, creating crisp, visible creases along the sleeves and collar.
+A person folds a pair of jeans neatly and places them in a drawer.
+A person folds a sheet of origami paper into a crane, showing each crease and fold clearly.
+A person forcefully rips a piece of kraft paper, the fibers stretching and separating before breaking.
+A person inflates a balloon with air, then carefully pushes a small toy inside before tying it off.
+A person inhales deeply from a pipe, smoke filling their mouth before being exhaled.
+A person juggles a soccer ball in a tight space surrounded by cones, demonstrating precise control and maneuverability.
+A person jumps rope twice, then stops suddenly, the rope coming to rest.
+A person kicks off the ground and starts riding a scooter across a smooth wooden surface.
+A person lies on a surfboard, paddling with their arms, then pushes off the wave and rides it to the shore.
+A person meticulously cuts and adds a bow made of ribbon onto a wrapped box.
+A person mops up a puddle of water on a concrete floor, the water disappearing as the mop passes.
+A person on a bicycle collides with a snowbank, their bike momentarily stopping.
+A person on a unicycle stops abruptly, putting a foot down to maintain balance before continuing.
+A person performs a backstroke, their arms moving rhythmically through the water, legs kicking in a coordinated pattern.
+A person pours orange juice from a carton into a glass, creating a splash.
+A person rips a playing card in half, separating the two halves cleanly.
+A person rolls out a sheet of phyllo pastry, the layers separating and becoming increasingly transparent.
+A person runs, then performs a backflip onto a skateboard.
+A person shovels snow from a garden path, leaving a clear path.
+A person shovels snow from around a car, creating a clear space around the wheels.
+A person sits and juggles three small oranges, using their legs to help with the pattern.
+A person skillfully jumps rope, doing a series of double unders, the rope passing rapidly under their feet.
+A person skillfully maneuvers their scooter around a group of pedestrians on a busy street.
+A person skillfully tosses several coins in the air, catching them one by one.
+A person spins a hula hoop around their ankle, the hoop following a circular path around their leg.
+A person squeezes a bag of flour, flour dust visibly erupting from a small tear.
+A person squeezes a grape, juice seeping out and staining their fingers.
+A person squeezes a tube of toothpaste, a continuous stream emerging onto a toothbrush.
+A person stretches a springy rope, highlighting the changes in its coil structure.
+A person stuffs a pillowcase into a laundry bag, the bag's shape changing.
+A person swings a chain, the links rotating and flashing in the light.
+A person threads a curved needle with a stiff, waxed thread, showing the thread bending as it enters the eye.
+A person throws a frisbee that tumbles along the ground before stopping.
+A person throws a knife at a hanging chain, the knife catching and hanging from the link.
+A person throws a snowball with great force, causing it to leave an impact crater in a soft snow bank.
+A person throws a throwing axe at a large pumpkin; the axe cuts cleanly through the pumpkin.
+A person throws a yo-yo, and it strikes a rubber ball, causing the ball to move.
+A person ties a bow tie while standing in front of a mirror, adjusting the knot's symmetry.
+A person ties a taut-line hitch in a rope attached to a tent stake, showing the loop's formation and secure placement.
+A person tips a beer stein, pouring the remaining beer into a waiting shot glass.
+A person trims a climbing rose, guiding the growth along a trellis using hand shears, shaping the plant against the trellis.
+A person twists a piece of fabric tightly, creating a tourniquet around their arm.
+A person twists the cap of a plastic water bottle, closing it securely.
+A person untying a necktie, undoing the knot and showing the fabric becoming loose.
+A person uses a flat mop to clean a large area of carpet, pushing the mop in long, straight lines.
+A person uses a funnel to pour beer from a large container into a smaller container.
+A person uses a gouge to remove large sections of ice from a block, creating a basic outline for a sculpture.
+A person uses a hairdryer with a diffuser attachment to dry curly hair, creating volume.
+A person uses a hand-held bellows to blow leaves away from the base of a large oak tree, creating a small clearing.
+A person uses a jab to strike a punching bag, followed by a hook, showing both impacts.
+A person uses a kayak paddle to push their kayak up the bank of a river, pushing against the mud.
+A person uses a long stick to poke a can off a shelf, causing it to fall to the ground.
+A person uses a long-handled fruit picker to reach and twist a peach from a tree.
+A person uses a low heat setting on the hairdryer to gently dry their fine hair.
+A person uses a pair of pliers to open a stubborn metal bottle, bending the cap slightly in the process.
+A person uses a post hole digger to create a hole and buries a fence post, packing the surrounding soil.
+A person uses a rotary cutter to cut fabric, creating a straight line through multiple layers.
+A person uses a skateboard to perform a somersault trick, landing on the board.
+A person uses a sledgehammer to demolish a concrete wall, resulting in large chunks breaking off.
+A person uses a small knife to dig a small groove into a piece of wood.
+A person uses a specialized breaking tool to fracture a thick ceramic tile cleanly.
+A person uses a specialized napkin folding tool to create a complex, origami-like design.
+A person uses a stick to poke a stack of playing cards, causing them to topple in a chaotic cascade.
+A person uses a stick to test the depth of the mud before stepping into a muddy area.
+A person uses a variety of tools  hammerstone  antler  bone  to knap a piece of flint into a specific shape .
+A person uses a variety of tools (hammerstone, antler, bone) to knap a piece of flint into a specific shape.
+A person uses a vegetable peeler to remove the skin from a potato, producing long, continuous strips.
+A person uses a wooden mallet to strike a piece of flint, generating a series of small flakes.
+A person uses long-handled loppers to cut thick branches from a bush, the branches snapping cleanly after the cut.
+A person uses nunchucks to break a stack of wooden blocks, the blocks scattering on impact.
+A person uses scissors to cut a piece of thread, then proceeds to tie off the end of the seam.
+A person vigorously twists a wet towel, water spraying outwards in a visible arc.
+A person wades through a muddy puddle, their boots leaving deep footprints.
+A person wades through a swamp, their legs sinking slightly into the soft mud.
+A person wades through thick mud, their boots sinking deeply with each step, leaving distinct footprints.
+A person wearing a protective helmet performs a backflip on a concrete surface.
+A person with limited mobility uses an assistive device to tie their shoelaces.
+A person wraps a rectangular gift box with red wrapping paper, securing it with tape.
+A person's finger pokes a stack of CDs, creating a small gap between the top two discs.
+A person's hands rapidly knitting, the needles moving swiftly across the yarn, creating a visible increase in the length of the knitted piece.
+A piece of duct tape is pulled apart, revealing its sticky residue on both sides.
+A pile of oranges is balanced on a curved, unstable surface; the oranges roll off in several directions.
+A pinball bounces between the flippers and several posts before entering a bonus area.
+A pinball hits the metal side of the machine, creating a distinct clang and ricocheting back into play.
+A pinball rolls down a lane, hitting several small bumpers before settling in a lower scoring area.
+A pizza chef uses a pizza peel to toss and catch a pizza, then slides the pizza onto a baking sheet.
+A pizza cutter slices a pizza into eight even pieces, the wheel rolling across the surface.
+A pizza dough is tossed up, its edges become thinner as it rotates in the air, and it's caught by a second person.
+A plastic ruler is bent until it cracks, displaying a visible stress fracture that propagates.
+A plate is spun rapidly on a turntable, its movement creating a slight blur.
+A player checks another player, sending them sprawling onto the ice.
+A player drops the ball during a handoff, the ball bounces off the ground, creating a visible impact.
+A player falls to the ice and scrambles to recover the puck.
+A player hits a forehand drive, the ball spinning rapidly as it crosses the net.
+A player hits a grounder, the ball rolling smoothly across the perfectly manicured infield.
+A player hits the ball off the side of the mallet, resulting in an unexpected trajectory.
+A player jumps high to block a spike, their hands impacting the ball forcefully, sending it back across the net.
+A player kicks a kickball that bounces off a wooden fence, changing direction.
+A player kicks a soccer ball which hits a lamp post, the ball rebounding at an angle.
+A player misses a shot, the cue ball gently rolling to a stop near a group of balls.
+A player performs a bicycle kick; their foot makes contact with the ball, launching it upward.
+A player performs a drag flick, hitting the ball forcefully from the ground towards the goal.
+A player performs a forearm pass, propelling the volleyball high over the net.
+A player performs a nick shot in squash, the ball barely grazing the side wall before reaching the opponent.
+A player rides their horse, preparing to strike the ball, their mallet poised.
+A player runs and hits the ball into the goal, the ball directly impacting the backboard.
+A player shoots a hook shot; the ball arcs high and falls through the net.
+A player shoots a three-pointer, the ball traveling a long arc before landing in the net.
+A player sits on the ground dribbling the ball between their legs, bouncing it on the floor gently.
+A player throws a sidearm pass; the football travels on a sideways trajectory before being caught.
+A player throws a softball against a brick wall; the ball rebounds at a visible angle.
+A player throws a softball sidearm; the ball spins noticeably as it travels through the air.
+A player throws an underhand pass; the football travels a short distance, hitting the ground after a low trajectory.
+A player throws multiple darts; some land near each other, others are scattered around the board.
+A player uses a backhand clear, sending the shuttlecock high and deep into the opponent's court.
+A player uses a backhand shot to send a racquetball into the corner, the ball rebounding off two walls.
+A player uses a quick set to spike the ball, driving it downward at a steep angle.
+A player uses their stick to push the ball around another player, effectively shielding it.
+A plumber uses an adjustable wrench to loosen a corroded pipe fitting, the wrench slipping slightly before gripping.
+A poi ball catches on a tree branch briefly interrupting the spin.
+A pointed plastic tool pokes a hole in a soft, modeling clay figurine, making an alteration to its shape.
+A pole vaulter knocks over the bar while vaulting, resulting in a failed attempt.
+A potter applies a thin layer of slip to a clay bowl, using a brush to create an even coat.
+A potter gently pokes a lump of clay with a tool, causing a small indentation to form.
+A potter uses a sponge to gently remove excess water from the surface of a clay piece.
+A potter uses a wooden tool to scrape excess clay from a vase, leaving clean lines and a smooth surface.
+A potter's wheel is lightly poked with a tool, causing a small wobble in the rotating clay.
+A powerful gust of wind blows a large pile of leaves down a city street, causing them to swirl and scatter.
+A professional stylist uses multiple hair dryers simultaneously to dry thick hair quickly in a salon setting.
+A rapid series of punches are thrown at a punching bag, causing it to sway violently.
+A rectangular pizza base is thrown and caught several times; the edges become increasingly rounded with each toss.
+A return is met with a powerful cross-court shot, the ball moves diagonally across the court.
+A rider sits on the mechanical bull, which starts to buck gently; then, the intensity gradually increases.
+A robotic arm uses a shovel to clear snow from a large parking lot.
+A robotic arm uses a slender tool to carefully reposition a circuit board, nudging it a fraction of an inch.
+A rock climber attaches a rope to a climbing anchor.
+A roller skater pushes off a wall, gaining speed and gliding across a smooth concrete surface.
+A rolling pin flattens a sphere of cookie dough into a disc, with the edges of the disc thinning.
+A roulette wheel is spun forcefully, the ball bouncing before settling in a slot.
+A round wooden bowl, positioned upright on a cloth-covered table, rolls and falls on its side.
+A rower pulls an oar from the water  the blade dripping water back into the lake .
+A rower pulls an oar from the water, the blade dripping water back into the lake.
+A rower pulls an oar from the water, the blade dripping water back into the lake. .
+A rower's hands release the oar, and the oar falls into the boat, making a gentle thud.
+A sailor uses a winch to tighten the halyard raising a heavy mainsail high up the mast.
+A scientist uses a probe to nudge a small, delicate insect on a leaf, causing it to twitch minimally.
+A scooter collides with a trash can, the scooter tilting to one side before stopping.
+A screwdriver pokes a hole into a wooden plank, leaving a small, round entry point.
+A seamstress pulls the fabric taut, guiding the needle with their fingers as they sew a straight seam.
+A series of hammers are thrown onto a pile of scrap metal, the impacts causing the metal to shift.
+A series of hurdles are successfully cleared by a hurdler running from left to right, the motion seamless.
+A shot put is thrown; the projectile creates a small crater upon impact with the sand.
+A shot putter's footwork is shown during their throw, highlighting the transfer of momentum through their body.
+A shovel digs into loose soil, extracting a buried treasure chest.
+A shuttlecock bounces on the court after being hit by a racquet.
+A single domino tips over, causing a chain reaction of dominoes falling down a long slanted line.
+A single person builds a small, compact snowman using only their hands.
+A single scull rower uses one oar to propel a boat along a river, creating a small wave pattern behind the boat.
+A skateboarder hits a small jump, the skateboard briefly leaving the ground.
+A skateboarder rolls along a smooth concrete path, maintaining a steady pace.
+A skateboarder uses their foot to stop the skateboard abruptly, creating a visible scuff on the ground.
+A skater pushes off the wall of the ice rink, gaining momentum before beginning their routine.
+A ski jet is being towed by a larger boat on calmer waters.
+A ski jet pulls a skier, who is towed over the water.
+A ski jet's propeller is seen churning through the water, creating a clear vortex.
+A sledgehammer is swung at a pile of rocks, scattering and breaking some of them.
+A sledgehammer is swung at a wooden fence post, causing it to break and fall to the ground.
+A slow-motion view of the jump showing leg extension and body position.
+A small child pokes a stack of empty soda cans with a toy car, causing the cans to topple like a chain reaction.
+A small hole is punched into a piece of leather, making a slight tear at the perimeter.
+A small kite, decorated with cartoon characters, is held by a child who runs in a circle to gain height.
+A small piece of wood is broken along the grain creating a small splintered tear.
+A small rock tumbles down a steep, rocky hillside, displacing soil and small stones.
+A small sailboat's rudder is hit by a floating piece of debris which changes its direction.
+A small throwing axe is launched and lodges in a wooden fence post, causing splintering.
+A small toy car is thrown across a room, stopping against a wall.
+A small tree branch is bent downwards until it breaks, exhibiting a clear fracture point.
+A small, flat stone is released at the top of a sand dune; it slides down, leaving a visible track in the sand.
+A small, painted rock is rolled up a sandy incline, leaving a visible trail as it rolls back down.
+A small, rectangular piece of cardboard is placed on a sloped glass surface; it slides down slowly, leaving no visible trace.
+A small, square piece of foam is placed on a slanted acrylic surface; it slides down, creating a soft impact sound upon landing.
+A snowball is thrown and hits a wooden fence, leaving a small, wet indentation.
+A snowmobile drives across a snowy lake, kicking up a large spray of snow behind it.
+A soccer ball is juggled while walking slowly forward, maintaining a steady rhythm and control, for five steps.
+A soccer ball is kicked and hits a person's leg, deflecting at a different angle.
+A soccer player runs, plants their foot, and drop kicks a soccer ball high into the air, the ball arcing visibly.
+A softball is thrown from the outfield, arcing towards home plate, and dropped by the catcher.
+A speeding car crashes into a brick wall, crumpling the front end and stopping abruptly.
+A spinnaker is deployed on a racing yacht, expanding like a parachute and creating a large amount of thrust.
+A spinning top made of wood slows and falls onto a wooden floor.
+A spinning wheel transforms raw flax into a fine linen yarn.
+A squash player serves the ball, the ball striking the front wall with a visible impact.
+A stack of dominoes is carefully balanced; one domino is nudged, initiating a chain reaction that causes the entire stack to fall.
+A stack of pancakes placed upright on a plate tips over and falls on its side.
+A static camera captures the entire trajectory of a bungee jump, from the initial leap to the final bounce, showing the cord's full extension and retraction.
+A steel ball bearing hits a metal plate at a high speed, leaving a visible dent.
+A steel ball bearing rolls across a flat surface and collides with another ball bearing, both ceasing motion.
+A stick pokes a hole into a mud wall, creating a small gap in the surface.
+A stone makes direct contact with the button in the house, centering itself.
+A straw pokes a stack of marshmallows, causing the top marshmallow to roll over slightly.
+A stream of sand propelled from a compressed air tank hits a clay sculpture, shaping and refining its form.
+A stream of water from a handheld nozzle hits a small oil fire, extinguishing the blaze.
+A streamer, cut from paper, descends from a high point, twisting and turning gently.
+A strong gust of wind pushes against a stack of papers causing the papers to scatter.
+A strong hand rips a piece of fabric, revealing the inner fibers of the material.
+A student attaches a poster to a corkboard with pushpins.
+A surfer dives underwater to avoid a breaking wave, resurfacing seconds later.
+A surfer falls off their board, colliding briefly with another surfer, before swimming away.
+A surfer performs a sharp turn on their board, creating a spray of water.
+A swimmer performs a breaststroke, their arms extending fully forward before pulling back in a wide arc, their hands meeting beneath their chest.
+A swimmer swims across a pool, their arms causing waves to break the surface.
+A swimmer using a pull buoy during breaststroke practice, showcasing the buoy's role in isolated leg work.
+A tall, thin candle, stood upright in a candlestick, is knocked over and falls onto its side.
+A tennis ball rolls down a grassy hill, stopping short of a small pond.
+A tennis player serves, the ball leaves the racquet at high speed, and lands in the service box.
+A thick copper wire is bent using pliers until it breaks, displaying a clean metallic fracture.
+A thick fabric napkin is folded and placed into a decorative napkin ring on a dining table.
+A thick rope is bent into a loop, with the visible deformation of the fibers under tension.
+A thin piece of wood is bent into a bow shape, exhibiting its flexibility.
+A tightly folded parachute is unfolded, revealing its vibrant colors and intricate design.
+A tightrope walker slides a wooden block along the tightrope using their balance pole, creating a small groove on the rope.
+A tightrope walker, wearing a safety harness, falls from the tightrope and the harness catches them.
+A tightrope walker, with their balance pole extended to the side, uses it to brace against a sudden gust of wind.
+A time-lapse showing the process of someone tying a bow tie, quickly showing the steps in sequence.
+A tiny section of plaster is pulled away from a wall, leaving a small, shallow tear.
+A tool pokes a stack of wooden planks, leaving a slight mark on the top plank.
+A towel is used to dry a wet pair of hands, leaving them visibly dry.
+A trapeze artist grips the bar, swings upward, and releases at the apex of their swing.
+A trapeze artist uses momentum from a swing to toss a ball to another trapeze artist.
+A unicycle wheel rolls over a small curb; the rider adjusts their position to keep upright.
+A volleyball is spiked downward; it hits the ground forcefully.
+A volleyball is spiked, hitting the wooden floor of the court and producing a soundless bounce visible by its slight dip and subsequent rebound.
+A volleyball player takes a hard swing, the ball contacting the palm and fingers, followed by a rapid downward motion sending the ball over the net.
+A water balloon is thrown against a brick wall, splattering water and leaving a wet mark.
+A water balloon is thrown at a large target made of cardboard; it bursts cleanly.
+A wedge is driven into a log using a sledgehammer, splitting the log cleanly apart.
+A weightlifter successfully completes a snatch with a 25kg barbell, holding it momentarily overhead.
+A welder uses a plasma cutter to cut a steel sheet, producing a bright arc and a clean cut edge.
+A wet sponge is wrung out in a sink, leaving behind a puddle of water.
+A wide shot capturing the entirety of the pole vault, from run-up to landing.
+A wind-up toy is wound up and released, its rotating propellers pushed into motion.
+A woman quickly ties a simple four-in-hand knot, the loose end hanging down.
+A wood burner with multiple tips is used to create varying line weights on a wooden panel.
+A wood burning tool etches a line drawing onto a wooden box.
+A wood burning tool is used to carve letters into a wooden plaque.
+A woodcutter with a long handled axe chops down a thick tree in a forest.
+A wooden hurdle breaks apart under the force of a hurdler's impact, scattering splinters.
+A worker hammers a copper pipe firmly onto a fitting, ensuring a secure connection.
+A worker pushes a stack of papers off a desk, and they scatter across the floor.
+A worker uses a claw hammer to remove a stubborn nail from a piece of wood, the nail popping out.
+A worker uses a pneumatic chisel to break apart a large chunk of concrete, sending debris flying.
+A wrench is used to detach a wheel from a cart, the wheel becoming detached after the bolt is completely unscrewed.
+A yo-yo is thrown and catches on a hanging rope; the yo-yo briefly swings back and forth before falling.
+A yo-yo is tossed against a brick wall; it bounces back without sustaining visible damage.
+A young athlete attempts a shot put throw, the projectile slightly veering off course from the intended trajectory and landing short of the sector.
+Aerial view of a luger descending a long, winding ice track.
+An archer draws a recurve bow, the string stretching taut, then releases the arrow, which hits a target's center.
+An artist twists a wire to create a specific shape for a sculpture.
+An athlete runs and jumps, their body momentarily suspended in midair before impacting the landing area, creating a visible divot.
+An athlete runs, jumps, and lands, creating a small indentation in the sand.
+An athlete throws a hammer, the rotation of the hammer head clearly visible against the sky.
+An athlete with a prosthetic arm throws a hammer, emphasizing the motion of the arm and the hammer's flight.
+An athlete's hand slips momentarily on a parallel bar before regaining a firm grip, then continuing the routine.
+An axe is used to fell a small tree, the tree trunk falling to the ground.
+An empty bowling lane is shown with the pins set up, ready for the next ball.
+An ice hockey player checks another player, causing the second player to fall to the ice.
+An ice skater practices a spin, initially slow then gradually accelerating the rotations.
+An object shaped like a globe is poked, causing it to spin on its axis, revealing different countries.
+An outside hitter hits a line shot, the ball bouncing sharply off the side line.
+An overhead shot depicts a stone's path on the ice, showing its speed and curvature.
+An overhead shot shows the cue ball striking the target ball dead center and continuing to a different pocket.
+An overhead throw sends an axe into a target made of stacked tires; the axe sticks through several.
+An underhand throw sends a frisbee spinning across a beach, landing near the water's edge.
+Arrows are shot at a moving target, with some arrows hitting and some missing visibly.
+Close-up of fingers manipulating a silk bow tie, showing the precise steps of tying a simple knot.
+Close-up shot of hands threading a large-eyed needle with a brightly colored embroidery floss.
+Close-up shot of hands tying shoelaces with a double knot, showing the intricate steps.
+Close-up showing the process of creating a purl stitch, showing the movement of the yarn and needle.
+Concrete is poured from a wheelbarrow into a form, leveling the surface with a trowel.
+Dry dog food is poured from a bag into a pet bowl.
+Fine sand is directed at a delicate glass ornament with light pressure, revealing a hidden pattern.
+Flint knapping creates a pile of discarded flakes around a partially shaped core of flint.
+Folded clothes are placed on shelves in a closet, creating neat rows of similar items.
+Hands fold a map, showing the creases forming as sections are brought together.
+Hands shape a lump of clay-like bread dough into a smooth, round boule on a wooden table.
+Hot chocolate is poured from a mug into a saucer, a small amount sloshing over the edge.
+Javelin thrower throws it with a low-trajectory throw, sticking into the mud.
+Javelin with a damaged tip is thrown; it wobbles in flight and lands off-target.
+Liquid soap is poured from a dispenser into a sink, producing bubbles.
+Multiple balls are grouped near a pocket; a precise shot pockets two of the balls.
+Multiple bowling balls are rolled consecutively, leaving visible marks on the lane.
+Multiple camera angles show the complete motion of the snatch from different perspectives.
+Multiple candles of varying heights and widths are blown out simultaneously by a single breath, some flames extinguishing faster than others.
+Multiple paragliders launch sequentially from a cliff edge, showcasing the staggered takeoffs and individual flight paths.
+Multiple ping pong balls are shown, illustrating different stages of a rally.
+Multiple punches strike a punching bag, each hit causing a distinct swing and ripple.
+Multiple water balloons are tossed upwards, simultaneously bursting in the air in a small arc.
+Nunchucks are swung, striking a punching bag, creating a visible ripple effect.
+Nunchucks are used to chop through a stack of bamboo poles.
+Parallel bars are shown from a side view with an athlete performing a series of dips.
+Players line up, one by one kicking the ball towards a designated area.
+Poi are spun with one hand, using a single rope attached to a single ball.
+Poi are swung against a soft surface  making a thudding sound  NOTE  This prompt includes sound  but it s included to illustrate the effect of the action  not to describe it in detail   The focus is still on the visible impact  .
+Poi are swung against a soft surface, making a thudding sound (NOTE: This prompt includes sound, but it's included to illustrate the effect of the action, not to describe it in detail.  The focus is still on the visible impact).
+Salt is poured from a shaker onto a plate of food, creating a visible layer of white granules.
+Sand is blasted onto a section of a stained-glass window, revealing the lead framework underneath.
+Slow-motion footage of the precise movements involved in tying a surgeon's knot using shoelaces.
+Small twigs are stuck into the snowman's head as eyes and mouth.
+Someone does a backflip onto a large inflatable cushion.
+Someone inflates a water balloon until it is taut and about to burst, the rubber stretching visibly.
+Someone pours gasoline from a gas can into a lawnmower's fuel tank. The fuel level rises visibly inside the tank.
+Someone pulls apart a tightly wound rubber band that separates with audible snap.
+Someone pushes a box onto a scale, and the weight is displayed.
+Someone pushes a large stone onto a pile of other stones.
+Someone removes a large tarp, revealing a gleaming new car underneath.
+Someone throws a snowball into the air, it breaks apart during flight.
+Someone throws a water balloon at a car windshield; the balloon bursts, leaving water residue.
+Someone uses a crowbar to pry open a rusty metal chest, revealing several ancient coins inside.
+Someone uses a shovel to bury a small campfire with sand, completely extinguishing it.
+Syrup is poured onto pancakes from a bottle, the syrup coating the surface.
+The lifter's feet move slightly during the snatch, adjusting their balance.
+The pole vaulter's pole impacts the box, the pole flexing dramatically as they rotate over the bar.
+The puck slides along the ice, skipping off a player's skate.
+Three metal balls are juggled; the sound of the metal hitting the juggler's hands is omitted, only visual impact is shown.
+Three trapeze artists execute a synchronized swing and simultaneous release.
+Time-lapse of a pencil being sharpened with sandpaper; the pencil point becomes increasingly sharp.
+Two children pull apart a pile of sand that divides into two distinct piles.
+Two hula hoops are stacked and spun simultaneously around a person's waist, one inside the other.
+Two javelin throwers launch their javelins simultaneously, showing the trajectory of each.
+Two jetskis perform synchronized turns in the open ocean.
+Two jetskis race side-by-side, their wakes colliding in a visible spray of water.
+Two people lift a large, flat stone slab, revealing several smaller rocks beneath that begin to roll off as it is tilted.
+Two people stand on a balance beam simultaneously, maintaining their stability.
+Two people stretch a bungee cord, extending it to its maximum length.
+Two people tie each other's neckties, showing the hands interacting with the fabric.
+Two people walk side-by-side through a snowstorm, their bodies partially obscured by falling snow.
+Two pieces of fabric are tied together securely using a simple overhand knot, the knot forming at the intersection.
+Two players collide while attempting to hit the ball, their mallets clashing.
+Two players reach for a volley, their racquets meet, creating a visible impact.
+Two roller skaters perform a synchronized spin, their skates leaving visible marks on the polished wood floor.
+Two skaters collide, their skates tangling momentarily before they separate.
+Two soccer balls are simultaneously juggled, one with the feet, the other with the head, before both are briefly balanced on a knee.
+Two swimmers race side-by-side, both performing breaststrokes, showing their bodies moving rhythmically through the water.
+Two swimmers race side-by-side, their hands entering the water simultaneously, creating small trails of bubbles.
+Using a knife, a baker cuts a loaf of pre-shaped dough into smaller rolls, making visible cuts.

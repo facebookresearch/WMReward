@@ -47,7 +47,7 @@ frames = pipe(prompt=prompt, negative_prompt=negative_prompt, num_frames=num_fra
 export_to_video(frames, f"./guidance_sample_robotarm_torch.mp4", fps=16)  # Export the video
 
 # Test the torch V-JEPA scoring on the generated video
-print(" Computing V-JEPA score with torch implementation...")
-video_tensor = preprocess_video_for_torch_vjepa(frames)
-loss_score = calculate_torch_vjepa_loss(video_tensor, torch_vjepa)
-print(f"Torch V-JEPA Loss Score: {loss_score:.4f}")
+# print(" Computing V-JEPA score with torch implementation...")
+# video_tensor = preprocess_video_for_torch_vjepa(frames)
+# loss_score = calculate_torch_vjepa_loss(video_tensor, torch_vjepa)
+# print(f"Torch V-JEPA Loss Score: {loss_score:.4f}")

@@ -32,5 +32,5 @@ source /home/yjianhao/miniconda3/bin/activate
 conda activate vg
 nvidia-smi
 echo "Running batch sample script env activated"
-bash generate.sh
-# bash eval_pipe.sh
+# bash generate.sh
+bash eval_pipe.sh
