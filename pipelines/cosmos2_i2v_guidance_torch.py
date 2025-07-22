@@ -34,11 +34,14 @@ from diffusers.pipelines.cosmos.pipeline_output import CosmosPipelineOutput
 from utils import init_torch_vjepa, preprocess_video_for_torch_vjepa
 from compute_vjepa_score import calculate_torch_vjepa_loss
 from transformers import AutoVideoProcessor, AutoModel
-from compute_vjepa_score import get_score, get_sliding_window_score, get_sliding_window_score_max_v2
+
+# Add action guidance imports
+# from compute_action_loss import ActionGuidanceLoss
+import os
 from diffusers.utils import export_to_video
 import gpustat
 from torch.utils.checkpoint import checkpoint
-
+import torch.nn.functional as F
 
 if is_cosmos_guardrail_available():
     from cosmos_guardrail import CosmosSafetyChecker
@@ -178,14 +181,15 @@ def retrieve_latents(
 class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
     r"""
     Pipeline for video-to-world generation using [Cosmos Predict2](https://github.com/nvidia-cosmos/cosmos-predict2)
-    with V-JEPA guidance support.
+    with V-JEPA and Action guidance support.
 
     This model inherits from [`DiffusionPipeline`]. Check the superclass documentation for the generic methods
     implemented for all pipelines (downloading, saving, running on a particular device, etc.).
 
-    The pipeline now supports V-JEPA guidance during generation. To configure guidance, set these attributes
-    on the pipeline instance before calling:
+    The pipeline now supports both V-JEPA guidance and Action guidance during generation. To configure guidance, 
+    set these attributes on the pipeline instance before calling:
     
+    V-JEPA Guidance:
     - guidance_start (int): Start timestep for guidance (default: 750)
     - guidance_end (int): End timestep for guidance (default: 900)  
     - guidance_rho_scale (float): Scaling factor for guidance gradients (default: 3.0)
@@ -193,13 +197,34 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
     - vjepa_stride (int): Stride for V-JEPA sliding window (default: 2)
     - vjepa_mode (str): V-JEPA aggregation mode (default: 'max')
 
+    Action Guidance:
+    - action_guidance_scale (float): Scale factor for action guidance loss (default: 2.0)
+    - action_use_simple_loss (bool): Whether to use simple variance-based loss (default: True)
+    - action_rho_scale (float): Scaling factor for action guidance gradients (default: 3.0)
+
     Example:
         ```python
         pipe = Cosmos2VideoToWorldPipeline.from_pretrained(model_id)
+        
+        # Configure V-JEPA guidance
         pipe.guidance_start = 800
         pipe.guidance_end = 950
         pipe.guidance_rho_scale = 2.5
-        video = pipe(image=image, prompt=prompt)
+        
+        # Configure action guidance
+        pipe.configure_action_guidance(
+            guidance_scale=2.0,
+            use_simple_loss=True,
+            rho_scale=3.0
+        )
+        
+        # Generate with both guidances
+        video = pipe(
+            image=image, 
+            prompt=prompt,
+            target_action=action_tensor,
+            initial_pose=pose_tensor
+        )
         ```
 
     Args:
@@ -256,6 +281,10 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         self.vjepa_model = init_torch_vjepa()
         self.vjepa_processor = None  # Not needed for torch version
 
+        # # Initialize action guidance for zero-shot adaptation
+        # print("🤖 Loading action guidance for zero-shot robot adaptation...")
+        # self.action_guidance = ActionGuidanceLoss(guidance_scale=2.0, use_simple_loss=True)
+
         self.sigma_max = 80.0
         self.sigma_min = 0.002
         self.sigma_data = 1.0
@@ -267,6 +296,25 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                 sigma_data=self.sigma_data,
                 final_sigmas_type=self.final_sigmas_type,
             )
+
+    def configure_action_guidance(self, guidance_scale=2.0, use_simple_loss=True, rho_scale=3.0):
+        """
+        Configure action guidance parameters for zero-shot robot adaptation
+        
+        Args:
+            guidance_scale: Scale factor for action guidance loss
+            use_simple_loss: Whether to use simple variance-based loss (True) or full VJEPA loss (False)
+            rho_scale: Scale factor for gradient-based guidance updates
+        """
+        self.action_guidance = ActionGuidanceLoss(guidance_scale=guidance_scale, use_simple_loss=use_simple_loss)
+        self.action_guidance_scale = guidance_scale
+        self.action_use_simple_loss = use_simple_loss
+        self.action_rho_scale = rho_scale
+        
+        print(f"🔧 Action guidance configured:")
+        print(f"   Guidance scale: {guidance_scale}")
+        print(f"   Use simple loss: {use_simple_loss}")
+        print(f"   Rho scale: {rho_scale}")
 
     # Copied from diffusers.pipelines.cosmos.pipeline_cosmos_text2world.CosmosTextToWorldPipeline._get_t5_prompt_embeds
     @torch.no_grad()
@@ -533,6 +581,8 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         video: List[PipelineImageInput] = None,
         prompt: Union[str, List[str]] = None,
         negative_prompt: Optional[Union[str, List[str]]] = None,
+        target_action: Optional[torch.Tensor] = None,
+        initial_pose: Optional[torch.Tensor] = None,
         height: int = 704,
         width: int = 1280,
         num_frames: int = 93,
@@ -552,6 +602,13 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         callback_on_step_end_tensor_inputs: List[str] = ["latents"],
         max_sequence_length: int = 512,
         sigma_conditioning: float = 0.0001,
+        guidance_start: int = 750,
+        guidance_end: int = 900,
+        guidance_rho_scale: float = 3.0,
+        vjepa_mode: str = "max",
+        vjepa_context_length: int = 12,
+        vjepa_stride: int = 2,
+        vjepa_kernel_size: int = 16,
     ):
         r"""
         The call function to the pipeline for generation.
@@ -564,6 +621,16 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             prompt (`str` or `List[str]`, *optional*):
                 The prompt or prompts to guide the image generation. If not defined, one has to pass `prompt_embeds`.
                 instead.
+            negative_prompt (`str` or `List[str]`, *optional*):
+                The prompt or prompts not to guide the image generation. If not defined, one has to pass
+                `negative_prompt_embeds` instead. Ignored when not using guidance (i.e., ignored if `guidance_scale` is
+                less than `1`).
+            target_action (`torch.Tensor`, *optional*):
+                Target robot action for action guidance. Should be shape [1, 1, 7] with format [dx,dy,dz,qx,qy,qz,qw].
+                Required for action guidance to work.
+            initial_pose (`torch.Tensor`, *optional*):
+                Initial robot pose for action guidance. Should be shape [1, 1, 7] with format [x,y,z,qx,qy,qz,qw].
+                Required for action guidance to work.
             height (`int`, defaults to `704`):
                 The height in pixels of the generated image.
             width (`int`, defaults to `1280`):
@@ -614,6 +681,20 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             sigma_conditioning (`float`, defaults to `0.0001`):
                 The sigma value used for scaling conditioning latents. Ideally, it should not be changed or should be
                 set to a small value close to zero.
+            guidance_start (`int`, *optional*, defaults to `750`):
+                The timestep at which to start applying V-JEPA guidance. Guidance is applied when timestep > guidance_start.
+            guidance_end (`int`, *optional*, defaults to `900`):
+                The timestep at which to stop applying V-JEPA guidance. Guidance is applied when timestep < guidance_end.
+            guidance_rho_scale (`float`, *optional*, defaults to `3.0`):
+                Scale factor for the guidance gradient updates. Higher values apply stronger guidance.
+            vjepa_mode (`str`, *optional*, defaults to `"max"`):
+                Mode for V-JEPA loss calculation. Options include "max", "mean", etc.
+            vjepa_context_length (`int`, *optional*, defaults to `12`):
+                Number of context frames to mask for V-JEPA prediction task.
+            vjepa_stride (`int`, *optional*, defaults to `2`):
+                Stride for V-JEPA sliding window when processing video clips.
+            vjepa_kernel_size (`int`, *optional*, defaults to `16`):
+                Number of frames per clip for V-JEPA processing. For torch V-JEPA, this is always 16.
 
         Examples:
 
@@ -643,6 +724,8 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
 
         device = self._execution_device
 
+        VIS_MEM = False
+        print_gpu_memory(VIS_MEM, info="Start ================================")
         print(f"🎬 STARTING COSMOS GUIDANCE PIPELINE GENERATION")
         print(f"   Frames: {num_frames}, Steps: {num_inference_steps}, CFG Scale: {guidance_scale}")
 
@@ -659,8 +742,10 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         for p in self.vae.parameters():
             p.requires_grad = False
 
-        # Keep V-JEPA model gradients enabled for guidance
-        # Note: We'll manage gradients in the guidance computation itself
+        # Keep V-JEPA model gradients disabled for guidance
+        self.vjepa_model.requires_grad_(False)
+        for p in self.vjepa_model.parameters():
+            p.requires_grad = False
 
         if self.safety_checker is not None:
             self.safety_checker.to(device)
@@ -675,9 +760,6 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             self.safety_checker.to("cpu")
         
         self.safety_checker = None
-
-        if_vis = True
-        print_gpu_memory(if_vis,info="===========START===========")
 
         # 2. Define call parameters
         if prompt is not None and isinstance(prompt, str):
@@ -702,22 +784,40 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                 device=device,
                 max_sequence_length=max_sequence_length,
             )
-            self.text_encoder.to("cpu")
-            torch.cuda.empty_cache()
-        print_gpu_memory(if_vis,info="===========Loaded Prompt===========")
+        print_gpu_memory(VIS_MEM, info="after encoder prompt ================================")
 
         # Add guidance configuration - make these configurable attributes
-        guidance_range = [getattr(self, 'guidance_start', -1), getattr(self, 'guidance_end', 80001)]
+        guidance_range = [guidance_start, guidance_end]
         time_travel_range = [-1, -1]
+        
+        # Check for action guidance inputs
+        perform_action_guidance = target_action is not None and initial_pose is not None
+        if perform_action_guidance:
+            # Validate action guidance inputs
+            assert target_action.shape == (1, 1, 7), f"target_action should be shape (1,1,7), got {target_action.shape}"
+            assert initial_pose.shape == (1, 1, 7), f"initial_pose should be shape (1,1,7), got {initial_pose.shape}"
+            target_action = target_action.to(device)
+            initial_pose = initial_pose.to(device)
+        
+        # Check if we should track V-JEPA loss without guidance
+        track_vjepa_loss = getattr(self, 'track_vjepa_loss', False)
         
         # Print guidance configuration
         print(f"\n🔧 COSMOS GUIDANCE PIPELINE CONFIGURATION:")
         print(f"   Guidance range: {guidance_range[0]} - {guidance_range[1]}")
-        print(f"   Rho scale: {getattr(self, 'guidance_rho_scale', 3.0)}")
-        print(f"   V-JEPA kernel_size: {getattr(self, 'vjepa_kernel_size', 16)}")
-        print(f"   V-JEPA context_length: {getattr(self, 'vjepa_context_length', 6)}")
-        print(f"   V-JEPA stride: {getattr(self, 'vjepa_stride', 2)}")
-        print(f"   V-JEPA mode: {getattr(self, 'vjepa_mode', 'max')}")
+        print(f"   Rho scale: {guidance_rho_scale}")
+        print(f"   Track V-JEPA loss: {track_vjepa_loss}")
+        print(f"   V-JEPA kernel_size: {vjepa_kernel_size}")
+        print(f"   V-JEPA context_length: {vjepa_context_length}")
+        print(f"   V-JEPA stride: {vjepa_stride}")
+        print(f"   V-JEPA mode: {vjepa_mode}")
+        if perform_action_guidance:
+            print(f"   🤖 Action guidance: ENABLED")
+            print(f"   Action guidance scale: {getattr(self, 'action_guidance_scale', 2.0)}")
+            print(f"   Action rho scale: {getattr(self, 'action_rho_scale', 3.0)}")
+            print(f"   Action use simple loss: {getattr(self, 'action_use_simple_loss', True)}")
+        else:
+            print(f"   🤖 Action guidance: DISABLED (no target_action/initial_pose provided)")
         print(f"   Total timesteps: {num_inference_steps}")
         print()
 
@@ -756,20 +856,26 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             )
             unconditioning_latents = None
         
-        print_gpu_memory(if_vis,info="===========Loaded Condition Image===========")
+            print_gpu_memory(VIS_MEM, info="after condition preparation ================================")
 
-        cond_mask = cond_mask.to(transformer_dtype)
-        if self.do_classifier_free_guidance:
-            uncond_mask = uncond_mask.to(transformer_dtype)
-            unconditioning_latents = conditioning_latents
+            cond_mask = cond_mask.to(transformer_dtype)
+            if self.do_classifier_free_guidance:
+                uncond_mask = uncond_mask.to(transformer_dtype)
+                unconditioning_latents = conditioning_latents
 
-        padding_mask = latents.new_zeros(1, 1, height, width, dtype=transformer_dtype)
-        sigma_conditioning = torch.tensor(sigma_conditioning, dtype=torch.float32, device=device)
-        t_conditioning = sigma_conditioning / (sigma_conditioning + 1)
+            padding_mask = latents.new_zeros(1, 1, height, width, dtype=transformer_dtype)
+            sigma_conditioning = torch.tensor(sigma_conditioning, dtype=torch.float32, device=device)
+            t_conditioning = sigma_conditioning / (sigma_conditioning + 1)
+
+        # Initialize loss history for tracking
+        if not hasattr(self, 'loss_history'):
+            self.loss_history = []
+            self.latent_norm_history = []
+            self.scaled_norm_history = []
 
         # Define transformer forward function for checkpointing
         def transformer_forward_cond(latent_input, timestep_input, prompt_embeds_input, fps_input, cond_mask_input, padding_mask_input):
-            with torch.enable_grad():
+            with torch.no_grad():
                 output = self.transformer(
                     hidden_states=latent_input,
                     timestep=timestep_input,
@@ -782,7 +888,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             return output
 
         def transformer_forward_uncond(latent_input, timestep_input, prompt_embeds_input, fps_input, uncond_mask_input, padding_mask_input):
-            with torch.enable_grad():
+            with torch.no_grad():
                 output = self.transformer(
                     hidden_states=latent_input,
                     timestep=timestep_input,
@@ -803,11 +909,10 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
             for i, t in enumerate(timesteps):
                 if self.interrupt:
                     continue
-                print(f"🚀 GUIDANCE STEP {i} (t={t.item():.0f})")
+                print(f"🚀 COSMOS STEP {i} (t={t.item():.0f})")
                 # Check if guidance should be performed at this timestep
                 perform_guidance = True if (t > guidance_range[0] and t < guidance_range[1]) else False
                 perform_travel = True if (t > time_travel_range[0] and t < time_travel_range[1]) else False
-                guidance_rho_scale = getattr(self, 'guidance_rho_scale', 3.0)
                 n_travel = 1 if perform_travel else 1
 
                 self._current_timestep = t
@@ -825,9 +930,11 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                 if perform_guidance:
                     latents = latents.detach().clone().requires_grad_(True)
                     latents.retain_grad()
+
+                visualize = False
                 
                 for rep in range(n_travel):
-                    print_gpu_memory(if_vis, "before DiT ================================")
+                    print_gpu_memory(VIS_MEM, "before DiT ================================")
 
                     cond_latent = latents * c_in
                     cond_latent = cond_indicator * conditioning_latents + (1 - cond_indicator) * cond_latent
@@ -836,33 +943,19 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                     cond_timestep = cond_timestep.to(transformer_dtype)
      
 
-                    if perform_guidance:
-                        torch.set_grad_enabled(True)
-                        noise_pred = checkpoint(
-                            transformer_forward_cond,
-                            cond_latent,
-                            cond_timestep,
-                            prompt_embeds,
-                            fps,
-                            cond_mask,
-                            padding_mask,
-                            use_reentrant=False
-                        ).requires_grad_(True)
-                    else:
-                        with torch.no_grad():
-                            noise_pred = transformer_forward_cond(
-                                cond_latent,
-                                cond_timestep,
-                                prompt_embeds,
-                                fps,
-                                cond_mask,
-                                padding_mask,
-                            )
+                    noise_pred = transformer_forward_cond(
+                        cond_latent,
+                        cond_timestep,
+                        prompt_embeds,
+                        fps,
+                        cond_mask,
+                        padding_mask,
+                    )
 
                     noise_pred = (c_skip * latents + c_out * noise_pred.float()).to(transformer_dtype)
                     noise_pred = cond_indicator * conditioning_latents + (1 - cond_indicator) * noise_pred
 
-                    print_gpu_memory(if_vis,info="================After Cond Forward===============")
+                    print_gpu_memory(VIS_MEM, info="after cond forward ================================")
 
                     if self.do_classifier_free_guidance:
                         uncond_latent = latents * c_in
@@ -871,27 +964,16 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                         uncond_timestep = uncond_indicator * t_conditioning + (1 - uncond_indicator) * timestep
                         uncond_timestep = uncond_timestep.to(transformer_dtype)
 
-                        if perform_guidance:
-                            noise_pred_uncond = checkpoint(
-                                transformer_forward_uncond,
+
+                        with torch.no_grad():
+                            noise_pred_uncond = transformer_forward_uncond(
                                 uncond_latent,
                                 uncond_timestep,
                                 negative_prompt_embeds,
                                 fps,
                                 uncond_mask,
                                 padding_mask,
-                                use_reentrant=False
-                            ).requires_grad_(True)
-                        else:
-                            with torch.no_grad():
-                                noise_pred_uncond = transformer_forward_uncond(
-                                    uncond_latent,
-                                    uncond_timestep,
-                                    negative_prompt_embeds,
-                                    fps,
-                                    uncond_mask,
-                                    padding_mask,
-                                )
+                            )
 
                         noise_pred_uncond = (c_skip * latents + c_out * noise_pred_uncond.float()).to(transformer_dtype)
                         noise_pred_uncond = (
@@ -899,7 +981,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                         )
                         noise_pred = noise_pred + self.guidance_scale * (noise_pred - noise_pred_uncond)
 
-                        print_gpu_memory(if_vis,info="================After Uncond Forward===============")
+                        print_gpu_memory(VIS_MEM, info="after uncond forward ================================")
 
                 # Apply V-JEPA guidance if enabled
                 if perform_guidance:
@@ -908,8 +990,13 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                     
                     with torch.set_grad_enabled(True):
                         # Estimate x0 (original sample) from noise prediction
-                        pred_original_sample = latents - current_sigma * noise_pred
-                        pred_original_sample.retain_grad()
+                        # noise_pred = (latents - noise_pred) / current_sigma
+                        # pred_original_sample = latents - current_sigma * noise_pred
+                        # pred_original_sample = pred_original_sample.clone().detach()
+                        pred_original_sample = noise_pred
+                        pred_original_sample.requires_grad_(True)
+                        # pred_original_sample.retain_grad()
+                        
                         latents_mean = (
                             torch.tensor(self.vae.config.latents_mean)
                             .view(1, self.vae.config.z_dim, 1, 1, 1)
@@ -921,61 +1008,83 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                             .to(pred_original_sample.device, pred_original_sample.dtype)
                         )
                         pred_original_sample = pred_original_sample * latents_std / self.scheduler.config.sigma_data + latents_mean
-                        orig_frame = self.vae.decode(pred_original_sample.to(self.vae.dtype), return_dict=False)[0]
 
-                        # Save visualization if needed
-                        visualize = True
+
+                        pred_original_sample_half = F.interpolate(pred_original_sample.squeeze(0), scale_factor=1/2, mode='bilinear', align_corners=False).unsqueeze(0)
+                        orig_frame = self.vae.decode(pred_original_sample_half.to(self.vae.dtype), return_dict=False)[0]
+
+                        print_gpu_memory(VIS_MEM, info="after VAE decode ================================")
+
+                        # Save visualization with organized directory structure
+                        
                         if visualize:
                             with torch.no_grad():
-                                # Create output directory if it doesn't exist
-                                os.makedirs("./temp/cosmos_guidance", exist_ok=True)
+                                # Create output directory with consistent naming
+                                ttpath = f'./temp/cosmos_guidance{guidance_rho_scale}'
+                                os.makedirs(ttpath, exist_ok=True)
                                 save_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type="np")
-                                export_to_video(save_frame[0], f"./temp/cosmos_guidance/guidance_sample_{rep}_{i}.mp4", fps=16)
-
+                                export_to_video(save_frame[0], f"{ttpath}/guidance_sample_{i}.mp4", fps=16)
+                        
+                        # 1. Apply V-JEPA guidance
                         # Calculate V-JEPA loss using torch implementation
                         B, C, T, H, W = orig_frame.shape
                         orig_frame_tensor = orig_frame
                         
                         with torch.enable_grad():
                             # Use configurable V-JEPA parameters 
-                            frames_per_clip = 16  # Fixed size that model was trained with
-                            context_window_size = getattr(self, 'vjepa_context_length', 12)
-                            stride = getattr(self, 'vjepa_stride', 2)
+                            frames_per_clip = vjepa_kernel_size  # Fixed size that model was trained with
+                            context_window_size = vjepa_context_length
+                            stride = vjepa_stride
                             
                             # Calculate loss with sliding window handled inside the function
-                            loss = calculate_torch_vjepa_loss(
+                            vjepa_loss, loss_arr = calculate_torch_vjepa_loss(
                                 orig_frame_tensor, 
                                 self.vjepa_model,
                                 context_length=context_window_size,
                                 frames_per_clip=frames_per_clip,
                                 stride=stride,
                                 require_grad=True,
-                                mode='max',
-                                return_arr=False,
-                                is_vae_output=True
+                                mode=vjepa_mode,
+                                return_arr=True,
+                                is_vae_output=True,
+                                save_step=i
                             )
-
-                        print_gpu_memory(if_vis, info="after vjepa ================================")
+                            print(f"📺 V-JEPA loss: {vjepa_loss.item():.4f}")
+                            print_gpu_memory(VIS_MEM, info="after VJepa loss ================================")
                         
                         # Backpropagate and get gradients
-                        loss.backward()
-                        
-                        # Use the tensor that actually has gradients (pred_original_sample in this case)
-                        if pred_original_sample.grad is not None:
-                            grad = pred_original_sample.grad.clone()
-                            pred_original_sample.grad = None
-                        elif latents.grad is not None:
-                            grad = latents.grad.clone()
-                            latents.grad = None
-                        else:
-                            print("❌ ERROR: No gradients found!")
-                            continue
+                        grad = torch.autograd.grad(vjepa_loss, pred_original_sample, retain_graph=False, create_graph=False)[0]
+                        pred_original_sample.grad = None
 
                         # Calculate rho scaling
                         grad_norm = grad.norm(2)
                         rho = 1 / grad_norm
+                        scaled_norm = (guidance_rho_scale * rho * grad).norm(2)
 
-                        print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Rho={rho.item():.6f}, Grad_norm={grad.norm(2).item():.4f}, Final_scale={guidance_rho_scale * rho.item():.4f}')
+                        print_gpu_memory(VIS_MEM, info="after guidance computation ================================")
+
+
+                        # Print slide-wise gradient norms like in wan pipeline
+                        # for kid in range(grad.shape[2]):
+                        #     print(f"slide norm: {grad[:,:,kid,:,:].norm(2)}")
+
+                        print(
+                            f'🎯 COSMOS GUIDANCE STEP {i} (t={t.item():.0f}): VJepa_loss={vjepa_loss.item():.4f}, Grad_norm={grad_norm.item():.4f}, '
+                            f'Rho={rho.item():.4f}, Rho_scale={guidance_rho_scale}, Latent norm={latents.norm(2).item():.4f}, '
+                            f'delta_norm={scaled_norm.item():.4f}'
+                        )
+
+                        # Store loss in history for comparison
+                        if hasattr(self, 'loss_history') and visualize:
+                            self.loss_history.append(vjepa_loss.item())
+                            self.latent_norm_history.append(latents.norm(2).item())
+                            self.scaled_norm_history.append(scaled_norm.item())
+
+                        # Save slide-wise grad norms like in wan pipeline
+                        if visualize:
+                            slide_grad_norms = np.array([grad[:,:,kid,:,:].norm(2).item() for kid in range(grad.shape[2])])
+                            np.save(f'{ttpath}/slide_grad_norms_step{i}.npy', slide_grad_norms)
+                            np.save(f'{ttpath}/loss_step{i}.npy', loss_arr)
 
                         if perform_travel:
                             # Time travel logic (currently disabled)
@@ -983,9 +1092,59 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                         else:
                             # Update latents with guidance
                             with torch.no_grad():
-                                latents = latents - guidance_rho_scale * grad
+                                latents = latents - guidance_rho_scale * rho * grad
 
                     torch.cuda.empty_cache()
+                elif track_vjepa_loss:
+                    # Track V-JEPA loss without guidance (for vanilla sampling comparison)
+                    guidance_steps_count += 1
+                    print(f"📊 TRACKING V-JEPA LOSS at step {i} (timestep={t.item():.0f}) - NO GUIDANCE")
+                    with torch.set_grad_enabled(False):  # No gradients needed for tracking only
+                        pred_original_sample = latents - current_sigma * noise_pred
+                        pred_original_sample = pred_original_sample.to(self.vae.dtype)
+                        latents_mean = (
+                            torch.tensor(self.vae.config.latents_mean)
+                            .view(1, self.vae.config.z_dim, 1, 1, 1)
+                            .to(pred_original_sample.device, pred_original_sample.dtype)
+                        )
+                        latents_std = (
+                            torch.tensor(self.vae.config.latents_std)
+                            .view(1, self.vae.config.z_dim, 1, 1, 1)
+                            .to(pred_original_sample.device, pred_original_sample.dtype)
+                        )
+                        pred_original_sample = pred_original_sample * latents_std / self.scheduler.config.sigma_data + latents_mean
+
+                        orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
+                        
+                        # Get vjepa loss using torch implementation (no gradients)
+                        B, C, T, H, W = orig_frame.shape
+                        orig_frame_tensor = orig_frame
+                        
+                        with torch.no_grad():
+                            # Calculate loss without gradients for tracking
+                            loss = calculate_torch_vjepa_loss(
+                                orig_frame_tensor, 
+                                self.vjepa_model,
+                                context_length=vjepa_context_length,
+                                frames_per_clip=vjepa_kernel_size,
+                                stride=vjepa_stride,
+                                require_grad=False,
+                                mode=vjepa_mode,
+                                return_arr=False,
+                                is_vae_output=True
+                            )
+
+                        print(f'📊 V-JEPA LOSS TRACKING {i} (t={t.item():.0f}): Loss={loss.item():.4f} (vanilla sampling)')
+                        
+                        # Store loss in history for comparison
+                        if hasattr(self, 'loss_history') and visualize:
+                            self.loss_history.append(loss.item())
+                    
+                    torch.cuda.empty_cache()
+                else:
+                    # No guidance and no tracking - store None for consistency
+                    if hasattr(self, 'loss_history'):
+                        self.loss_history.append(None)
 
                 # Compute the previous noisy sample x_t -> x_t-1
                 noise_pred = (latents - noise_pred) / current_sigma
@@ -1009,6 +1168,14 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                     xm.mark_step()
 
         self._current_timestep = None
+
+        # Save trajectories at the end like in wan pipeline
+        if visualize:
+            ttpath = f'./temp/cosmos_guidance{guidance_rho_scale}'
+            os.makedirs(ttpath, exist_ok=True)
+            np.save(f'{ttpath}/loss_trajectory.npy', np.array(getattr(self, 'loss_history', [])))
+            np.save(f'{ttpath}/latent_norm_trajectory.npy', np.array(getattr(self, 'latent_norm_history', [])))
+            np.save(f'{ttpath}/scaled_norm_trajectory.npy', np.array(getattr(self, 'scaled_norm_history', [])))
 
         if not output_type == "latent":
             with torch.no_grad():

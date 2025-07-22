@@ -34,6 +34,8 @@ from compute_vjepa_score import calculate_torch_vjepa_loss
 from diffusers.utils import export_to_video
 import gpustat
 from torch.utils.checkpoint import checkpoint
+import os
+import numpy as np
 
 if is_torch_xla_available():
     import torch_xla.core.xla_model as xm
@@ -163,6 +165,8 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         print("🚀 Loading torch V-JEPA model for guidance...")
         self.vjepa_model = init_torch_vjepa()
         self.vjepa_processor = None  # Not needed for torch version
+
+
 
     @torch.no_grad()
     def _get_t5_prompt_embeds(
@@ -403,6 +407,13 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         latents: Optional[torch.Tensor] = None,
         prompt_embeds: Optional[torch.Tensor] = None,
         negative_prompt_embeds: Optional[torch.Tensor] = None,
+        guidance_start: int = 750,
+        guidance_end: int = 900,
+        guidance_rho_scale: float = 10.0,
+        vjepa_mode: str = "max",
+        vjepa_context_length: int = 6,
+        vjepa_stride: int = 2,
+        vjepa_kernel_size: int = 16,
         output_type: Optional[str] = "np",
         return_dict: bool = True,
         attention_kwargs: Optional[Dict[str, Any]] = None,
@@ -448,6 +459,20 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
             prompt_embeds (`torch.Tensor`, *optional*):
                 Pre-generated text embeddings. Can be used to easily tweak text inputs (prompt weighting). If not
                 provided, text embeddings are generated from the `prompt` input argument.
+            guidance_start (`int`, *optional*, defaults to `750`):
+                The timestep at which to start applying V-JEPA guidance. Guidance is applied when timestep > guidance_start.
+            guidance_end (`int`, *optional*, defaults to `900`):
+                The timestep at which to stop applying V-JEPA guidance. Guidance is applied when timestep < guidance_end.
+            guidance_rho_scale (`float`, *optional*, defaults to `10.0`):
+                Scale factor for the guidance gradient updates. Higher values apply stronger guidance.
+            vjepa_mode (`str`, *optional*, defaults to `"max"`):
+                Mode for V-JEPA loss calculation. Options include "max", "mean", etc.
+            vjepa_context_length (`int`, *optional*, defaults to `6`):
+                Number of context frames to mask for V-JEPA prediction task.
+            vjepa_stride (`int`, *optional*, defaults to `2`):
+                Stride for V-JEPA sliding window when processing video clips.
+            vjepa_kernel_size (`int`, *optional*, defaults to `16`):
+                Number of frames per clip for V-JEPA processing. For torch V-JEPA, this is always 16.
             output_type (`str`, *optional*, defaults to `"np"`):
                 The output format of the generated image. Choose between `PIL.Image` or `np.array`.
             return_dict (`bool`, *optional*, defaults to `True`):
@@ -496,6 +521,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
 
         self.vae.requires_grad_(False)
         for p in self.vae.parameters():
+            p.requires_grad = False
+
+        self.vjepa_model.requires_grad_(False)
+        for p in self.vjepa_model.parameters():
             p.requires_grad = False
 
         # Keep V-JEPA model gradients enabled for guidance
@@ -557,14 +586,12 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         print_gpu_memory(VIS_MEM, info="after encoder prompt ================================")
         ################################################
 
-
-        prompt_embeds.requires_grad_(False)
-        negative_prompt_embeds.requires_grad_(False)
-
         transformer_dtype = self.transformer.dtype
         prompt_embeds = prompt_embeds.to(transformer_dtype)
+        prompt_embeds.requires_grad_(False)
         if negative_prompt_embeds is not None:
             negative_prompt_embeds = negative_prompt_embeds.to(transformer_dtype)
+            negative_prompt_embeds.requires_grad_(False)
 
 
         # 4. Prepare timesteps
@@ -589,7 +616,12 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         self._num_timesteps = len(timesteps)
         guidance_steps_count = 0
-
+        
+        # Initialize loss history for tracking
+        if not hasattr(self, 'loss_history'):
+            self.loss_history = []
+            self.latent_norm_history = []
+            self.scaled_norm_history = []
 
         def dit_forward(latent_model_input, timestep, prompt_embeds, attention_kwargs):
             with torch.enable_grad():
@@ -603,17 +635,21 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
             return output
 
         # Use configurable guidance parameters if available, otherwise use defaults
-        guidance_range = [getattr(self, 'guidance_start', 750), getattr(self, 'guidance_end', 900)]
+        guidance_range = [guidance_start, guidance_end]
         time_travel_range = [-1, -1]
+        
+        # Check if we should track V-JEPA loss without guidance
+        track_vjepa_loss = getattr(self, 'track_vjepa_loss', False)
         
         # Print guidance configuration
         print(f"\n🔧 GUIDANCE PIPELINE CONFIGURATION:")
         print(f"   Guidance range: {guidance_range[0]} - {guidance_range[1]}")
-        print(f"   Rho scale: {getattr(self, 'guidance_rho_scale', 3.0)}")
-        print(f"   V-JEPA kernel_size: {getattr(self, 'vjepa_kernel_size', 16)}")
-        print(f"   V-JEPA context_length: {getattr(self, 'vjepa_context_length', 6)}")
-        print(f"   V-JEPA stride: {getattr(self, 'vjepa_stride', 2)}")
-        print(f"   V-JEPA mode: {getattr(self, 'vjepa_mode', 'max')}")
+        print(f"   Rho scale: {guidance_rho_scale}")
+        print(f"   Track V-JEPA loss: {track_vjepa_loss}")
+        print(f"   V-JEPA kernel_size: {vjepa_kernel_size}")
+        print(f"   V-JEPA context_length: {vjepa_context_length}")
+        print(f"   V-JEPA stride: {vjepa_stride}")
+        print(f"   V-JEPA mode: {vjepa_mode}")
         print(f"   Total timesteps: {len(timesteps)}")
         print()
         
@@ -625,8 +661,6 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                     continue
                 perform_guidance = True if (t > guidance_range[0] and t < guidance_range[1]) else False
                 perform_travel = True if (t > time_travel_range[0] and t < time_travel_range[1]) else False
-                # Use configurable rho_scale
-                guidance_rho_scale = getattr(self, 'guidance_rho_scale', 100.0)
                 n_travel = 1 if perform_travel else 1
                 # perform_guidance = False
                 self._current_timestep = t
@@ -679,8 +713,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                     guidance_steps_count += 1
                     print(f"🚀 APPLYING GUIDANCE at step {i} (timestep={t.item():.0f})")
                     with torch.set_grad_enabled(True):
-                        pred_original_sample = self.scheduler.step(noise_pred, t, latents, return_dict=False, return_original=True)
-                        pred_original_sample = pred_original_sample.to(self.vae.dtype)
+                        sigma_t = self.scheduler.sigmas[i]
+                        pred_original_sample = latents - sigma_t * noise_pred
+                        pred_original_sample = pred_original_sample.to(self.vae.dtype).requires_grad_(True)
+
                         latents_mean = (
                             torch.tensor(self.vae.config.latents_mean)
                             .view(1, self.vae.config.z_dim, 1, 1, 1)
@@ -695,11 +731,15 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
                         # print("Shape After VAE decoder",orig_frame.shape)
 
+                        print_gpu_memory(VIS_MEM, info="after VAE decode ================================")
+
                         visualize = True
                         if visualize:
                             with torch.no_grad():
                                 save_frame = self.video_processor.postprocess_video(orig_frame.detach(), output_type=output_type)
-                                export_to_video(save_frame[0], f"./temp/robotarm2/guidance_sample_{rep}_{i}.mp4", fps=16)  # Export the original frames to video
+                                ttpath = f'./temp/invest_hammer{guidance_rho_scale}'
+                                os.makedirs(ttpath, exist_ok=True)
+                                export_to_video(save_frame[0], f"{ttpath}/guidance_sample_{i}.mp4", fps=16)  # Export the original frames to video
                     
                         # Get vjepa loss using torch implementation
                         B, C, T, H, W = orig_frame.shape
@@ -707,35 +747,57 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         orig_frame_tensor = orig_frame
                         
                         with torch.enable_grad():
-                            # Use configurable V-JEPA parameters 
-                            frames_per_clip = 16  # Fixed size that model was trained with
-                            context_window_size = getattr(self, 'vjepa_context_length', 8)
-                            stride = getattr(self, 'vjepa_stride', 2)
-                            
                             # Calculate loss with sliding window handled inside the function
-                            loss = calculate_torch_vjepa_loss(
+                            loss, loss_arr = calculate_torch_vjepa_loss(
                                 orig_frame_tensor, 
                                 self.vjepa_model,
-                                context_length=context_window_size,
-                                frames_per_clip=frames_per_clip,
-                                stride=stride,
+                                context_length=vjepa_context_length,
+                                frames_per_clip=vjepa_kernel_size,
+                                stride=vjepa_stride,
                                 require_grad=True,
-                                mode='max',
+                                mode=vjepa_mode,
                                 return_arr=False,
-                                is_vae_output=True
+                                is_vae_output=True,
+                                save_step=i
                             )
 
                         print_gpu_memory(VIS_MEM, info="after vjepa ================================")
                         
                         loss.backward()
                         grad = latents.grad.clone()
+                        # los = torch.autograd.grad(loss, latents, create_graph=False)
+                        # print(f"grad shape: {grad.shape}")
                         latents.grad = None  # Clear the gradients
+                            
+                        # Save slide-wise grad norms
+                        if visualize:
+                            
+                            os.makedirs(ttpath, exist_ok=True)
+                            slide_grad_norms = np.array([grad[:,:,kid,:,:].norm(2).item() for kid in range(grad.shape[2])])
+                            np.save(f'{ttpath}/slide_grad_norms_step{i}.npy', slide_grad_norms)
+                            np.save(f'{ttpath}/loss_step{i}.npy', loss_arr)
 
+                        # import pdb; pdb.set_trace()
                         # clipping and set coefficient
                         grad_norm = grad.norm(2)
                         rho = 1 / grad_norm
+                        scaled_norm = (guidance_rho_scale * rho * grad).norm(2)
 
-                        print(f'🎯 GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Grad_norm={grad.norm(2).item():.4f}, Rho={rho.item():.4f}, Rho_scale={guidance_rho_scale}')
+                        print_gpu_memory(VIS_MEM, info="after guidance computation ================================")
+
+                        for kid in range(grad.shape[2]):
+                            print(f"slide norm: {grad[:,:,kid,:,:].norm(2)}")
+                       
+                        print(
+                            f'🎯 COGVIDEOX GUIDANCE STEP {i} (t={t.item():.0f}): Loss={loss.item():.4f}, Grad_norm={grad_norm.item():.4f}, '
+                            f'Rho={rho.item():.4f}, Rho_scale={guidance_rho_scale}, Latent norm={latents.norm(2).item():.4f}, '
+                            f'delta_norm={(guidance_rho_scale * rho * grad).norm(2).item():.4f}'
+                        )
+                        # Store loss in history for comparison
+                        if hasattr(self, 'loss_history'):
+                            self.loss_history.append(loss.item())
+                            self.latent_norm_history.append(latents.norm(2).item())
+                            self.scaled_norm_history.append(scaled_norm.item())
 
                         if perform_travel:
 
@@ -744,9 +806,57 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
                         else:
                             with torch.no_grad():
                                 # latents = latents - guidance_rho_scale * rho * grad # update with guidance
-                                latents = latents - guidance_rho_scale * grad # update with guidance
+                                latents = latents - guidance_rho_scale * rho * grad # update with guidance
                     # import pdb; pdb.set_trace()
                     torch.cuda.empty_cache()
+                elif track_vjepa_loss:
+                    # Track V-JEPA loss without guidance (for vanilla sampling comparison)
+                    guidance_steps_count += 1
+                    print(f"📊 TRACKING V-JEPA LOSS at step {i} (timestep={t.item():.0f}) - NO GUIDANCE")
+                    with torch.set_grad_enabled(False):  # No gradients needed for tracking only
+                        pred_original_sample = self.scheduler.step(noise_pred, t, latents, return_dict=False, return_original=True)
+                        pred_original_sample = pred_original_sample.to(self.vae.dtype)
+                        latents_mean = (
+                            torch.tensor(self.vae.config.latents_mean)
+                            .view(1, self.vae.config.z_dim, 1, 1, 1)
+                            .to(pred_original_sample.device, pred_original_sample.dtype)
+                        )
+                        latents_std = 1.0 / torch.tensor(self.vae.config.latents_std).view(1, self.vae.config.z_dim, 1, 1, 1).to(
+                            pred_original_sample.device, pred_original_sample.dtype
+                        )
+                        pred_original_sample = pred_original_sample / latents_std + latents_mean
+
+                        orig_frame = self.vae.decode(pred_original_sample, return_dict=False)[0]
+                        
+                        # Get vjepa loss using torch implementation (no gradients)
+                        B, C, T, H, W = orig_frame.shape
+                        orig_frame_tensor = orig_frame
+                        
+                        with torch.no_grad():
+                            # Calculate loss without gradients for tracking
+                            loss = calculate_torch_vjepa_loss(
+                                orig_frame_tensor, 
+                                self.vjepa_model,
+                                context_length=vjepa_context_length,
+                                frames_per_clip=vjepa_kernel_size,
+                                stride=vjepa_stride,
+                                require_grad=True,
+                                mode=vjepa_mode,
+                                return_arr=False,
+                                is_vae_output=True
+                            )
+
+                        print(f'📊 V-JEPA LOSS TRACKING {i} (t={t.item():.0f}): Loss={loss.item():.4f} (vanilla sampling)')
+                        
+                        # Store loss in history for comparison
+                        if hasattr(self, 'loss_history'):
+                            self.loss_history.append(loss.item())
+                    
+                    torch.cuda.empty_cache()
+                else:
+                    # No guidance and no tracking - store None for consistency
+                    if hasattr(self, 'loss_history'):
+                        self.loss_history.append(None)
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, return_dict=False)[0]
@@ -770,6 +880,12 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
 
         self._current_timestep = None
 
+        # Save trajectories at the end
+        if visualize:
+            os.makedirs(ttpath, exist_ok=True)
+            np.save(f'{ttpath}/loss_trajectory.npy', np.array(getattr(self, 'loss_history', [])))
+            np.save(f'{ttpath}/latent_norm_trajectory.npy', np.array(getattr(self, 'latent_norm_history', [])))
+            np.save(f'{ttpath}/scaled_norm_trajectory.npy', np.array(getattr(self, 'scaled_norm_history', [])))
         
         if not output_type == "latent":
             with torch.no_grad():
