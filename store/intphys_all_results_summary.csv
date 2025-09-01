@@ -1,4 +1,0 @@
-timestamp,dataset_path,dataset_name,frames_per_clip,frame_step,accuracy,auroc,auprc,num_scenes,output_dir,context_2_count,context_2_avg_acc,context_4_count,context_4_avg_acc,context_6_count,context_6_avg_acc
-2025-06-30 20:08:10,/home/yjianhao/project/video_guidance/dev/O1,O1,16,4,0.7333333333333333,0.41694444444444445,0.5122891976533163,30,./intphys_results_dev_O1_f16_s4_20250630_200610,26,0.7307692307692307,3,0.75,1,0.75
-2025-06-30 20:10:19,/home/yjianhao/project/video_guidance/dev/O2,O2,16,4,0.75,0.4345833333333333,0.48054059506675095,30,./intphys_results_dev_O2_f16_s4_20250630_200822,24,0.75,4,0.75,1,0.75,1,0.75
-2025-06-30 20:12:29,/home/yjianhao/project/video_guidance/dev/O3,O3,16,4,0.7333333333333333,0.45111111111111113,0.4576409752481452,30,./intphys_results_dev_O3_f16_s4_20250630_201031,26,0.7307692307692307,2,0.75,1,0.75,1,0.75

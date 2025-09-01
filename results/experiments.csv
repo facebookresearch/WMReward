@@ -1,2 +1,0 @@
-name,method,frames,steps,kernel_size,context_length,attempts,guidance_rho_scale,cfg_scale,timestamp,status
-guidance_f17_s50_w8c6_rho3.0_cfg5.0_0630_2144,guidance,17,50,8,6,10,3.0,5.0,2025-06-30 21:44:25,started
