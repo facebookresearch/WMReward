@@ -1,7 +1,7 @@
 import os, cv2, argparse, torch
 from PIL import Image
 from datetime import datetime
-from diffusers.utils import export_to_gif
+from diffusers.utils import export_to_video
 from pipelines.pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
 
 def build_seq(pattern: str, steps: int, is_float: bool):
@@ -70,7 +70,7 @@ def main():
 
     os.makedirs(args.out_dir, exist_ok=True)
     run_name = args.run_name or datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = os.path.join(args.out_dir, f"{run_name}.gif")
+    out_path = os.path.join(args.out_dir, f"{run_name}.mp4")
 
     init_frame = load_first_frame(args.init_image, args.init_video)
     # Minimal list with the image as the I2V condition
@@ -117,7 +117,7 @@ def main():
         travel_time=travel_time,
     ).frames[0]
 
-    export_to_gif(result, out_path, fps=args.fps)
+    export_to_video(result, out_path, fps=args.fps)
     print("Saved:", out_path)
 
 if __name__ == "__main__":
