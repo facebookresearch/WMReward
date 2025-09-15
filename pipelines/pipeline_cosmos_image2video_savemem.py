@@ -979,7 +979,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                                 
                                 # Convert to V-JEPA encoder dtype to avoid mismatch
                                 clip_cthw = clip_cthw.to(device_sw, dtype=enc_dtype)
-                                # print("clip_cthw", clip_cthw.shape)
+                                print("clip_cthw", clip_cthw.shape)
 
                                 # Determine windowing
                                 WSIZE = max(1, min(slice_window_size, clip_cthw.size(2)))
@@ -1011,7 +1011,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                                     img_size=img_size_local,
                                     frames_per_clip=Tchunk,
                                     encoder=self.vjepa_encoder,
-                                    context_frames=4,
+                                    context_frames=7,
                                     mask_ratio=mask_ratio,
                                     device=device_sw,
                                 )
@@ -1079,7 +1079,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                                 
                                 noise = randn_tensor(pred_clean.shape, generator=generator, device=device, dtype=pred_clean.dtype)
                                 latents = current_sigma * noise + (1 - current_sigma) * pred_clean
-                                latents = latents - guidance_lr[i] * rho * grad # update with guidance
+                                latents = latents - guidance_lr[i]  * grad # update with guidance
                             
                         else:
                             def log_grad_spread(g, delta_base, step_i, sample_idx: int = 0, topk: int = 5):
@@ -1139,7 +1139,8 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                                 log_grad_spread(grad, (noise_pred_cond - noise_pred_uncond), step_i=i, sample_idx=0, topk=5)
                                 eps = 1e-8
                                 scale = guidance_lr[i] * (latents.norm(2) / (grad.norm(2) + eps))
-                                # print("scale", scale)
+                                # scale = guidance_lr[i] * (1 / grad.norm(2))
+                                print("scale", scale)
                                 latents = latents - scale * grad
 
 

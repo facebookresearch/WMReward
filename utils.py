@@ -13,7 +13,7 @@ from PIL import Image
 from einops import rearrange
 
 # Add V-JEPA path
-sys.path.append("/home/yjianhao/project/vjepa2")
+sys.path.append("./vjepa2")
 import src.datasets.utils.video.transforms as video_transforms
 import src.datasets.utils.video.volume_transforms as volume_transforms
 from src.models.vision_transformer import vit_giant_xformers_rope, vit_huge_rope

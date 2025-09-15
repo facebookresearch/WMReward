@@ -47,7 +47,7 @@ except Exception:
 import sys
 # sys.path.append("/home/yjianhao/project")
 # from video_guidance.compute_vjepa_loss_new import generate_vjepa_masks
-from utils import generate_vjepa_masks
+from utils import generate_vjepa_masks, log_grad_spread
 sys.path.append("/home/yjianhao/project/vjepa2")
 from src.masks.utils import apply_masks
 
@@ -1000,17 +1000,18 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                                     )
 
                                     def forward_target(c):
-                                        with torch.no_grad():
-                                            h = self.vjepa_target_encoder(c)
-                                            h = torch.stack([F.layer_norm(hi, (hi.size(-1),)) for hi in h])
-                                        return h.detach()
+                                        # with torch.no_grad():
+                                        h = self.vjepa_target_encoder(c)
+                                        h = torch.stack([F.layer_norm(hi, (hi.size(-1),)) for hi in h])
+                                        return h
 
                                     def forward_context(c):
                                         # Enable gradients to flow to input chunk
-                                        z = self.vjepa_encoder(c, ctxt_positions)
-                                        z = self.vjepa_predictor(z, ctxt_positions, tgt_positions)
-                                        z = F.layer_norm(z, (z.size(-1),))
-                                        return z
+                                        with torch.no_grad():
+                                            z = self.vjepa_encoder(c, ctxt_positions)
+                                            z = self.vjepa_predictor(z, ctxt_positions, tgt_positions)
+                                            z = F.layer_norm(z, (z.size(-1),))
+                                            return z
 
                                     def loss_fn_v2(z, h):
                                         h = apply_masks(h, tgt_positions, concat=False)
@@ -1032,98 +1033,40 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                             total_loss.backward()
                             print(f"total_loss {i}/{rep}", total_loss.item())
                             
-                        # grad = torch.autograd.grad(total_loss, latents, retain_graph=False, create_graph=False)[0]
-                        # total_loss.backward()
-                        grad = latents.grad.clone()
-                        latents.grad = None  # Clear the gradients
+                        grad = torch.autograd.grad(total_loss, pred_clean, retain_graph=False, create_graph=False)[0]
+                        total_loss.backward()
+                        # grad = latents.grad.clone()
+                        # latents.grad = None  # Clear the gradients
 
-                        print('grad', grad.norm(2))
-                        print('latents', latents.norm(2))
-                        print('pred_clean', pred_clean.norm(2))
-
-                        # Apply gradient clipping
-                        grad_norm = grad.norm(2)
-                        rho = 1 / grad_norm
+                        scaling_t = (1 - current_t ** 2)
+                        scaling = (
+                            pred_clean.norm(2)
+                            / grad.norm(2)
+                            * scaling_t
+                            )
+                        # scale = 0.001 * (x_chunk.norm(2) / (grad.norm(2) + 1e-8))
+                        velocity = velocity - 0.03 * scaling * grad
                         print(i+shorten_steps, travel_time[0], travel_time[1])
-                        if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
-                            print("Time travel!")
-                            with torch.no_grad():
-                                
-                                # noise = randn_tensor(pred_clean.shape, generator=generator, device=device, dtype=pred_clean.dtype)
-                                # pred_clean = pred_clean - guidance_lr[i] * rho * grad
-                                # latents = current_sigma * noise + (1 - current_sigma) * pred_clean
+  
+                     
 
-                                noise = randn_tensor(pred_clean.shape, generator=generator, device=device, dtype=pred_clean.dtype)
-                                latents = current_sigma * noise + (1 - current_sigma) * pred_clean
-                                latents = latents - guidance_lr[i] * rho * grad # update with guidance
-                            
-                        else:
-                            def log_grad_spread(g, delta_base, step_i, sample_idx: int = 0, topk: int = 5):
-                                """
-                                g            : [B,C,T,H,W]   (∂L/∂x_t)
-                                delta_base   : [B,C,T,H,W]   (vanilla solver step per frame)
-                                step_i       : int           (k in your loop)
-                                sample_idx   : which batch element to print
-                                topk         : how many top frames to summarize
-                                """
-                                print('g', g.shape)
-                                print('delta_base', delta_base.shape)
-                                eps = 1e-12
-                                assert g.dim() == 5 and delta_base.shape == g.shape, "shape mismatch"
-                                B, C, T, H, W = g.shape
-                                b = min(sample_idx, B-1)
-
-                                # Per-frame L2 norms over C,H,W
-                                reduce_chw = (1, 3, 4)
-                                g_t = g.pow(2).sum(dim=reduce_chw).sqrt()                   # [B,T]
-                                d_t = delta_base.pow(2).sum(dim=reduce_chw).sqrt()          # [B,T]
-                                dot_t = (g * delta_base).sum(dim=reduce_chw)                # [B,T]
-                                cos_t = dot_t / (g_t * d_t + eps)                           # [B,T] per-frame cosine
-
-                                # Normalized energy distribution over frames
-                                p_t = g_t / (g_t.sum(dim=1, keepdim=True) + eps)            # [B,T], sum_t p_t = 1
-
-                                # Concentration metrics
-                                hhi = (p_t**2).sum(dim=1)                                   # Herfindahl index
-                                eff_frames = 1.0 / (hhi + eps)                              # "effective number of frames"
-
-                                # How many frames cover 50% / 90% of the mass?
-                                p_sorted, idx_sorted = torch.sort(p_t[b], descending=True)
-                                csum = torch.cumsum(p_sorted, dim=0)
-                                k50 = int((csum >= 0.50).nonzero(as_tuple=False)[0]) + 1
-                                k90 = int((csum >= 0.90).nonzero(as_tuple=False)[0]) + 1
-
-                                # Top-k summary
-                                K = min(topk, T)
-                                top_idx = idx_sorted[:K]
-                                top_mass = p_sorted[:K].sum().item()
-                                top_cos_mean = cos_t[b, top_idx].mean().item()
-
-                                # Compact, readable printout
-                                tops = [(int(i), float(p_t[b, i]), float(cos_t[b, i])) for i in top_idx]
-                                print(f"[k={step_i}] grad spread (b={b}): eff_frames={eff_frames[b].item():.2f}, "
-                                    f"k50={k50}, k90={k90}, top{K}_mass={top_mass:.2f}, top{K}_cos={top_cos_mean:.3f}")
-                                print(f"          top{K} frames (idx, p_t, cos): {tops}")
-
-                                # Optional: an ASCII bar for p_t (one character per frame, scaled)
-                                width = 30
-                                bars = ''.join('█' * max(1, int(width * float(p))) for p in p_t[b].tolist())
-                                print(f"          p_t bars (T={T}): {bars}")
-
-                            print("DLO!")
-                            with torch.no_grad():
-                                # log_grad_spread(grad, (noise_pred_cond - noise_pred_uncond), step_i=i, sample_idx=0, topk=5)
-                                # latents = latents - guidance_lr[i] * rho * grad
-                                # print('effective guidance_lr', guidance_lr[i] * latents.norm(2)
+                        print("DLO!")
+                        with torch.no_grad():
+                            log_grad_spread(grad, (noise_pred_cond - noise_pred_uncond), step_i=i, sample_idx=0, topk=5)
+                            # latents = latents - guidance_lr[i] * rho * grad
+                            # print('effective guidance_lr', guidance_lr[i] * latents.norm(2)
 
 
-                                # grad_xt = t * grad                      # map to x_t space
-                                eps = 1e-8
-                                scale = guidance_lr[i] * (latents.norm(2) / (grad.norm(2) + eps))
-                                # print("scale", scale)
-                                latents = latents - scale * grad
-                            print("DLO! done!!!!")
-                        torch.cuda.empty_cache()
+                            # grad_xt = t * grad                      # map to x_t space
+                            eps = 1e-8
+                            scale = guidance_lr[i] * (latents.norm(2) / (grad.norm(2) + eps))
+                            # scale = (guidance_lr[i]) * (1/ (grad.norm(2)))
+                            print("grad", grad.norm(2).item())
+                            print("latents", latents.norm(2).item())
+                            print("scale", scale.item())
+                            latents = latents - scale * grad
+
+                    torch.cuda.empty_cache()
 
 
                 # Convert to eps and take scheduler step using last_pred_clean

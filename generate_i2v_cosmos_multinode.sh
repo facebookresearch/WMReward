@@ -128,6 +128,8 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                         # Physics-IQ JSON uses filename physics_iq.json; map to group 'physics_iq'
                         if [[ "$(basename "$BATCH_JSON")" == "physics_iq.json" ]]; then
                             GROUP_NAME="physics_iq"
+                        elif [[ "$(basename "$BATCH_JSON")" == "physics_iq_multiframe.json" ]]; then
+                            GROUP_NAME="physics_iq_multiframe"
                         else
                             GROUP_NAME=$(basename "$(dirname "$BATCH_JSON")")
                         fi

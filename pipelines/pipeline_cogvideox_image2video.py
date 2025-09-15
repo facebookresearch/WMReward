@@ -44,13 +44,7 @@ import torch.nn.functional as F
 from PIL import Image
 import sys
 
-# enable importing shared helpers similar to v6 pipeline
-sys.path.append("/home/yjianhao/project")
-from video_guidance.compute_vjepa_loss_new import generate_vjepa_masks
-
-# allow importing local helpers in `frame-guidance`
-sys.path.append("/home/yjianhao/project/frame-guidance")
-from utils import load_vjepa_models_torchhub, load_vjepa_model_source
+from utils import load_vjepa_models_torchhub, load_vjepa_model_source, generate_vjepa_masks
 
 sys.path.append("/home/yjianhao/project/vjepa2")
 from src.masks.utils import apply_masks
@@ -656,7 +650,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
         guidance_frequency: int = 1,
         loss_fn: str = "slice_pred",
         additional_inputs: Optional[Dict[str, Any]] = None,
-        travel_time: Tuple[int, int] = (0, 50),
+        travel_time: Tuple[int, int] = (-1, -1),
     ) -> Union[CogVideoXPipelineOutput, Tuple]:
         """
         Function invoked when calling the pipeline for generation.
@@ -1159,6 +1153,62 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         print("grad_norm", grad_norm.item())
                         print("latents", latents.norm(2).item())
                         # import pdb; pdb.set_trace()
+
+
+
+                        def log_grad_spread(g, delta_base, step_i, sample_idx: int = 0, topk: int = 5):
+                            """
+                            g            : [B,C,T,H,W]   (∂L/∂x_t)
+                            delta_base   : [B,C,T,H,W]   (vanilla solver step per frame)
+                            step_i       : int           (k in your loop)
+                            sample_idx   : which batch element to print
+                            topk         : how many top frames to summarize
+                            """
+                            print('g', g.shape)
+                            print('delta_base', delta_base.shape)
+                            eps = 1e-12
+                            assert g.dim() == 5 and delta_base.shape == g.shape, "shape mismatch"
+                            B, C, T, H, W = g.shape
+                            b = min(sample_idx, B-1)
+
+                            # Per-frame L2 norms over C,H,W
+                            reduce_chw = (1, 3, 4)
+                            g_t = g.pow(2).sum(dim=reduce_chw).sqrt()                   # [B,T]
+                            d_t = delta_base.pow(2).sum(dim=reduce_chw).sqrt()          # [B,T]
+                            dot_t = (g * delta_base).sum(dim=reduce_chw)                # [B,T]
+                            cos_t = dot_t / (g_t * d_t + eps)                           # [B,T] per-frame cosine
+
+                            # Normalized energy distribution over frames
+                            p_t = g_t / (g_t.sum(dim=1, keepdim=True) + eps)            # [B,T], sum_t p_t = 1
+
+                            # Concentration metrics
+                            hhi = (p_t**2).sum(dim=1)                                   # Herfindahl index
+                            eff_frames = 1.0 / (hhi + eps)                              # "effective number of frames"
+
+                            # How many frames cover 50% / 90% of the mass?
+                            p_sorted, idx_sorted = torch.sort(p_t[b], descending=True)
+                            csum = torch.cumsum(p_sorted, dim=0)
+                            k50 = int((csum >= 0.50).nonzero(as_tuple=False)[0]) + 1
+                            k90 = int((csum >= 0.90).nonzero(as_tuple=False)[0]) + 1
+
+                            # Top-k summary
+                            K = min(topk, T)
+                            top_idx = idx_sorted[:K]
+                            top_mass = p_sorted[:K].sum().item()
+                            top_cos_mean = cos_t[b, top_idx].mean().item()
+
+                            # Compact, readable printout
+                            tops = [(int(i), float(p_t[b, i]), float(cos_t[b, i])) for i in top_idx]
+                            print(f"[k={step_i}] grad spread (b={b}): eff_frames={eff_frames[b].item():.2f}, "
+                                f"k50={k50}, k90={k90}, top{K}_mass={top_mass:.2f}, top{K}_cos={top_cos_mean:.3f}")
+                            print(f"          top{K} frames (idx, p_t, cos): {tops}")
+
+                            # Optional: an ASCII bar for p_t (one character per frame, scaled)
+                            width = 30
+                            bars = ''.join('█' * max(1, int(width * float(p))) for p in p_t[b].tolist())
+                            print(f"          p_t bars (T={T}): {bars}")
+
+                        log_grad_spread(grad, (noise_pred_text - noise_pred_uncond), step_i=i, sample_idx=0, topk=5)
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
                             # print("Time travel!")
