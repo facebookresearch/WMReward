@@ -37,6 +37,7 @@ from diffusers.utils import export_to_video
 
 from torchvision import transforms as T
 from torchvision.transforms import InterpolationMode
+from utils import log_grad_spread
 
 # Optional GPU stats (best-effort import)
 try:
@@ -1050,19 +1051,10 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                             with torch.enable_grad():
                                 max_chunk = latents_chunks[max_idx]
                                 total_loss = decode_evaluate_chunk(max_chunk)
-                            
-                            # grad = torch.autograd.grad(total_loss, latents, retain_graph=False, create_graph=False)[0]
-                        # print("total_loss", total_loss.requires_grad)
-                        # print("latents", latents.requires_grad)
-                        # print("pred_clean", pred_clean.requires_grad)
-                        # print_gpu_memory(True, "Before total_loss.backward")
 
                         total_loss.backward()
                         grad = latents.grad.clone()
                         latents.grad = None  # Clear the gradients
-
-                        # grad = torch.autograd.grad(total_loss, latents, retain_graph=False, create_graph=False)[0]
-                        # print_gpu_memory(True, "After total_loss.backward")
 
 
                         if (i + shorten_steps) > travel_time[0] and (i + shorten_steps) < travel_time[1]:
@@ -1078,57 +1070,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                                 latents = latents - guidance_lr[i]  * grad # update with guidance
                             
                         else:
-                            def log_grad_spread(g, delta_base, step_i, sample_idx: int = 0, topk: int = 5):
-                                """
-                                g            : [B,C,T,H,W]   (∂L/∂x_t)
-                                delta_base   : [B,C,T,H,W]   (vanilla solver step per frame)
-                                step_i       : int           (k in your loop)
-                                sample_idx   : which batch element to print
-                                topk         : how many top frames to summarize
-                                """
-                                print('g', g.shape)
-                                print('delta_base', delta_base.shape)
-                                eps = 1e-12
-                                assert g.dim() == 5 and delta_base.shape == g.shape, "shape mismatch"
-                                B, C, T, H, W = g.shape
-                                b = min(sample_idx, B-1)
 
-                                # Per-frame L2 norms over C,H,W
-                                reduce_chw = (1, 3, 4)
-                                g_t = g.pow(2).sum(dim=reduce_chw).sqrt()                   # [B,T]
-                                d_t = delta_base.pow(2).sum(dim=reduce_chw).sqrt()          # [B,T]
-                                dot_t = (g * delta_base).sum(dim=reduce_chw)                # [B,T]
-                                cos_t = dot_t / (g_t * d_t + eps)                           # [B,T] per-frame cosine
-
-                                # Normalized energy distribution over frames
-                                p_t = g_t / (g_t.sum(dim=1, keepdim=True) + eps)            # [B,T], sum_t p_t = 1
-
-                                # Concentration metrics
-                                hhi = (p_t**2).sum(dim=1)                                   # Herfindahl index
-                                eff_frames = 1.0 / (hhi + eps)                              # "effective number of frames"
-
-                                # How many frames cover 50% / 90% of the mass?
-                                p_sorted, idx_sorted = torch.sort(p_t[b], descending=True)
-                                csum = torch.cumsum(p_sorted, dim=0)
-                                k50 = int((csum >= 0.50).nonzero(as_tuple=False)[0]) + 1
-                                k90 = int((csum >= 0.90).nonzero(as_tuple=False)[0]) + 1
-
-                                # Top-k summary
-                                K = min(topk, T)
-                                top_idx = idx_sorted[:K]
-                                top_mass = p_sorted[:K].sum().item()
-                                top_cos_mean = cos_t[b, top_idx].mean().item()
-
-                                # Compact, readable printout
-                                tops = [(int(i), float(p_t[b, i]), float(cos_t[b, i])) for i in top_idx]
-                                print(f"[k={step_i}] grad spread (b={b}): eff_frames={eff_frames[b].item():.2f}, "
-                                    f"k50={k50}, k90={k90}, top{K}_mass={top_mass:.2f}, top{K}_cos={top_cos_mean:.3f}")
-                                print(f"          top{K} frames (idx, p_t, cos): {tops}")
-
-                                # Optional: an ASCII bar for p_t (one character per frame, scaled)
-                                width = 30
-                                bars = ''.join('█' * max(1, int(width * float(p))) for p in p_t[b].tolist())
-                                print(f"          p_t bars (T={T}): {bars}")
 
                             print("DLO!")
                             with torch.no_grad():

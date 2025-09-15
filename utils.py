@@ -12,7 +12,6 @@ from diffusers.utils import export_to_video
 from PIL import Image
 from einops import rearrange
 
-# Add V-JEPA path
 import vjepa2.src.datasets.utils.video.transforms as video_transforms
 import vjepa2.src.datasets.utils.video.volume_transforms as volume_transforms
 from vjepa2.src.models.vision_transformer import vit_giant_xformers_rope, vit_huge_rope
@@ -38,6 +37,59 @@ def _clean_backbone_key(state_dict):
         key = key.replace("backbone.", "")
         state_dict[key] = val
     return state_dict
+
+
+def log_grad_spread(g, delta_base, step_i, sample_idx: int = 0, topk: int = 5):
+    """
+    g            : [B,C,T,H,W]   (∂L/∂x_t)
+    delta_base   : [B,C,T,H,W]   (vanilla solver step per frame)
+    step_i       : int           (k in your loop)
+    sample_idx   : which batch element to print
+    topk         : how many top frames to summarize
+    """
+    print('g', g.shape)
+    print('delta_base', delta_base.shape)
+    eps = 1e-12
+    assert g.dim() == 5 and delta_base.shape == g.shape, "shape mismatch"
+    B, C, T, H, W = g.shape
+    b = min(sample_idx, B-1)
+
+    # Per-frame L2 norms over C,H,W
+    reduce_chw = (1, 3, 4)
+    g_t = g.pow(2).sum(dim=reduce_chw).sqrt()                   # [B,T]
+    d_t = delta_base.pow(2).sum(dim=reduce_chw).sqrt()          # [B,T]
+    dot_t = (g * delta_base).sum(dim=reduce_chw)                # [B,T]
+    cos_t = dot_t / (g_t * d_t + eps)                           # [B,T] per-frame cosine
+
+    # Normalized energy distribution over frames
+    p_t = g_t / (g_t.sum(dim=1, keepdim=True) + eps)            # [B,T], sum_t p_t = 1
+
+    # Concentration metrics
+    hhi = (p_t**2).sum(dim=1)                                   # Herfindahl index
+    eff_frames = 1.0 / (hhi + eps)                              # "effective number of frames"
+
+    # How many frames cover 50% / 90% of the mass?
+    p_sorted, idx_sorted = torch.sort(p_t[b], descending=True)
+    csum = torch.cumsum(p_sorted, dim=0)
+    k50 = int((csum >= 0.50).nonzero(as_tuple=False)[0]) + 1
+    k90 = int((csum >= 0.90).nonzero(as_tuple=False)[0]) + 1
+
+    # Top-k summary
+    K = min(topk, T)
+    top_idx = idx_sorted[:K]
+    top_mass = p_sorted[:K].sum().item()
+    top_cos_mean = cos_t[b, top_idx].mean().item()
+
+    # Compact, readable printout
+    tops = [(int(i), float(p_t[b, i]), float(cos_t[b, i])) for i in top_idx]
+    print(f"[k={step_i}] grad spread (b={b}): eff_frames={eff_frames[b].item():.2f}, "
+        f"k50={k50}, k90={k90}, top{K}_mass={top_mass:.2f}, top{K}_cos={top_cos_mean:.3f}")
+    print(f"          top{K} frames (idx, p_t, cos): {tops}")
+
+    # Optional: an ASCII bar for p_t (one character per frame, scaled)
+    width = 30
+    bars = ''.join('█' * max(1, int(width * float(p))) for p in p_t[b].tolist())
+    print(f"          p_t bars (T={T}): {bars}")
 
 def build_pt_video_transform(img_size):
     """Build video preprocessing transform."""
@@ -105,18 +157,17 @@ def load_vjepa_model_source(model, num_frames=64):
     img_size = 384 if "384" in model else 256
     if model == "vith" or model == "vit_huge":
         encoder = vit_huge_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "/home/yjianhao/project/checkpoints/vith.pt"
+        model_path = "./checkpoints/vith.pt"
 
     elif model == "vitg" or model == "vit_giant":
         encoder = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "/home/yjianhao/project/checkpoints/vitg.pt"
-        # model_path = "/home/yjianhao/project/checkpoints/vjepa2-ac-vitg.pt"
+        model_path = "./checkpoints/vitg.pt"
     elif model == "vitg384" or model == "vit_giant_384":
         encoder = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "/home/yjianhao/.cache/torch/hub/checkpoints/vitg-384.pt"
+        model_path = "./checkpoints/vitg-384.pt"
     elif model == "vitgac" or model == "vit_giant_ac":
         encoder = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "/home/yjianhao/.cache/torch/hub/checkpoints/vjepa2-ac-vitg.pt"
+        model_path = "./checkpoints/vjepa2-ac-vitg.pt"
     else:
         raise ValueError(f"Unknown model: {model}. Use 'vith', 'vitg' or 'vitg384'.")
 
@@ -831,345 +882,4 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
     print(f"aggregated loss ({mode}): {loss.item()} similarity: {1 - loss.item():.6f}")
     
     return loss
-
-def push_target_tensor_v2(video_tensor, model, context_length=4, frames_per_clip=16, stride=2, use_bfloat16=True, require_grad=True, mode='max', return_arr=False, is_vae_output=True):
-    """
-    Push the video to a V-JEPA feature computed from a target video loaded each time.
-    """
-    model.eval()
-    device = next(model.parameters()).device
-    # Load target video and compute its feature
-    # target_video_path = "/home/yjianhao/project/video_guidance/0160_full-videos_30FPS_perspective-left_take-1_trimmed-single-cradle.mp4"
-    target_video_path = "/home/yjianhao/project/video_guidance/cradle_49.mp4"
-    # target_video_path = "/home/yjianhao/project/video_guidance/red_49.mp4"
-    # target_video_path = "/home/yjianhao/project/video_guidance/results/action/rho_scale_0.1/gt_video.mp4"
-    # target_video_path = "/home/yjianhao/project/video_guidance/results/action/rho_scale_1/gt_video.mp4"
-    # target_video_path = "/home/yjianhao/project/video_guidance/sampled1.mp4"
-    # target_video_path = "/home/yjianhao/project/video_guidance/sampled.mp4"
-    num_video_frames = video_tensor.shape[2]  # T dimension from video_tensor [B, C, T, H, W]
-    
-    # Load target video normally
-    target_video = get_video(target_video_path, max_frames=49)
-    target_video_tensor = torch.from_numpy(target_video).permute(0, 3, 1, 2).to(device).float()
-
-    # print(f"target_video_tensor shape: {target_video_tensor.shape}")
-    # print(f"video_tensor shape: {video_tensor.shape}")
-
-    transform = build_pt_video_transform(256)
-
-    # Apply post-processing based on input type
-    if is_vae_output:
-        # For VAE output: [-1,1] → [0,1] → [0,255]
-        video_postprocessed = (video_tensor * 0.5 + 0.5).clamp(0, 1)  # [-1,1] → [0,1] with clamp
-        video_255 = video_postprocessed * 255.0  # [0,1] → [0,255]
-    else:
-        # Already post-processed: [0,255] (no further processing needed)
-        video_255 = video_tensor
-    
-    grad_context = torch.enable_grad() if require_grad else torch.no_grad()
-
-    def forward_target(c):
-        h = model(c)
-        h = torch.stack([F.layer_norm(hi, (hi.size(-1),)) for hi in h])
-        return h
-    
-    with grad_context:
-        # Process input video feature
-        # Transform expects [T, C, H, W] format, so reshape from [B, C, T, H, W]
-        B, C, T, H, W = video_255.shape
-        video_normalized = video_255.squeeze(0).permute(1, 0, 2, 3).to(device)  # [B, C, T, H, W] -> [T, C, H, W]
-        video_normalized = transform(video_normalized).unsqueeze(0).to(device)
-
-        # Process target video feature
-        target_normalized = transform(target_video_tensor).to(device).unsqueeze(0)
-        
-        # DEBUG: Show post-transform ranges
-        print(f"video_normalized shape: {video_normalized.shape}")
-        print(f"target_normalized shape: {target_normalized.shape}")
-        print(f"  After guidance transform range: [{video_normalized.min().item():.3f}, {video_normalized.max().item():.3f}]")
-        print(f"  Target after transform range: [{target_normalized.min().item():.3f}, {target_normalized.max().item():.3f}]")
-
-        # Compute features
-        video_feature = forward_target(video_normalized)
-        target_feature = forward_target(target_normalized)
-         # Ensure both features are on the same device
-        target_feature = target_feature.to(video_feature.device)
-        
-        # Compute loss
-        # print(f"video_feature shape: {video_feature.shape}")
-        # print(f"target_feature shape: {target_feature.shape}")
-        # loss = F.mse_loss(video_feature, target_feature, reduction="mean")
-        # loss = F.l1_loss(video_feature, target_feature, reduction="mean")
-        # print(f"video_feature shape: {video_feature.shape}")
-        loss = 1 - F.cosine_similarity(video_feature, target_feature, dim=1).mean()
-        print(f"sim shape: {F.cosine_similarity(video_feature, target_feature).shape}")
-        print(f"similarity: {F.cosine_similarity(video_feature, target_feature, dim=1).mean().item():.6f}")
-
-        # print(f"loss: {loss.item():.6f}")
-        
-
-    return loss
-
-
-# def push_target_tensor_dinov2(video_tensor, model, context_length=4, frames_per_clip=16, stride=2, use_bfloat16=True, require_grad=True, mode='max', return_arr=False, is_vae_output=True):
-#     """
-#     Push the video to a DINOv2 feature computed from a target video loaded each time.
-#     Processes videos frame-by-frame since DINOv2 is designed for images.
-#     """
-#     model.eval()
-#     device = next(model.parameters()).device
-
-#     # target_video_path = "/home/yjianhao/project/video_guidance/sampled.mp4"
-#     # target_video_path = "/home/yjianhao/project/video_guidance/cradle_49.mp4"
-#     # target_video_path = "/home/yjianhao/project/video_guidance/sampled.mp4"
-#     target_video_path = "/home/yjianhao/project/video_guidance/red_49.mp4"
-#     # target_video_path = "/home/yjianhao/project/video_guidance/sampled2.mp4"
-#     num_video_frames = video_tensor.shape[2]  # T dimension from video_tensor [B, C, T, H, W]
-    
-#     # Load target video normally
-#     target_video = get_video(target_video_path, max_frames=49)
-#     target_video_tensor = torch.from_numpy(target_video).permute(0, 3, 1, 2).to(device).float()
-
-#     print(f"target_video_tensor shape: {target_video_tensor.shape}")
-#     print(f"video_tensor shape: {video_tensor.shape}")
-    
-#     transform = build_dinov2_transform()
-
-#     # Apply post-processing based on input type
-#     if is_vae_output:
-#         # For VAE output: [-1,1] → [0,1] → [0,255]
-#         video_postprocessed = (video_tensor * 0.5 + 0.5).clamp(0, 1)  # [-1,1] → [0,1] with clamp
-#         video_255 = video_postprocessed * 255.0  # [0,1] → [0,255]
-#     else:
-#         # Already post-processed: [0,255] (no further processing needed)
-#         video_255 = video_tensor
-    
-#     grad_context = torch.enable_grad() if require_grad else torch.no_grad()
-
-#     def forward_video_dinov2(video_frames, model, transform):
-#         """
-#         Process video frames through DINOv2 frame-by-frame and concatenate features.
-        
-#         Args:
-#             video_frames: [T, C, H, W] tensor of video frames (values in [0, 255])
-#             model: DINOv2 model
-#             transform: DINOv2 transform
-            
-#         Returns:
-#             Concatenated video features [T * feature_dim]
-#         """
-#         frame_features = []
-        
-#         for t in range(video_frames.shape[0]):
-#             # Extract single frame: [C, H, W]
-#             frame = video_frames[t]
-            
-#             # print(f"frame shape: {frame.shape}")
-            
-#             # 2. Resize to DINOv2 expected size (224x224) - dimensions must be multiples of patch size 14
-#             C, H, W = frame.shape
-#             if H != 224 or W != 224:
-#                 frame = F.interpolate(
-#                     frame.unsqueeze(0),  # Add batch dim: [1, C, H, W]
-#                     size=(224, 224),
-#                     mode='bilinear',
-#                     align_corners=False
-#                 ).squeeze(0)  # Remove batch dim: [C, H, W]
-
-#             # print(f"frame shape 2: {frame.shape}")
-            
-#             # 3. Convert from [0, 255] to [0, 1] (since ToTensor() expects [0, 255] -> [0, 1])
-#             frame_normalized = frame / 255.0
-            
-#             # 4. Apply DINOv2 normalization: scale by 255 and normalize
-#             # DINOv2 transform does: lambda x: 255.0 * x[:3] then normalize
-#             frame_scaled = frame_normalized * 255.0
-            
-#             # 5. Apply DINOv2 normalization with its specific mean/std
-#             mean = torch.tensor([123.675, 116.28, 103.53], device=device).view(3, 1, 1)
-#             std = torch.tensor([58.395, 57.12, 57.375], device=device).view(3, 1, 1)
-#             frame_transformed = (frame_scaled - mean) / std
-            
-#             # Add batch dimension for model: [1, C, H, W]
-#             frame_batch = frame_transformed.unsqueeze(0)
-            
-#             # Get features from DINOv2
-#             with torch.no_grad() if not frame_batch.requires_grad else torch.enable_grad():
-#                 frame_feature = model(frame_batch)  # [1, feature_dim]
-            
-#             frame_features.append(frame_feature.squeeze(0))  # Remove batch dim: [feature_dim]
-        
-#         # Concatenate all frame features: [T * feature_dim]
-#         concatenated_features = torch.cat(frame_features, dim=0)
-            
-#         return concatenated_features
-    
-#     with grad_context:
-#         # Process input video feature
-#         # Reshape from [B, C, T, H, W] to [T, C, H, W]
-#         B, C, T, H, W = video_255.shape
-#         video_frames = video_255.squeeze(0).permute(1, 0, 2, 3)  # [B, C, T, H, W] -> [T, C, H, W]
-        
-#         # Process target video feature  
-#         target_frames = target_video_tensor  # Already [T, C, H, W]
-        
-#         # DEBUG: Show pre-transform ranges
-#         print(f"  Video frames range before transform: [{video_frames.shape} {video_frames.min().item():.3f}, {video_frames.max().item():.3f}]")
-#         print(f"  Target frames range before transform: [{target_frames.shape} {target_frames.min().item():.3f}, {target_frames.max().item():.3f}]")
-
-#         # Get DINOv2 features for video and target
-#         video_feature = forward_video_dinov2(video_frames, model, transform)
-#         target_feature = forward_video_dinov2(target_frames, model, transform)
-        
-#         # Ensure both features are on the same device
-#         target_feature = target_feature.to(video_feature.device)
-        
-#         # DEBUG: Show feature shapes and ranges
-#         print(f"  Video feature shape: {video_feature.shape}, range: [{video_feature.min().item():.3f}, {video_feature.max().item():.3f}]")
-#         print(f"  Target feature shape: {target_feature.shape}, range: [{target_feature.min().item():.3f}, {target_feature.max().item():.3f}]")
-
-#         # Compute loss
-#         loss = F.l1_loss(video_feature, target_feature, reduction="mean")
-#         print(f"  DINOv2 guidance loss: {loss.item():.6f}")
-
-#     return loss
-
-
-@torch.enable_grad()
-def push_target_tensor_dinov2(
-    video_tensor: torch.Tensor,               # [1,3,T,H,W] (your case) or [B,3,T,H,W]
-    model,                                     # DINOv2 backbone (e.g., dinov2_vitl14_reg)
-    target_video_path: str = "/home/yjianhao/project/video_guidance/red_49.mp4",                    # e.g. "/home/.../red_49.mp4"
-    is_vae_output: bool = True,                # True if video_tensor is in [-1,1]
-    assume_target_bgr: bool = False,           # True if get_video() loads via OpenCV (BGR)
-    use_derivative: bool = False               # add temporal-derivative cosine
-) -> torch.Tensor:
-    """
-    Differentiable DINOv2 guidance loss between generated frames and target video.
-    Everything inline: shape handling, preprocessing, CLS features, cosine loss.
-    """
-    device = next(model.parameters()).device
-    dtype = torch.float32
-    model.eval()
-
-    # ---- current video -> [T,C,H,W] in 0..255 RGB ----
-    x = video_tensor.to(device=device, dtype=dtype)
-    if is_vae_output:
-        x = (x * 0.5 + 0.5).clamp(0, 1) * 255.0           # [-1,1] -> [0,255]
-    if x.ndim == 5:                                       # [B,C,T,H,W]
-        if x.size(0) != 1:
-            # pick first item; change to mean over batch if you want multi-B support
-            x = x[0]                                      # [C,T,H,W]
-        else:
-            x = x[0]                                      # [C,T,H,W]
-        vid_tchw = x.permute(1, 0, 2, 3).contiguous()     # [T,C,H,W]
-    elif x.ndim == 4:                                     # [C,T,H,W]
-        vid_tchw = x.permute(1, 0, 2, 3).contiguous()     # [T,C,H,W]
-    else:
-        raise ValueError(f"Expected 4D/5D, got {tuple(x.shape)}")
-
-    T = vid_tchw.shape[0]
-
-    # ---- target -> [T,C,H,W] in 0..255 RGB ----
-    tgt_np = get_video(target_video_path, max_frames=T)   # [T,H,W,C] uint8
-    tgt = torch.from_numpy(tgt_np).permute(0, 3, 1, 2).to(device=device, dtype=dtype)  # [T,C,H,W]
-    if assume_target_bgr:
-        tgt = tgt[:, [2, 1, 0], :, :]                     # BGR -> RGB
-
-    # ---- preprocess for DINOv2 (0..255 domain mean/std), resize to 224 ----
-    def preprocess_224_255rgb(z: torch.Tensor) -> torch.Tensor:
-        z = F.interpolate(z, size=(224, 224), mode='bilinear', align_corners=False)
-        mean = torch.tensor([123.675, 116.28, 103.53], device=z.device, dtype=z.dtype).view(1, 3, 1, 1)
-        std  = torch.tensor([58.395,  57.12,  57.375], device=z.device, dtype=z.dtype).view(1, 3, 1, 1)
-        return (z - mean) / std
-
-    vid_in = preprocess_224_255rgb(vid_tchw)              # [T,3,224,224]
-    with torch.no_grad():
-        tgt_in = preprocess_224_255rgb(tgt)               # [T,3,224,224]
-
-    # ---- forward CLS features (batched over T) ----
-    def cls_feats(m, inp: torch.Tensor) -> torch.Tensor:
-        out = m.forward_features(inp)                     # dict for official DINOv2
-        if isinstance(out, dict):
-            if "x_norm_clstoken" in out:
-                f = out["x_norm_clstoken"]               # [T,D] (reg checkpoints)
-            elif "x_norm_cls" in out:
-                f = out["x_norm_cls"]
-            else:
-                # fallback: first tensor value
-                for v in out.values():
-                    if torch.is_tensor(v):
-                        f = v
-                        break
-                else:
-                    raise RuntimeError("forward_features returned no tensor outputs")
-        else:
-            f = out                                       # rare forks
-        return F.normalize(f, dim=-1)                     # [T,D], L2-normalized
-
-    f_vid = cls_feats(model, vid_in)                      # [T,D], requires_grad
-    with torch.no_grad():
-        f_tgt = cls_feats(model, tgt_in)                  # [T,D]
-
-    # ---- cosine loss (+ optional temporal derivative) ----
-    print(f"f_vid shape: {f_vid.shape}")
-    print(f"f_tgt shape: {f_tgt.shape}")
-    feat_loss = 1.0 - F.cosine_similarity(f_vid, f_tgt, dim=-1).mean()
-
-    return feat_loss
-
-
-
-
-@torch.enable_grad()
-def lpip_loss(video_tensor, lpips):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    # Ensure LPIPS model is on the correct device
-    lpips = lpips.to(device)
-    
-    # Normalization parameters for ImageNet - shaped for individual frames [1, 3, 1, 1]
-    mean = torch.tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1).to(device)
-    std = torch.tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1).to(device)
-
-    target_video_path = "/home/yjianhao/project/video_guidance/sampled.mp4"
-    target_video = get_video(target_video_path, max_frames=5)
-    target_video_tensor = torch.from_numpy(target_video).permute(0, 3, 1, 2).to(device).float()
-
-    # Preprocess video tensor: [-1,1] → [0,1]
-    video_postprocessed = (video_tensor * 0.5 + 0.5).clamp(0, 1)  # [-1,1] → [0,1] with clamp
-    target_postprocessed = (target_video_tensor / 255.0).clamp(0, 1)  # [0,255] → [0,1]
-    
-    # Get dimensions
-    B, C, T, H, W = video_postprocessed.shape
-    T_target, C_target, H_target, W_target = target_postprocessed.shape
-    
-    # Ensure we have the same number of frames
-    num_frames = min(T, T_target)
-    
-    total_loss = 0.0
-    
-    # Process each frame individually
-    for t in range(num_frames):
-        # Extract single frames [B, C, H, W]
-        video_frame = video_postprocessed[:, :, t, :, :]  # [B, C, H, W]
-        target_frame = target_postprocessed[t:t+1, :, :, :].expand(B, -1, -1, -1)  # [B, C, H, W]
-        
-        # Resize frames to 256x256
-        video_frame_resized = F.interpolate(video_frame, size=(256, 256), mode='bilinear', align_corners=False)
-        target_frame_resized = F.interpolate(target_frame, size=(256, 256), mode='bilinear', align_corners=False)
-        
-        # Normalize for ImageNet
-        video_frame_normalized = (video_frame_resized - mean) / std
-        target_frame_normalized = (target_frame_resized - mean) / std
-        
-        # Compute LPIPS for this frame pair
-        frame_loss = lpips(video_frame_normalized, target_frame_normalized)
-        total_loss += frame_loss
-    
-    # Average loss across all frames
-    avg_loss = total_loss / num_frames
-    print(f"  LPIPS loss (avg across {num_frames} frames): {avg_loss.item():.6f}")
-
-    return avg_loss
 

@@ -2,8 +2,7 @@ import os, cv2, argparse, torch
 from PIL import Image
 from datetime import datetime
 from diffusers.utils import export_to_gif
-# from pipelines.pipeline_cogvideox_image2video_vjepa import CogVideoXImageToVideoPipeline
-from pipelines.pipeline_cogvideox_image2video_hybrid import CogVideoXImageToVideoPipeline
+from pipelines.pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
 
 def build_seq(pattern: str, steps: int, is_float: bool):
     tokens = [p.strip() for p in pattern.split(",") if p.strip()]
@@ -40,21 +39,17 @@ def load_first_frame(image_path: str | None, video_path: str | None) -> Image.Im
 def main():
     ap = argparse.ArgumentParser("I2V with VJEPA slice_pred guidance")
     ap.add_argument("--prompt", type=str, default=(
-        "Use the left hand to pick up dark green cucumber from on circular gray mat to above beige bowl."
+        "Two pillows on a table and two grabber tools hanging above them from which a brown tennis ball and an orange block are suspended. The grabber tools let go of the ball and block. Static shot with no camera movement."
     ))
-    ap.add_argument("--init_image", type=str, default="/home/yjianhao/project/frame-guidance/dream_gen_benchmark/gr1_object/0_Use the left hand to pick up dark green cucumber from on circular gray mat to above beige bowl..png")
+    ap.add_argument("--init_image", type=str, default="./example/0001_switch-frames_anyFPS_perspective-left_trimmed-ball-and-block-fall.jpg")
     ap.add_argument("--init_video", type=str, default=None)
     ap.add_argument("--model_id", type=str, default="THUDM/CogVideoX-5b-I2V")
     ap.add_argument("--num_frames", type=int, default=49)
     ap.add_argument("--steps", type=int, default=50)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--guidance_scale", type=float, default=6.0)
-    # ap.add_argument("--guidance_step_pattern", type=str, default="0x3,3x12,2x12,1x23")
-    # ap.add_argument("--guidance_step_pattern", type=str, default="1x50")
     ap.add_argument("--guidance_step_pattern", type=str, default="0x5,1x45")
-    # ap.add_argument("--guidance_lr_pattern", type=str, default="3.0x15,2.0x15,1.0x20")
     ap.add_argument("--guidance_lr_pattern", type=str, default="0.005x50")
-    # ap.add_argument("--guidance_lr_pattern", type=str, default="5.0x15,3.0x15,2.0x20")
     ap.add_argument("--guidance_frequency", type=int, default=1)
     ap.add_argument("--travel_time", type=str, default="0,0")
     # VJEPA slice_pred
@@ -68,7 +63,7 @@ def main():
     ap.add_argument("--vae_decode_scale", type=float, default=0.8)
     ap.add_argument("--loss_mode", type=str, default="max", choices=["mean","max"])
     # IO
-    ap.add_argument("--out_dir", type=str, default="results/i2v_vjepa_slicepred")
+    ap.add_argument("--out_dir", type=str, default="results/i2v_cogvideox")
     ap.add_argument("--run_name", type=str, default="")
     ap.add_argument("--fps", type=int, default=8)
     args = ap.parse_args()

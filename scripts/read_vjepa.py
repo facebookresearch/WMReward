@@ -182,7 +182,7 @@ if __name__ == "__main__":
     parser.add_argument('--exclude_patterns', nargs='+', default=None,
                         help='Exclude models containing these patterns')
     parser.add_argument('--base_dir', type=str,
-                        default='/home/yjianhao/project/frame-guidance',
+                        default='./',
                         help='Base project directory')
     parser.add_argument('--param_keywords', nargs='+',
                         default=['sampling_method', 'cfg_scale', 'loss_mode', 'guidance_lr_pattern', 'guidance_step_pattern', 'guidance_frequency'],

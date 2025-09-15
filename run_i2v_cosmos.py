@@ -94,39 +94,11 @@ pipe = pipe.to("cuda")
 pipe.transformer.enable_gradient_checkpointing()
 pipe.vae.enable_tiling()
 pipe.vae.enable_slicing()
-# pipe.vae.enable_gradient_checkpointing()
-
-# prompt = "A close-up shot captures a vibrant yellow scrubber vigorously working on a grimy plate, its bristles moving in circular motions to lift stubborn grease and food residue. The dish, once covered in remnants of a hearty meal, gradually reveals its original glossy surface. Suds form and bubble around the scrubber, creating a satisfying visual of cleanliness in progress. The sound of scrubbing fills the air, accompanied by the gentle clinking of the dish against the sink. As the scrubber continues its task, the dish transforms, gleaming under the bright kitchen lights, symbolizing the triumph of cleanliness over mess."
-# prompt = "A robot arm performing precise manipulation task and reaching for the drawer, smooth realistic motion"
-# negative_prompt = "The video captures a series of frames showing ugly scenes, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
-# image = load_image(
-#     "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/yellow-scrubber.png"
-# )
-# image = load_image("/home/yjianhao/project/video_guidance/droid/8756/original_buffer/frame_0000.png")
-# image = load_image("/home/yjianhao/project/frame-guidance/dream_gen_benchmark/gr1_object/0_Use the left hand to pick up dark green cucumber from on circular gray mat to above beige bowl..png")
-# prompt = "Use the left hand to pick up dark green cucumber from on circular gray mat to above beige bowl."
-
-
-# image = load_image("/home/yjianhao/project/frame-guidance/dream_gen_benchmark/gr1_object/1_Use the right hand to pick up orange juice carton from center of pink plate to center of green bowl..png")
-# prompt = "Use the right hand to pick up orange juice carton from center of pink plate to center of green bowl."
-
-# image = load_image("/home/yjianhao/project/frame-guidance/dream_gen_benchmark/gr1_object/4_Use the right hand to pick up orange carrot from center of table to lower white shelf..png")
-# prompt="Use the right hand to pick up orange carrot from center of table to lower white shelf."
-# negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
-
-# image = load_image("/home/yjianhao/project/frame-guidance/dream_gen_benchmark/gr1_object/4_Use the right hand to pick up orange carrot from center of table to lower white shelf..png")
-# video_path = "/home/yjianhao/project/PhysicsIQ/physics-IQ-benchmark/split-videos/conditioning/30FPS/0001_conditioning-videos_30FPS_perspective-left_take-1_trimmed-ball-and-block-fall.mp4"
-
-# # Use decord to downsample video to exact 16 fps and select final k frames
-# video = downsample_video_to_fps(video_path, original_fps=30, target_fps=16, num_frames=args.k_frames)
-# print(f"Processed video: {len(video)} frames at exactly 16 fps, size: {video[0].size}")
-# export_to_video(video, "temp.mp4", fps=5)
-# print(f"Saved conditioned input video as temp.mp4")
 
 prompt="Two pillows on a table and two grabber tools hanging above them from which a brown tennis ball and an orange block are suspended. The grabber tools let go of the ball and block. Static shot with no camera movement."
 negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
 
-image = load_image("/home/yjianhao/project/PhysicsIQ/physics-IQ-benchmark/switch-frames/0001_switch-frames_anyFPS_perspective-left_trimmed-ball-and-block-fall.jpg")
+image = load_image("./example/0001_switch-frames_anyFPS_perspective-left_trimmed-ball-and-block-fall.jpg")
 
 # Build guidance schedules like in CogVideoX script
 def build_seq(pattern: str, steps: int, is_float: bool):
@@ -147,15 +119,8 @@ def build_seq(pattern: str, steps: int, is_float: bool):
 steps = 35
 
 if args.mode == 'guidance':
-#   guidance_step = build_seq("0x5,10x15,5x15", steps, is_float=False)  # 0 for first 3, 3 for next 12, 2 for rest
   guidance_step = build_seq(args.guidance_step_pattern, steps, is_float=False)  # 0 for first 3, 3 for next 12, 2 for rest
-  # guidance_step = build_seq("0x3,1x12,1x10,1x10", steps, is_float=False)  # 0 for first 3, 3 for next 12, 2 for rest
-  # guidance_step = build_seq("0x3,3x10,2x10,1x12", steps, is_float=False)  # 0 for first 3, 3 for next 12, 2 for rest
-  # guidance_lr = build_seq("3.0x15,2.0x20", steps, is_float=True)     # 3.0 for first 15, 2.0 for rest
-  # guidance_lr = build_seq("30x15,20x15,10x5", steps, is_float=True)     # 3.0 for first 15, 2.0 for rest
   guidance_lr = build_seq(args.guidance_lr_pattern, steps, is_float=True)     # 3.0 for first 15, 2.0 for rest
-  # guidance_step = build_seq("0x35", steps, is_float=False)  # 0 for first 3, 3 for next 12, 2 for rest
-  # guidance_lr = build_seq("0x35", steps, is_float=True)     # 3.0 for first 15, 2.0 for rest
   travel_time = (0, 0)  # time travel window
 elif args.mode == 'vanilla':
   guidance_step = build_seq("0x35", steps, is_float=False)  # 0 for first 3, 3 for next 12, 2 for rest
@@ -164,7 +129,6 @@ elif args.mode == 'vanilla':
 
 video = pipe(
   image=image,
-#   video=video,
   prompt=prompt,
   num_frames=93,
   height=704,

@@ -371,7 +371,7 @@ if __name__ == "__main__":
     parser.add_argument('--exclude_patterns', nargs='+', default=None,
                       help='Exclude models containing these patterns')
     parser.add_argument('--base_dir', type=str, 
-                      default='/home/yjianhao/project/frame-guidance',
+                      default='./',
                       help='Base project directory')
     args = parser.parse_args()
 

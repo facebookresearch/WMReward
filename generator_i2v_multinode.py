@@ -208,13 +208,10 @@ def load_first_frame(image_path: str | None, video_path: str | None) -> Image.Im
 def init_pipeline(args):
     """Initialize the CogVideoX I2V pipeline with V-JEPA slice-pred support."""
     if "CogVideoX" in args.model_id:
-        from pipelines.pipeline_cogvideox_image2video_vjepa import CogVideoXImageToVideoPipeline
+        from pipelines.pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
         pipe = CogVideoXImageToVideoPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16).to("cuda")
         pipe.vae.enable_tiling(); pipe.vae.enable_slicing(); pipe.vae.enable_gradient_checkpointing()
     elif "Cosmos" in args.model_id:
-        # from pipelines.pipeline_cosmos_image2video_v1 import Cosmos2VideoToWorldPipeline
-        # from pipelines.pipeline_cosmos_image2video_14b import Cosmos2VideoToWorldPipeline
-        # from pipelines.pipeline_cosmos_image2video_v2 import Cosmos2VideoToWorldPipeline
         from pipelines.pipeline_cosmos_image2video_savemem import Cosmos2VideoToWorldPipeline
         pipe = Cosmos2VideoToWorldPipeline.from_pretrained(args.model_id, torch_dtype=torch.bfloat16).to("cuda")
         pipe = pipe.to("cuda")

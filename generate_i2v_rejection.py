@@ -9,6 +9,7 @@ os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 import math
 import numpy as np
 import re
+import shutil
 from PIL import Image
 from utils import compute_vjepa_loss_sliding_window, load_vjepa_models_torchhub
 
@@ -88,6 +89,26 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "loss_mode": getattr(args, 'loss_mode', 'mean'),
         })
     
+    # Add rej_guide parameters (combines guidance and rejection)
+    if args.sampling_method == 'rej_guide':
+        context_frames, stride, window_size = _resolve_sliding_window_params(args)
+        metadata["parameters"].update({
+            "vjepa_context_frames": context_frames,
+            "slice_stride": stride,
+            "slice_window_size": window_size,
+            "travel_time": getattr(args, 'travel_time', None),
+            "guidance_step_pattern": getattr(args, 'guidance_step_pattern', None),
+            "guidance_lr_pattern": getattr(args, 'guidance_lr_pattern', None),
+            "guidance_frequency": getattr(args, 'guidance_frequency', None),
+            "vjepa_variant": getattr(args, 'vjepa_variant', None),
+            "vjepa_img_size": getattr(args, 'vjepa_img_size', None),
+            "vjepa_masking_mode": getattr(args, 'vjepa_masking_mode', None),
+            "vjepa_mask_ratio": getattr(args, 'vjepa_mask_ratio', None),
+            "style_weight": getattr(args, 'style_weight', None),
+            "loss_mode": getattr(args, 'loss_mode', None),
+            "rejection_samples": getattr(args, 'rejection_samples', 3),
+        })
+    
     # Save metadata file
     metadata_path = os.path.join(experiment_folder, "experiment_config.json")
     with open(metadata_path, 'w') as f:
@@ -120,10 +141,25 @@ def get_simple_experiment_name(args):
             name += f"_{vjepa_short}"
     elif args.sampling_method == 'rejection':
         name = f"{args.sampling_method}_{version}_f{args.num_frames}_s{args.num_inference_steps}_cfg{args.cfg_scale}"
-
-    # Add rejection samples suffix if using rejection sampling
-    if args.sampling_method == 'rejection':
         name += f"_reject{getattr(args, 'rejection_samples', 3)}_{getattr(args, 'loss_mode', 'mean')}"
+        vjepa_variant = getattr(args, 'vjepa_variant', 'vit_giant')
+
+        name += f"_{vjepa_variant}_abl"
+    elif args.sampling_method == 'rej_guide':
+        loss_mode = getattr(args, 'loss_mode', 'mean')
+        vjepa_variant = getattr(args, 'vjepa_variant', 'vit_giant')
+        # Simplify vjepa variant name for brevity
+        vjepa_short = vjepa_variant.replace('vit_', '') if vjepa_variant != 'vit_giant' else ''
+        
+        name = (
+            f"rej_guide_{version}_f{args.num_frames}_s{args.num_inference_steps}"
+            f"_c{getattr(args, 'vjepa_context_frames', 8)}"
+            f"_cfg{args.cfg_scale}_reject{getattr(args, 'rejection_samples', 3)}_{loss_mode}"
+        )
+        
+        # Add vjepa variant if not default
+        if vjepa_short:
+            name += f"_{vjepa_short}"
 
     if "5frame" in args.batch_json:
         name += "_5frame"
@@ -208,11 +244,13 @@ def load_first_frame(image_path: str | None, video_path: str | None) -> Image.Im
 def init_pipeline(args):
     """Initialize the CogVideoX I2V pipeline with V-JEPA slice-pred support."""
     if "CogVideoX" in args.model_id:
-        from pipelines.pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
+        from pipelines.pipeline_cogvideox_image2video_vjepa import CogVideoXImageToVideoPipeline
         pipe = CogVideoXImageToVideoPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16).to("cuda")
         pipe.vae.enable_tiling(); pipe.vae.enable_slicing(); pipe.vae.enable_gradient_checkpointing()
     elif "Cosmos" in args.model_id:
-        from pipelines.pipeline_cosmos_image2video import Cosmos2VideoToWorldPipeline
+        # from pipelines.pipeline_cosmos_image2video_v1 import Cosmos2VideoToWorldPipeline
+        # from pipelines.pipeline_cosmos_image2video_14b import Cosmos2VideoToWorldPipeline
+        from pipelines.pipeline_cosmos_image2video_v2 import Cosmos2VideoToWorldPipeline
         pipe = Cosmos2VideoToWorldPipeline.from_pretrained(args.model_id, torch_dtype=torch.bfloat16).to("cuda")
         pipe = pipe.to("cuda")
         pipe.transformer.enable_gradient_checkpointing()
@@ -224,10 +262,10 @@ def init_pipeline(args):
 
 def init_vjepa_models(args):
     """Initialize V-JEPA models for rejection sampling evaluation."""
-    if args.sampling_method != 'rejection':
+    if args.sampling_method not in ['rejection', 'rej_guide']:
         return None, None, None
     
-    print(f"Loading V-JEPA models for rejection sampling ({args.vjepa_variant})...")
+    print(f"Loading V-JEPA models for {args.sampling_method} sampling ({args.vjepa_variant})...")
     encoder, target_encoder, predictor, img_size = load_vjepa_models_torchhub(args.vjepa_variant)
     encoder.eval().cuda()
     target_encoder.eval().cuda()
@@ -474,131 +512,354 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
         elif args.sampling_method == 'rejection':
             print(f"  Generating with rejection sampling ({args.rejection_samples} candidates)...")
             
-            # Generate multiple samples and select best based on V-JEPA loss
-            candidate_frames = []
-            candidate_losses = []
+            # Use centralized buffer folder only
+            base_experiment_folder = os.path.dirname(experiment_folder)
+            buffer_experiment_pattern = f"rejection_{getattr(args, 'vjepa_variant', 'vit_giant')}_{args.loss_mode}_buffer"
+            buffer_experiment_folder = os.path.join(base_experiment_folder, buffer_experiment_pattern)
             
-            for sample_idx in range(args.rejection_samples):
-                print(f"    Generating candidate {sample_idx + 1}/{args.rejection_samples}...")
+            # Define buffer subfolder for this prompt
+            if "physics" in args.batch_json:
+                buffer_rejection_folder = os.path.join(buffer_experiment_folder, f"{args.output_filename}_rejection")
+            else:
+                buffer_rejection_folder = os.path.join(buffer_experiment_folder, f"{safe_prompt}_rejection")
+            
+            print(f"Using buffer folder: {buffer_rejection_folder}")
+            
+            # Check for existing candidates in buffer
+            existing_candidates = []
+            if os.path.exists(buffer_rejection_folder):
+                print(f"    Found existing rejection buffer, checking for candidates...")
                 
-                # Create unique generator for each sample
-                sample_generator = torch.Generator(device="cuda").manual_seed(42 + sample_idx)
+                # Load candidates from buffer (check more than needed in case some are missing)
+                for i in range(16):  # Check up to 32 candidates
+                    candidate_path = os.path.join(buffer_rejection_folder, f"candidate_{i+1:02d}.mp4")
+                    loss_path = os.path.join(buffer_rejection_folder, f"candidate_{i+1:02d}_loss.txt")
+                    if os.path.exists(candidate_path) and os.path.exists(loss_path):
+                        with open(loss_path, 'r') as f:
+                            loss = float(f.read().strip())
+                        existing_candidates.append((i+1, candidate_path, loss))
+            
+            if len(existing_candidates) >= args.rejection_samples:
+                print(f"    Found {len(existing_candidates)} existing candidates, sampling {args.rejection_samples} from buffer...")
                 
-                # Generate using vanilla method (no guidance)
-                zero_steps = [0] * int(args.num_inference_steps)
-                zero_lrs = [0.0] * int(args.num_inference_steps)
+                # Sample k candidates from the buffer (with or without replacement depending on buffer size)
+                if len(existing_candidates) == args.rejection_samples:
+                    # Use all available candidates
+                    candidates_to_use = existing_candidates
+                    print(f"      Using all {len(existing_candidates)} available candidates")
+                else:
+                    # Sample k candidates from the buffer
+                    candidate_indices = np.random.choice(len(existing_candidates), args.rejection_samples, replace=False)
+                    candidates_to_use = [existing_candidates[i] for i in candidate_indices]
+                    print(f"      Sampled {args.rejection_samples} candidates from {len(existing_candidates)} available")
                 
-                if "CogVideoX" in args.model_id:
-                    result = pipe(
-                        video=[init_frame],
-                        prompt=prompt,
-                        negative_prompt=negative_prompt,
-                        num_frames=args.num_frames,
-                        height=args.height,
-                        width=args.width,
-                        generator=sample_generator,
-                        num_inference_steps=args.num_inference_steps,
-                        guidance_scale=args.cfg_scale,
-                        use_dynamic_cfg=True,
-                        fixed_frames=None,
-                        guidance_step=zero_steps,
-                        guidance_lr=zero_lrs,
-                        loss_fn="slice_pred",
-                        travel_time=(0, 0),
-                        additional_inputs={
-                            "loss_mode": getattr(args, 'loss_mode', 'mean'),
-                        },
-                    )
-                elif "Cosmos" in args.model_id:
-                    if "5frame" in args.batch_json:
+                # Load the sampled candidates and their losses
+                candidate_frames = []
+                candidate_losses = []
+                for idx, candidate_path, loss in candidates_to_use:
+                    print(f"      Loading candidate {idx} with loss: {loss:.6f}")
+                    video_frames = load_video(candidate_path)
+                    candidate_frames.append(video_frames)
+                    candidate_losses.append(loss)
+            else:
+                print(f"    Found {len(existing_candidates)} existing candidates, generating {args.rejection_samples - len(existing_candidates)} more in buffer...")
+                
+                # Create buffer folder if it doesn't exist
+                os.makedirs(buffer_rejection_folder, exist_ok=True)
+                
+                candidate_frames = []
+                candidate_losses = []
+                
+                # Load existing candidates first
+                for idx, candidate_path, loss in existing_candidates:
+                    print(f"      Loading existing candidate {idx} with loss: {loss:.6f}")
+                    video_frames = load_video(candidate_path)
+                    candidate_frames.append(video_frames)
+                    candidate_losses.append(loss)
+                
+                # Generate missing candidates in buffer folder
+                for sample_idx in range(len(existing_candidates), args.rejection_samples):
+                    print(f"    Generating candidate {sample_idx + 1}/{args.rejection_samples}...")
+                    
+                    # Create unique generator for each sample
+                    sample_generator = torch.Generator(device="cuda").manual_seed(42 + sample_idx)
+                    
+                    # Generate using vanilla method (no guidance)
+                    zero_steps = [0] * int(args.num_inference_steps)
+                    zero_lrs = [0.0] * int(args.num_inference_steps)
+                    
+                    if "CogVideoX" in args.model_id:
                         result = pipe(
-                            video=init_frame,
+                            video=[init_frame],
                             prompt=prompt,
                             negative_prompt=negative_prompt,
+                            num_frames=args.num_frames,
+                            height=args.height,
+                            width=args.width,
+                            generator=sample_generator,
                             num_inference_steps=args.num_inference_steps,
                             guidance_scale=args.cfg_scale,
-                            generator=sample_generator,
-                            loss_fn="slice_pred",
+                            use_dynamic_cfg=True,
+                            fixed_frames=None,
                             guidance_step=zero_steps,
                             guidance_lr=zero_lrs,
-                            guidance_frequency=args.guidance_frequency,
-                            additional_inputs={
-                                "loss_mode": args.loss_mode,
-                            },
+                            loss_fn="slice_pred",
                             travel_time=(0, 0),
-                        )
-                    else:
-                        result = pipe(
-                            image=init_frame,
-                            prompt=prompt,
-                            negative_prompt=negative_prompt,
-                            num_inference_steps=args.num_inference_steps,
-                            guidance_scale=args.cfg_scale,
-                            generator=sample_generator,
-                            loss_fn="slice_pred",
-                            guidance_step=zero_steps,
-                            guidance_lr=zero_lrs,
-                            guidance_frequency=args.guidance_frequency,
                             additional_inputs={
                                 "loss_mode": getattr(args, 'loss_mode', 'mean'),
                             },
-                            travel_time=(0, 0),
                         )
-                candidate_frames.append(result.frames[0])
-                
-                # Compute V-JEPA loss for this candidate
-                if encoder is not None:
-                    # Convert frames to tensor for loss computation
-                    # frames is a list of PIL Images, convert to tensor
-                    frames_tensor = torch.stack([torch.from_numpy(np.array(frame)).permute(2, 0, 1) for frame in result.frames[0]])
-                    frames_tensor = frames_tensor.unsqueeze(0).float()  # Add batch dimension: [T, C, H, W] -> [1, T, C, H, W]
-                    frames_tensor = frames_tensor.permute(0, 2, 1, 3, 4)  # [1, T, C, H, W] -> [1, C, T, H, W]
+                    elif "Cosmos" in args.model_id:
+                        if "5frame" in args.batch_json:
+                            result = pipe(
+                                video=init_frame,
+                                prompt=prompt,
+                                negative_prompt=negative_prompt,
+                                num_inference_steps=args.num_inference_steps,
+                                guidance_scale=args.cfg_scale,
+                                generator=sample_generator,
+                                loss_fn="slice_pred",
+                                guidance_step=zero_steps,
+                                guidance_lr=zero_lrs,
+                                guidance_frequency=args.guidance_frequency,
+                                additional_inputs={
+                                    "loss_mode": args.loss_mode,
+                                },
+                                travel_time=(0, 0),
+                            )
+                        else:
+                            result = pipe(
+                                image=init_frame,
+                                prompt=prompt,
+                                negative_prompt=negative_prompt,
+                                num_inference_steps=args.num_inference_steps,
+                                guidance_scale=args.cfg_scale,
+                                generator=sample_generator,
+                                loss_fn="slice_pred",
+                                guidance_step=zero_steps,
+                                guidance_lr=zero_lrs,
+                                guidance_frequency=args.guidance_frequency,
+                                additional_inputs={
+                                    "loss_mode": getattr(args, 'loss_mode', 'mean'),
+                                },
+                                travel_time=(0, 0),
+                            )
                     
-                    # Normalize to [-1, 1] range (assuming frames are in [0, 255])
-                    frames_tensor = (frames_tensor / 127.5) - 1.0
+                    # Save candidate video in buffer folder
+                    candidate_path = os.path.join(buffer_rejection_folder, f"candidate_{sample_idx+1:02d}.mp4")
+                    export_to_video(result.frames[0], candidate_path, fps=args.fps)
+                    candidate_frames.append(result.frames[0])
                     
-                    with torch.no_grad():
-                        context_frames, stride, window_size = _resolve_sliding_window_params(args)
+                    # Compute V-JEPA loss for this candidate
+                    if encoder is not None:
+                        # Convert frames to tensor for loss computation
+                        frames_tensor = torch.stack([torch.from_numpy(np.array(frame)).permute(2, 0, 1) for frame in result.frames[0]])
+                        frames_tensor = frames_tensor.unsqueeze(0).float()  # Add batch dimension: [T, C, H, W] -> [1, T, C, H, W]
+                        frames_tensor = frames_tensor.permute(0, 2, 1, 3, 4)  # [1, T, C, H, W] -> [1, C, T, H, W]
                         
-                        loss = compute_vjepa_loss_sliding_window(
-                            video_tensor=frames_tensor,
-                            encoder=encoder,
-                            target_encoder=target_encoder,
-                            predictor=predictor,
-                            img_size=getattr(args, 'vjepa_img_size', 256),
-                            window_size=window_size,
-                            loss_exp=2,
-                            masking_mode=getattr(args, 'vjepa_masking_mode', 'causal'),
-                            context_frames=context_frames,
-                            mask_ratio=getattr(args, 'vjepa_mask_ratio', 0.75),
-                            spatial_pred_mask_scale=None,
-                            temporal_pred_mask_scale=None,
-                            aspect_ratio=None,
-                            npred=None,
-                            max_context_frames_ratio=None,
-                            is_vae_output=True,
-                            seed=42,
-                            stride=stride,
-                            mode=getattr(args, 'loss_mode', 'mean')
-                        )
-                        candidate_losses.append(loss.item())
-                        print(f"      Candidate {sample_idx + 1} V-JEPA loss: {loss.item():.6f}")
+                        # Normalize to [-1, 1] range (assuming frames are in [0, 255])
+                        frames_tensor = (frames_tensor / 127.5) - 1.0
+                        
+                        with torch.no_grad():
+                            context_frames, stride, window_size = _resolve_sliding_window_params(args)
+                            
+                            loss = compute_vjepa_loss_sliding_window(
+                                video_tensor=frames_tensor,
+                                encoder=encoder,
+                                target_encoder=target_encoder,
+                                predictor=predictor,
+                                img_size=getattr(args, 'vjepa_img_size', 256),
+                                window_size=window_size,
+                                loss_exp=2,
+                                masking_mode=getattr(args, 'vjepa_masking_mode', 'causal'),
+                                context_frames=context_frames,
+                                mask_ratio=getattr(args, 'vjepa_mask_ratio', 0.75),
+                                spatial_pred_mask_scale=None,
+                                temporal_pred_mask_scale=None,
+                                aspect_ratio=None,
+                                npred=None,
+                                max_context_frames_ratio=None,
+                                is_vae_output=True,
+                                seed=42,
+                                stride=stride,
+                                mode=getattr(args, 'loss_mode', 'mean')
+                            )
+                            candidate_losses.append(loss.item())
+                            print(f"      Candidate {sample_idx + 1} V-JEPA loss: {loss.item():.6f}")
+                            
+                            # Save loss to file in buffer folder
+                            loss_path = os.path.join(buffer_rejection_folder, f"candidate_{sample_idx+1:02d}_loss.txt")
+                            with open(loss_path, 'w') as f:
+                                f.write(f"{loss.item():.6f}")
 
+                    else:
+                        print(f"      Warning: V-JEPA models not loaded, using random selection")
+                        candidate_losses.append(sample_idx)  # Use index as dummy loss
+                        
+                        # Save dummy loss to file in buffer folder
+                        loss_path = os.path.join(buffer_rejection_folder, f"candidate_{sample_idx+1:02d}_loss.txt")
+                        with open(loss_path, 'w') as f:
+                            f.write(f"{sample_idx}")
+            
+            # Select best candidate based on lowest loss (consistent for all cases)
+            best_idx = np.argmin(candidate_losses)
+            frames = candidate_frames[best_idx]
+            best_loss = candidate_losses[best_idx]
+            print(f"    Selected candidate {best_idx + 1} with lowest V-JEPA loss: {best_loss:.6f}")
+            
+
+        elif args.sampling_method == 'rej_guide':
+            print(f"  Generating with rejection + guidance sampling ({args.rejection_samples} candidates)...")
+            
+            # Use centralized buffer folder only
+            base_experiment_folder = os.path.dirname(experiment_folder)
+            buffer_experiment_pattern = f"rejguide_{getattr(args, 'vjepa_variant', 'vit_giant')}_buffer"
+            buffer_experiment_folder = os.path.join(base_experiment_folder, buffer_experiment_pattern)
+            
+            # Define buffer subfolder for this prompt
+            if "physics" in args.batch_json:
+                buffer_rejection_folder = os.path.join(buffer_experiment_folder, f"{args.output_filename}_rejection")
+            else:
+                buffer_rejection_folder = os.path.join(buffer_experiment_folder, f"{safe_prompt}_rejection")
+            
+            print(f"Using buffer folder: {buffer_rejection_folder}")
+            
+            # Check for existing candidates in buffer
+            existing_candidates = []
+            if os.path.exists(buffer_rejection_folder):
+                print(f"    Found existing rejection buffer, checking for candidates...")
+                
+                # Load candidates from buffer (check more than needed in case some are missing)
+                for i in range(32):  # Check up to 32 candidates
+                    candidate_path = os.path.join(buffer_rejection_folder, f"candidate_{i+1:02d}.mp4")
+                    loss_path = os.path.join(buffer_rejection_folder, f"candidate_{i+1:02d}_loss.txt")
+                    if os.path.exists(candidate_path) and os.path.exists(loss_path):
+                        with open(loss_path, 'r') as f:
+                            loss = float(f.read().strip())
+                        existing_candidates.append((i+1, candidate_path, loss))
+            
+            if len(existing_candidates) >= args.rejection_samples:
+                print(f"    Found {len(existing_candidates)} existing candidates, sampling {args.rejection_samples} from buffer...")
+                
+                # Sample k candidates from the buffer (with or without replacement depending on buffer size)
+                if len(existing_candidates) == args.rejection_samples:
+                    # Use all available candidates
+                    candidates_to_use = existing_candidates
+                    print(f"      Using all {len(existing_candidates)} available candidates")
                 else:
-                    print(f"      Warning: V-JEPA models not loaded, using random selection")
-                    candidate_losses.append(sample_idx)  # Use index as dummy loss
+                    # Sample k candidates from the buffer
+                    candidate_indices = np.random.choice(len(existing_candidates), args.rejection_samples, replace=False)
+                    candidates_to_use = [existing_candidates[i] for i in candidate_indices]
+                    print(f"      Sampled {args.rejection_samples} candidates from {len(existing_candidates)} available")
+                
+                # Load the sampled candidates and their losses
+                candidate_frames = []
+                candidate_losses = []
+                for idx, candidate_path, loss in candidates_to_use:
+                    print(f"      Loading candidate {idx} with loss: {loss:.6f}")
+                    video_frames = load_video(candidate_path)
+                    candidate_frames.append(video_frames)
+                    candidate_losses.append(loss)
+            else:
+                print(f"    Found {len(existing_candidates)} existing candidates, generating {args.rejection_samples - len(existing_candidates)} more in buffer...")
+                
+                # Create buffer folder if it doesn't exist
+                os.makedirs(buffer_rejection_folder, exist_ok=True)
+                
+                candidate_frames = []
+                candidate_losses = []
+                
+                # Load existing candidates first
+                for idx, candidate_path, loss in existing_candidates:
+                    print(f"      Loading existing candidate {idx} with loss: {loss:.6f}")
+                    video_frames = load_video(candidate_path)
+                    candidate_frames.append(video_frames)
+                    candidate_losses.append(loss)
+                
+                # Generate missing candidates using guidance sampling in buffer folder
+                for sample_idx in range(len(existing_candidates), args.rejection_samples):
+                    print(f"    Generating guided candidate {sample_idx + 1}/{args.rejection_samples}...")
+                    
+                    # Create unique generator for each sample
+                    sample_generator = torch.Generator(device="cuda").manual_seed(42 + sample_idx)
+                    
+                    # Generate using guidance sampling
+                    guided_frames = guidance_sample(
+                        pipe=pipe,
+                        args=args,
+                        init_frame=init_frame,
+                        prompt=prompt,
+                        negative_prompt=negative_prompt,
+                        generator=sample_generator
+                    )
+                    
+                    # Save candidate video in buffer folder
+                    candidate_path = os.path.join(buffer_rejection_folder, f"candidate_{sample_idx+1:02d}.mp4")
+                    export_to_video(guided_frames, candidate_path, fps=args.fps)
+                    candidate_frames.append(guided_frames)
+                    
+                    # Compute V-JEPA loss for this candidate
+                    if encoder is not None:
+                        # Convert frames to tensor for loss computation
+                        frames_tensor = torch.stack([torch.from_numpy(np.array(frame)).permute(2, 0, 1) for frame in guided_frames])
+                        frames_tensor = frames_tensor.unsqueeze(0).float()  # Add batch dimension: [T, C, H, W] -> [1, T, C, H, W]
+                        frames_tensor = frames_tensor.permute(0, 2, 1, 3, 4)  # [1, T, C, H, W] -> [1, C, T, H, W]
+                        
+                        # Normalize to [-1, 1] range (assuming frames are in [0, 255])
+                        frames_tensor = (frames_tensor / 127.5) - 1.0
+                        
+                        with torch.no_grad():
+                            context_frames, stride, window_size = _resolve_sliding_window_params(args)
+                            
+                            loss = compute_vjepa_loss_sliding_window(
+                                video_tensor=frames_tensor,
+                                encoder=encoder,
+                                target_encoder=target_encoder,
+                                predictor=predictor,
+                                img_size=getattr(args, 'vjepa_img_size', 256),
+                                window_size=window_size,
+                                loss_exp=2,
+                                masking_mode=getattr(args, 'vjepa_masking_mode', 'causal'),
+                                context_frames=context_frames,
+                                mask_ratio=getattr(args, 'vjepa_mask_ratio', 0.75),
+                                spatial_pred_mask_scale=None,
+                                temporal_pred_mask_scale=None,
+                                aspect_ratio=None,
+                                npred=None,
+                                max_context_frames_ratio=None,
+                                is_vae_output=True,
+                                seed=42,
+                                stride=stride,
+                                mode=getattr(args, 'loss_mode', 'mean')
+                            )
+                            candidate_losses.append(loss.item())
+                            print(f"      Candidate {sample_idx + 1} V-JEPA loss: {loss.item():.6f}")
+                            
+                            # Save loss to file in buffer folder
+                            loss_path = os.path.join(buffer_rejection_folder, f"candidate_{sample_idx+1:02d}_loss.txt")
+                            with open(loss_path, 'w') as f:
+                                f.write(f"{loss.item():.6f}")
+                    else:
+                        print(f"      Warning: V-JEPA models not loaded, using random selection")
+                        candidate_losses.append(sample_idx)  # Use index as dummy loss
+                        
+                        # Save dummy loss to file in buffer folder
+                        loss_path = os.path.join(buffer_rejection_folder, f"candidate_{sample_idx+1:02d}_loss.txt")
+                        with open(loss_path, 'w') as f:
+                            f.write(f"{sample_idx}")
             
             # Select best candidate based on lowest loss
             best_idx = np.argmin(candidate_losses)
             frames = candidate_frames[best_idx]
             best_loss = candidate_losses[best_idx]
             print(f"    Selected candidate {best_idx + 1} with lowest V-JEPA loss: {best_loss:.6f}")
-        
+            
 
         # Export to video
         export_to_video(frames, video_path, fps=fps)
-        if args.sampling_method == 'rejection':
-            print(f"[{experiment_name}] Generated: {video_path} (selected from {args.rejection_samples} candidates)")
+        if args.sampling_method in ['rejection', 'rej_guide']:
+            method_name = "rejection + guidance" if args.sampling_method == 'rej_guide' else "rejection"
+            print(f"[{experiment_name}] Generated: {video_path} (selected from {args.rejection_samples} {method_name} candidates)")
         else:
             print(f"[{experiment_name}] Generated: {video_path}")
     
@@ -656,10 +917,13 @@ def main():
     parser.add_argument('--base_dir', type=str, default=None, help='Optional: Base directory to prepend to input/output paths in --batch_json.')
     parser.add_argument('--dataset_mode', type=str, default='auto', choices=['auto', 'dreambench', 'physics_iq'], 
                        help='Dataset mode: auto (detect from batch_json name), dreambench (relative paths), physics_iq (absolute paths)')
-    parser.add_argument('--num_gpus', type=int, default=1, help='Total number of GPUs available.')
-    parser.add_argument('--gpu_idx', type=int, default=0, help='Index of the GPU to use for this process.')
+    parser.add_argument('--num_gpus', type=int, default=1, help='Total number of GPUs available across all nodes.')
+    parser.add_argument('--gpu_idx', type=int, default=0, help='Global index of the GPU to use for this process (0 to num_gpus-1).')
+    parser.add_argument('--num_nodes', type=int, default=1, help='Total number of nodes available.')
+    parser.add_argument('--node_id', type=int, default=0, help='Index of the current node (0 to num_nodes-1).')
+    parser.add_argument('--gpus_per_node', type=int, default=8, help='Number of GPUs per node.')
     parser.add_argument('--sampling_method', type=str, default='vanilla', 
-                       choices=['vanilla', 'guidance', 'rejection'],
+                       choices=['vanilla', 'guidance', 'rejection', 'rej_guide'],
                        help='Sampling method to use.')
     parser.add_argument('--init_image', type=str, default=None, help='Path to the initial image for I2V conditioning.')
     parser.add_argument('--init_video', type=str, default=None, help='Path to the initial video for I2V conditioning (first frame used).')
@@ -718,7 +982,7 @@ def main():
             raise ValueError("Provide either --init_image or --init_video for I2V conditioning")
 
     # Validate V-JEPA parameters for guidance and rejection sampling
-    if args.sampling_method in ['guidance', 'rejection']:
+    if args.sampling_method in ['guidance', 'rejection', 'rej_guide']:
         if args.vjepa_context_frames >= 16:
             raise ValueError(f"vjepa_context_frames ({args.vjepa_context_frames}) must be less than 16 (torch V-JEPA frames_per_clip)")
         if 16 > args.num_frames:
@@ -760,7 +1024,10 @@ def main():
     if not args.batch_json:
         print(f"Prompts assigned to this GPU: {len(chunked_prompts)}")
     else:
-        print(f"Running in batch_json mode. Sharding entries by index modulo {args.num_gpus} (this worker idx={args.gpu_idx}).")
+        print(f"Running in batch_json mode. Multi-node setup:")
+        print(f"  - Node {args.node_id + 1}/{args.num_nodes}")
+        print(f"  - Local GPU {args.gpu_idx % args.gpus_per_node}, Global GPU {args.gpu_idx + 1}/{args.num_gpus}")
+        print(f"  - Sharding entries by global GPU index {args.gpu_idx}")
     
     if args.sampling_method == 'guidance':
         print(f"Guidance parameters:")
@@ -774,13 +1041,24 @@ def main():
         print(f"  - Number of samples: {args.rejection_samples}")
         print(f"  - Using existing V-JEPA parameters for evaluation")
     
+    if args.sampling_method == 'rej_guide':
+        print(f"Rejection + Guidance sampling enabled:")
+        print(f"  - Number of samples: {args.rejection_samples}")
+        print(f"  - Step pattern: {args.guidance_step_pattern}")
+        print(f"  - LR pattern: {args.guidance_lr_pattern}")
+        print(f"  - Frequency: {args.guidance_frequency}")
+        print(f"  - Travel time: {args.travel_time}")
+        print(f"  - Using V-JEPA parameters for evaluation")
+    
     print(f"{'='*60}\n")
 
     # Initialize pipeline once per process
     pipe = init_pipeline(args)
+    # pipe = None
     
     # Initialize V-JEPA models for rejection sampling if enabled
     vjepa_models = init_vjepa_models(args)
+    # vjepa_models = None
 
     if not args.batch_json:
         # Single or multi-prompt mode using provided init image/video
@@ -843,11 +1121,16 @@ def main():
             args.init_image = input_image_abs
             args.init_video = input_video_abs
 
+            # print("init_image", args.init_image)
+            # print("init_video", args.init_video)
+            # print("init_frame", init_frame)
+            # import pdb; pdb.set_trace()
+
             print(f"[GPU {args.gpu_idx}] {os.path.basename(output_video_abs)}")
             generate_videos(pipe, args, init_frame, per_item_prompts, negative_prompt, experiment_name, fps=args.fps, vjepa_models=vjepa_models)
             processed_count += 1
 
-        print(f"Processed {processed_count} entries on GPU index {args.gpu_idx}.")
+        print(f"Node {args.node_id} processed {processed_count} entries on global GPU index {args.gpu_idx}.")
 
 if __name__ == "__main__":
     main()

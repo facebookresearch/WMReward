@@ -1,2 +1,0 @@
-nohup: ignoring input
-bash: example/24B/run_physicsiq_multiframe.sh: No such file or directory
