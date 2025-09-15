@@ -42,12 +42,8 @@ from diffusers.pipelines.cogvideo.pipeline_cogvideox import CogVideoXPipelineOut
 
 import torch.nn.functional as F
 from PIL import Image
-import sys
 
-from utils import load_vjepa_models_torchhub, load_vjepa_model_source, generate_vjepa_masks
-
-sys.path.append("/home/yjianhao/project/vjepa2")
-from src.masks.utils import apply_masks
+from utils import load_vjepa_models_torchhub, load_vjepa_model_source, generate_vjepa_masks, apply_masks
 from torchvision.transforms import InterpolationMode
 
 if is_torch_xla_available():
@@ -1152,7 +1148,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
                         print("grad_norm", grad_norm.item())
                         print("latents", latents.norm(2).item())
-                        # import pdb; pdb.set_trace()
+
 
 
 
@@ -1208,7 +1204,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                             bars = ''.join('█' * max(1, int(width * float(p))) for p in p_t[b].tolist())
                             print(f"          p_t bars (T={T}): {bars}")
 
-                        log_grad_spread(grad, (noise_pred_text - noise_pred_uncond), step_i=i, sample_idx=0, topk=5)
+                        # log_grad_spread(grad, (noise_pred_text - noise_pred_uncond), step_i=i, sample_idx=0, topk=5)
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
                             # print("Time travel!")

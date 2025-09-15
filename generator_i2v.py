@@ -208,13 +208,11 @@ def load_first_frame(image_path: str | None, video_path: str | None) -> Image.Im
 def init_pipeline(args):
     """Initialize the CogVideoX I2V pipeline with V-JEPA slice-pred support."""
     if "CogVideoX" in args.model_id:
-        from pipelines.pipeline_cogvideox_image2video_vjepa import CogVideoXImageToVideoPipeline
+        from pipelines.pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
         pipe = CogVideoXImageToVideoPipeline.from_pretrained(args.model_id, torch_dtype=torch.float16).to("cuda")
         pipe.vae.enable_tiling(); pipe.vae.enable_slicing(); pipe.vae.enable_gradient_checkpointing()
     elif "Cosmos" in args.model_id:
-        # from pipelines.pipeline_cosmos_image2video_v1 import Cosmos2VideoToWorldPipeline
-        # from pipelines.pipeline_cosmos_image2video_14b import Cosmos2VideoToWorldPipeline
-        from pipelines.pipeline_cosmos_image2video_v2 import Cosmos2VideoToWorldPipeline
+        from pipelines.pipeline_cosmos_image2video import Cosmos2VideoToWorldPipeline
         pipe = Cosmos2VideoToWorldPipeline.from_pretrained(args.model_id, torch_dtype=torch.bfloat16).to("cuda")
         pipe = pipe.to("cuda")
         pipe.transformer.enable_gradient_checkpointing()
@@ -844,11 +842,6 @@ def main():
             
             args.init_image = input_image_abs
             args.init_video = input_video_abs
-
-            # print("init_image", args.init_image)
-            # print("init_video", args.init_video)
-            # print("init_frame", init_frame)
-            # import pdb; pdb.set_trace()
 
             print(f"[GPU {args.gpu_idx}] {os.path.basename(output_video_abs)}")
             generate_videos(pipe, args, init_frame, per_item_prompts, negative_prompt, experiment_name, fps=args.fps, vjepa_models=vjepa_models)

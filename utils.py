@@ -13,13 +13,12 @@ from PIL import Image
 from einops import rearrange
 
 # Add V-JEPA path
-sys.path.append("./vjepa2")
-import src.datasets.utils.video.transforms as video_transforms
-import src.datasets.utils.video.volume_transforms as volume_transforms
-from src.models.vision_transformer import vit_giant_xformers_rope, vit_huge_rope
-from src.models.predictor import vit_predictor
-from src.models.ac_predictor import vit_ac_predictor
-from src.masks.utils import apply_masks
+import vjepa2.src.datasets.utils.video.transforms as video_transforms
+import vjepa2.src.datasets.utils.video.volume_transforms as volume_transforms
+from vjepa2.src.models.vision_transformer import vit_giant_xformers_rope, vit_huge_rope
+from vjepa2.src.models.predictor import vit_predictor
+from vjepa2.src.models.ac_predictor import vit_ac_predictor
+from vjepa2.src.masks.utils import apply_masks
 
 IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
@@ -28,8 +27,8 @@ def set_deterministic(seed=42):
     """Set deterministic behavior for reproducible results."""
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
-    # torch.backends.cudnn.deterministic = True
-    # torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
     np.random.seed(seed)
 
 def _clean_backbone_key(state_dict):

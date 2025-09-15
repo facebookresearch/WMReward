@@ -45,11 +45,7 @@ except Exception:
     gpustat = None
 
 import sys
-# sys.path.append("/home/yjianhao/project")
-# from video_guidance.compute_vjepa_loss_new import generate_vjepa_masks
-from utils import generate_vjepa_masks
-sys.path.append("/home/yjianhao/project/vjepa2")
-from src.masks.utils import apply_masks
+from utils import generate_vjepa_masks, apply_masks
 
 if is_cosmos_guardrail_available():
     from cosmos_guardrail import CosmosSafetyChecker
