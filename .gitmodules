@@ -1,0 +1,3 @@
+[submodule "vjepa2"]
+	path = vjepa2
+	url = https://github.com/facebookresearch/vjepa2.git
