@@ -10,10 +10,8 @@ Supports both CogVideoX and NVIDIA Cosmos I2V checkpoints via customized pipelin
 
 ### Setup
 ```bash
+git clone https://github.com/fairinternal/video_guidance.git
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-```
-- Install Python deps:
-```bash
 pip install -r requirements.txt
 ```
 
