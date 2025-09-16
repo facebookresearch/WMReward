@@ -35,7 +35,7 @@ TRIPLETS=(
 
 # Guidance step/lr patterns and frequency (match run_vjepa_slicepred.py defaults)
 GUIDANCE_STEP_PATTERN="0x3,1x47"
-GUIDANCE_LR_PATTERN="0.002x35"
+GUIDANCE_LR_PATTERN="0.003x35"
 GUIDANCE_FREQUENCY=1
 
 # CFG scale values for classifier-free guidance ablation

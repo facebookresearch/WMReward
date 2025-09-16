@@ -12,6 +12,8 @@ Supports both CogVideoX and NVIDIA Cosmos I2V checkpoints via customized pipelin
 1. pull the repo
 ```bash
 git clone https://github.com/fairinternal/video_guidance.git
+cd ./vejap2
+git clone https://github.com/facebookresearch/vjepa2.git
 ```
 2. (Optional) Activate conda env locally to debug
 ```bash

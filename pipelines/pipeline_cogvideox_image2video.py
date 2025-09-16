@@ -1113,7 +1113,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         latents.grad = None  # Clear the gradients
 
                         # Apply gradient clipping
-                        scaling = (latents.norm(2) / grad.norm(2) + 1e-8)
+                        scaling = (latents.norm(2) / (grad.norm(2) + 1e-8))
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
                             with torch.no_grad():
