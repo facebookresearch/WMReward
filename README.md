@@ -50,6 +50,6 @@ sbatch generation/generate_i2v_cosmos_rejection_multinode.sh
 ```
 - Key Hyperparameters inside batch generation:
 ```bash
-- SBATCH --array=0-2 (line5) and NUM_NODES=3 (line21) --> these control how many node to use, the script will distribute the generation as (198 // NUM_NODE * 8)   
+- SBATCH --array=0-2 (line5) and NUM_NODES=3 (line21) --> these control how many node to use, the script will distribute the generation as 198 // (NUM_NODE * 8)   
 - SAMPLE_METHODS=("vanilla") --> control what sampling nethod to use
 ```
