@@ -169,7 +169,6 @@ result = pipe(
     num_inference_steps=steps,
     guidance_scale=args.guidance_scale,
     generator=torch.Generator(device="cuda").manual_seed(args.seed),
-    loss_fn="slice_pred",
     guidance_step=guidance_step,
     guidance_lr=guidance_lr,
     guidance_frequency=args.guidance_frequency,

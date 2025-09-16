@@ -58,8 +58,8 @@ BATCH_JSON_LIST=(
     # Physics-IQ dataset 
     "./physics_iq.json"
 )
-BASEDIR=""
-OUTPUT_FOLDER="./generated_videos"
+BASEDIR="/checkpoint/dream/yjianhao/PhysicsIQ/code"
+OUTPUT_FOLDER="/checkpoint/dream/yjianhao/generated_videos"
 SAMPLE_METHODS=("rejection")
 # SAMPLE_METHODS=("guidance" "vanilla" "rejection" "rej_guide")
 NUM_SAMPLING_STEPS="50"

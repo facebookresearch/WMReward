@@ -718,32 +718,34 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         guidance_lr = guidance_lr[-num_inference_steps:]
         guidance_step = guidance_step[-num_inference_steps:]
         guidance_frequency = max(1, int(guidance_frequency))
+        save_intermediate = False
 
-        vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
-        vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
-        desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
+        if additional_inputs is not None:
+            vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
+            vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
+            desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
 
-        if not hasattr(self, "vjepa_encoder") or not hasattr(self, "vjepa_predictor") or not hasattr(self, "vjepa_target_encoder"):
-            load_from = (additional_inputs or {}).get("vjepa_load_from", "hub")
-            if load_from == "source":
-                enc, tgt_enc, pred, _auto_img_size = load_vjepa_model_source(vjepa_variant)
-            else:
-                enc, tgt_enc, pred, _auto_img_size = load_vjepa_models_torchhub(vjepa_variant)
-            self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
-            self.vjepa_target_encoder = tgt_enc.to(self._execution_device, dtype=desired_dtype).eval()
-            self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
-            self.vjepa_resize = T.Resize((_auto_img_size, _auto_img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
-            self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
-            self._vjepa_config = {"variant": vjepa_variant, "img_size": _auto_img_size, "dtype": vjepa_dtype_str}
+            if not hasattr(self, "vjepa_encoder") or not hasattr(self, "vjepa_predictor") or not hasattr(self, "vjepa_target_encoder"):
+                load_from = (additional_inputs or {}).get("vjepa_load_from", "hub")
+                if load_from == "source":
+                    enc, tgt_enc, pred, _auto_img_size = load_vjepa_model_source(vjepa_variant)
+                else:
+                    enc, tgt_enc, pred, _auto_img_size = load_vjepa_models_torchhub(vjepa_variant)
+                self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
+                self.vjepa_target_encoder = tgt_enc.to(self._execution_device, dtype=desired_dtype).eval()
+                self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
+                self.vjepa_resize = T.Resize((_auto_img_size, _auto_img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
+                self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+                self._vjepa_config = {"variant": vjepa_variant, "img_size": _auto_img_size, "dtype": vjepa_dtype_str}
 
-        masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
-        context_frames: int = int(additional_inputs.get("vjepa_context_frames", 8))
-        slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
-        slice_stride: int = int(additional_inputs.get("slice_stride", 2))
+            masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
+            context_frames: int = int(additional_inputs.get("vjepa_context_frames", 8))
+            slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
+            slice_stride: int = int(additional_inputs.get("slice_stride", 2))
 
-        # Optional: save intermediate decoded videos for visualization
-        save_intermediate = additional_inputs.get("save_intermediate", True) if additional_inputs else True
-        save_dir = None
+            # Optional: save intermediate decoded videos for visualization
+            save_intermediate = additional_inputs.get("save_intermediate", True) if additional_inputs else True
+            save_dir = None
 
         if save_intermediate:
             save_dir = additional_inputs.get("intermediate_save_dir", None) if additional_inputs else None
@@ -1016,11 +1018,6 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                         print("DLO!")
                         with torch.no_grad():
                             log_grad_spread(grad, (noise_pred_cond - noise_pred_uncond), step_i=i, sample_idx=0, topk=5)
-                            # latents = latents - guidance_lr[i] * rho * grad
-                            # print('effective guidance_lr', guidance_lr[i] * latents.norm(2)
-
-
-                            # grad_xt = t * grad                      # map to x_t space
                             eps = 1e-8
                             scale = guidance_lr[i] * (latents.norm(2) / (grad.norm(2) + eps))
                             # scale = (guidance_lr[i]) * (1/ (grad.norm(2)))

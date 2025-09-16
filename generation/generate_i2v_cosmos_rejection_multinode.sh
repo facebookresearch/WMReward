@@ -2,7 +2,7 @@
 
 # SLURM job array configuration for multi-node execution
 #SBATCH --job-name=rej2b_pi_multi
-#SBATCH --array=0-4                    # 1 nodes (0)
+#SBATCH --array=0-3                    # 1 nodes (0)
 #SBATCH --nodes=1                      # Each job uses 1 node
 #SBATCH --qos=dream_high
 #SBATCH --ntasks-per-node=1           # 1 task per node
@@ -18,10 +18,11 @@ conda activate vg
 nvidia-smi
 
 # Multi-node configuration
-NUM_NODES=5                       # Total number of nodes
+NUM_NODES=4                       # Total number of nodes
 NUM_GPUS_PER_NODE=8                   # GPUs per node
 TOTAL_GPUS=$((NUM_NODES * NUM_GPUS_PER_NODE))  # 64 total GPUs
 NODE_ID=${SLURM_ARRAY_TASK_ID}        # Current node ID (0-7)
+# NODE_ID=0        # Current node ID (0-7)
 
 echo "Starting node ${NODE_ID} of ${NUM_NODES} (GPUs per node: ${NUM_GPUS_PER_NODE}, Total GPUs: ${TOTAL_GPUS})"
 
@@ -57,10 +58,10 @@ MODEL_NAMES=("nvidia/Cosmos-Predict2-2B-Video2World")
 BATCH_JSON_LIST=(
 
     # Physics-IQ dataset 
-    "./physics_iq.json"
+    "./prompts/physics_iq.json"
 )
-BASEDIR=""
-OUTPUT_FOLDER="./generated_videos"
+BASEDIR="/checkpoint/dream/yjianhao/PhysicsIQ/code"
+OUTPUT_FOLDER="/checkpoint/dream/yjianhao/generated_videos"
 SAMPLE_METHODS=("rejection")
 # SAMPLE_METHODS=("guidance" "vanilla" "rejection" "rej_guide")
 NUM_SAMPLING_STEPS="50"

@@ -56,8 +56,8 @@ BATCH_JSON_LIST=(
     "./prompts/physics_iq.json"
     # "./prompts/physics_iq_5frame.json"
 )
-BASEDIR=""
-OUTPUT_FOLDER="/checkpoint/yjianhao/generated_videos"
+BASEDIR="/checkpoint/dream/yjianhao/PhysicsIQ/code"
+OUTPUT_FOLDER="/checkpoint/dream/yjianhao/generated_videos"
 SAMPLE_METHODS=("vanilla")
 # SAMPLE_METHODS=("guidance")
 NUM_SAMPLING_STEPS="35"
