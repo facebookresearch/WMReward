@@ -98,7 +98,6 @@ def main():
         guidance_step=guidance_step,
         guidance_lr=guidance_lr,
         guidance_frequency=args.guidance_frequency,
-        loss_fn="slice_pred",
         additional_inputs={
             "vjepa_variant": args.vjepa_variant,
             "vjepa_img_size": args.vjepa_img_size,
