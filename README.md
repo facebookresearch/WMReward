@@ -26,7 +26,7 @@ pip install diffusers transformers
 pip install -r requirements.txt
 ```
 
-### Quick start (single prompt)
+### Quick start (single prompt for debug)
 Use these script entrypoints for quick local runs.
 
 - CogVideoX:
@@ -40,11 +40,11 @@ python run_i2v_cosmos.py
 ```
 
 ### Batch mode - PhysicsIQ generation
-- SLURM multi-node (guidance):
+- SLURM multi-node (guidance and vanilla sampling example):
 ```bash
-sbatch generate_i2v_cosmos_multinode.sh
+sbatch generation/generate_i2v_cosmos_multinode.sh
 ```
-- SLURM multi-node (rejection, with rejection buffer reuse this will save all rejection samples for later analysis):
+- SLURM multi-node (rejection, with rejection buffer reuse this will save all rejection samples for later analysis, example):
 ```bash
-sbatch generate_i2v_cosmos_rejection_multinode.sh
+sbatch generation/generate_i2v_cosmos_rejection_multinode.sh
 ```
