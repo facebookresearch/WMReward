@@ -44,8 +44,7 @@ try:
 except Exception:
     gpustat = None
 
-from utils import generate_vjepa_masks, log_grad_spread
-from vjepa2.src.masks.utils import apply_masks
+from utils import generate_vjepa_masks, log_grad_spread, apply_masks, load_vjepa_models_torchhub, load_vjepa_model_source
 
 if is_cosmos_guardrail_available():
     from cosmos_guardrail import CosmosSafetyChecker
@@ -248,15 +247,6 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                 sigma_data=self.sigma_data,
                 final_sigmas_type=self.final_sigmas_type,
             )
-
-
-        # self.vjepa_processor = AutoVideoProcessor.from_pretrained("facebook/vjepa2-vith-fpc64-256")
-        # self.vjepa_model = AutoModel.from_pretrained(
-        #     "facebook/vjepa2-vith-fpc64-256",
-        #     torch_dtype=torch.float16,
-        #     device_map="auto",
-        #     attn_implementation="sdpa"
-        # )
 
     # Copied from diffusers.pipelines.cosmos.pipeline_cosmos_text2world.CosmosTextToWorldPipeline._get_t5_prompt_embeds
     def _get_t5_prompt_embeds(
@@ -543,7 +533,6 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         guidance_step: Union[List[int], int] = 0,
         guidance_lr: Union[float, List[float]] = 1e-2,
         guidance_frequency: int = 1,
-        loss_fn: str = "slice_pred",
         additional_inputs: Optional[Dict[str, Any]] = None,
         travel_time: Tuple[int, int] = (0, 50),
     ):
@@ -730,39 +719,27 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
         guidance_step = guidance_step[-num_inference_steps:]
         guidance_frequency = max(1, int(guidance_frequency))
 
-        if loss_fn not in ("slice_pred", None, "none"):
-            raise ValueError("Only 'slice_pred' is supported")
+        vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
+        vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
+        desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
 
-        if (additional_inputs is not None) and (loss_fn == "slice_pred"):
-            if not hasattr(self, "vjepa_encoder") or not hasattr(self, "vjepa_predictor") or not hasattr(self, "vjepa_target_encoder"):
-                vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
-                img_size: int = int(additional_inputs.get("vjepa_img_size", 256 if vjepa_variant != "vit_giant_384" else 384))
-                hub_fn_map = {
-                    "vit_large": "vjepa2_vit_large",
-                    "vit_huge": "vjepa2_vit_huge",
-                    "vit_giant": "vjepa2_vit_giant",
-                    "vit_giant_384": "vjepa2_vit_giant_384",
-                }
-                hub_fn_name = hub_fn_map.get(vjepa_variant, "vjepa2_vit_giant")
-                enc, pred = torch.hub.load("facebookresearch/vjepa2", hub_fn_name)
-                vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
-                desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
-                self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
-                self.vjepa_target_encoder = copy.deepcopy(self.vjepa_encoder).eval()
-                self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
-                # Freeze VJEPA module weights to avoid computing parameter grads while
-                # still allowing gradients to flow w.r.t. inputs (the decoded frames)
-                for m in (self.vjepa_encoder, self.vjepa_target_encoder, self.vjepa_predictor):
-                    for p in m.parameters():
-                        p.requires_grad_(False)
-                self.vjepa_resize = T.Resize((img_size, img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
-                self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+        if not hasattr(self, "vjepa_encoder") or not hasattr(self, "vjepa_predictor") or not hasattr(self, "vjepa_target_encoder"):
+            load_from = (additional_inputs or {}).get("vjepa_load_from", "hub")
+            if load_from == "source":
+                enc, tgt_enc, pred, _auto_img_size = load_vjepa_model_source(vjepa_variant)
+            else:
+                enc, tgt_enc, pred, _auto_img_size = load_vjepa_models_torchhub(vjepa_variant)
+            self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
+            self.vjepa_target_encoder = tgt_enc.to(self._execution_device, dtype=desired_dtype).eval()
+            self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
+            self.vjepa_resize = T.Resize((_auto_img_size, _auto_img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
+            self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+            self._vjepa_config = {"variant": vjepa_variant, "img_size": _auto_img_size, "dtype": vjepa_dtype_str}
 
-            masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
-            context_frames: int = int(additional_inputs.get("vjepa_context_frames", 15))
-            mask_ratio: float = float(additional_inputs.get("vjepa_mask_ratio", 0.75))
-            slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
-            slice_stride: int = int(additional_inputs.get("slice_stride", 2))
+        masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
+        context_frames: int = int(additional_inputs.get("vjepa_context_frames", 8))
+        slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
+        slice_stride: int = int(additional_inputs.get("slice_stride", 2))
 
         # Optional: save intermediate decoded videos for visualization
         save_intermediate = additional_inputs.get("save_intermediate", True) if additional_inputs else True
@@ -817,8 +794,7 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
 
                 # Determine if we are in the guidance range
                 in_guidance_range = (
-                    (loss_fn == "slice_pred")
-                    and (additional_inputs is not None)
+                    (additional_inputs is not None)
                     and (guidance_step[i] != 0)
                     and ((i % max(1, int(guidance_frequency))) == 0)
                 )
@@ -851,16 +827,8 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
 
 
                         # Predicted clean from conditional path (keep full grad path to latents)
-                        # print("model_out_cond", model_out_cond.requires_grad)
-                        # print("latents", latents.requires_grad)
-                        # print("c_skip", c_skip.requires_grad, type(c_skip))
-                        # print("c_out", c_out.requires_grad, type(c_out))
                         pure_cond = (c_skip * latents + c_out * model_out_cond.float()).to(transformer_dtype)
-                        # pure_cond = (c_skip * latents + c_out * model_out_cond)
-                        # print("pure_cond", pure_cond.requires_grad)
-                        # Blended version only for denoising/scheduler
                         noise_pred_cond = cond_indicator * conditioning_latents + (1 - cond_indicator) * pure_cond
-                        # print("noise_pred_cond1111", noise_pred_cond.requires_grad)
 
                     if self.do_classifier_free_guidance:
                         with ctx:
@@ -991,7 +959,6 @@ class Cosmos2VideoToWorldPipeline(DiffusionPipeline):
                                         frames_per_clip=Tchunk,
                                         encoder=self.vjepa_encoder,
                                         context_frames=context_frames,
-                                        mask_ratio=mask_ratio,
                                         device=device_sw,
                                     )
 

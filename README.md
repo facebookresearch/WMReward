@@ -8,10 +8,21 @@ Minimal tooling to run image-to-video (I2V) generation with three modes:
 
 Supports both CogVideoX and NVIDIA Cosmos I2V checkpoints via customized pipelines in `pipelines/`.
 
-### Setup
+
+### Setup Internal
+The Conda environment can be accessed through 
+```bash
+source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
+conda activate vg
+```
+
+### Setup External
 ```bash
 git clone https://github.com/fairinternal/video_guidance.git
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
+conda create -n reproduce python=3.12
+pip install torch torchvision
+pip install diffusers transformers
 pip install -r requirements.txt
 ```
 
@@ -20,15 +31,15 @@ Use these script entrypoints for quick local runs.
 
 - CogVideoX:
 ```bash
-python ./run_i2v_cogvideox.py
+python run_i2v_cogvideox.py
 ```
 
 - Cosmos:
 ```bash
-python ./run_i2v_cosmos.py
+python run_i2v_cosmos.py
 ```
 
-### Batch mode (JSON) 
+### Batch mode - PhysicsIQ generation
 - SLURM multi-node (guidance):
 ```bash
 sbatch generate_i2v_cosmos_multinode.sh

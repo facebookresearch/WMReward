@@ -13,7 +13,7 @@
 #SBATCH --output=jobs/rej_guide_node_%A_%a.out
 #SBATCH --error=jobs/rej_guide_node_%A_%a.err
 
-source /home/yjianhao/miniconda3/bin/activate
+source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
 conda activate vg
 nvidia-smi
 
@@ -34,18 +34,13 @@ TRIPLETS=(
 )
 
 # Guidance step/lr patterns and frequency (match run_vjepa_slicepred.py defaults)
-GUIDANCE_STEP_PATTERN="0x3,3x12,2x12,1x23"
-GUIDANCE_LR_PATTERN="3.0x15,2.0x15,1.0x20"
+GUIDANCE_STEP_PATTERN="0x3,1x47"
+GUIDANCE_LR_PATTERN="0.002x35"
 GUIDANCE_FREQUENCY=1
 
 # CFG scale values for classifier-free guidance ablation
 CFG_SCALES=(
-    # "1.0"
-    # "2.0"
-    # "3.0"
-    "7.0"
-    # "7.5"
-    # "10.0"
+    "6.0"
 )
 
 # Guidance range values for range ablation (format: "start end") in GLOBAL steps [0..49]
@@ -59,16 +54,12 @@ MODEL_NAMES=("nvidia/Cosmos-Predict2-2B-Video2World")
 # JSON batch describing entries with input image/video, prompt, and output path
 # Add or remove batch JSON files as needed
 BATCH_JSON_LIST=(
-    # DreamBench datasets
-    # "/home/yjianhao/project/cosmos-predict2/dream_gen_benchmark/gr1_object/batch_input.json"
-    # "/home/yjianhao/project/cosmos-predict2/dream_gen_benchmark/gr1_env/batch_input.json"
-    # "/home/yjianhao/project/cosmos-predict2/dream_gen_benchmark/gr1_behavior/batch_input.json"
-    
+
     # Physics-IQ dataset 
     "./physics_iq.json"
 )
-BASEDIR="/home/yjianhao/project/cosmos-predict2"
-OUTPUT_FOLDER="/home/yjianhao/project/frame-guidance/generated_videos"
+BASEDIR=""
+OUTPUT_FOLDER="./generated_videos"
 SAMPLE_METHODS=("rejection")
 # SAMPLE_METHODS=("guidance" "vanilla" "rejection" "rej_guide")
 NUM_SAMPLING_STEPS="50"
@@ -85,8 +76,6 @@ REJECTION_SAMPLES=(
 VJEPA_VARIANT="vit_huge"
 VJEPA_IMG_SIZE=256
 VJEPA_MASKING_MODE="causal"
-VJEPA_MASK_RATIO=0.75
-STYLE_WEIGHT=1.0
 LOSS_MODES=("max")  # Loss aggregation modes for rejection sampling
 
 # Ablation parameters for rejection sampling experiments:
@@ -155,7 +144,7 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                             # Calculate global GPU index across all nodes
                             GLOBAL_GPU_IDX=$((NODE_ID * NUM_GPUS_PER_NODE + g))
                             echo "  -> Launching worker on Node $NODE_ID, Local GPU $g (Global GPU $GLOBAL_GPU_IDX)"
-                            CUDA_VISIBLE_DEVICES=$g python generate_i2v_rejection.py \
+                            CUDA_VISIBLE_DEVICES=$g python generator_i2v_rejection.py \
                                 --model_id "$MODEL_NAME" \
                                 --output_folder "$MODEL_OUTPUT_FOLDER" \
                                 --batch_json "$BATCH_JSON" \
@@ -167,15 +156,13 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                                 --gpus_per_node $NUM_GPUS_PER_NODE \
                                 --sampling_method "$SAMPLE_METHOD" \
                                 --num_inference_steps $NUM_SAMPLING_STEPS \
-                                --num_frames 93 \
-                                --height 704 \
-                                --width 1280 \
+                                --num_frames 49 \
+                                --height 480 \
+                                --width 720 \
                                 --cfg_scale $CFG_SCALE \
                                 --vjepa_variant $VJEPA_VARIANT \
                                 --vjepa_img_size $VJEPA_IMG_SIZE \
                                 --vjepa_masking_mode $VJEPA_MASKING_MODE \
-                                --vjepa_mask_ratio $VJEPA_MASK_RATIO \
-                                --style_weight $STYLE_WEIGHT \
                                 --vjepa_context_frames $CONTEXT_LENGTH \
                                 --slice_stride $STRIDE \
                                 --slice_window_size $SLICE_WINDOW_SIZE \

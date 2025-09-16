@@ -214,19 +214,6 @@ def find_existing_video_for_prompt(experiment_folder: str, prompt: str) -> str |
         return None
     return None
 
-def get_prompts(prompt_file, args):
-    """Read prompts and negative prompts from a text file."""
-    with open(f"./prompts/{prompt_file}.txt", 'r') as file:
-        prompts = [line.strip() for line in file if line.strip()]
-    
-    # Define a negative prompt suitable for CogVideoX
-    if "CogVideoX" in args.model_id:
-        negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
-    elif "Cosmos" in args.model_id:
-        negative_prompt = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
-    
-    return prompts, negative_prompt
-
 def load_first_frame(image_path: str | None, video_path: str | None) -> Image.Image:
     if image_path:
         return Image.open(image_path).convert("RGB")
@@ -321,7 +308,6 @@ def guidance_sample(pipe, args, init_frame, prompt, negative_prompt, generator=N
             guidance_step=guidance_step,
             guidance_lr=guidance_lr,
             guidance_frequency=args.guidance_frequency,
-            loss_fn="slice_pred",
             additional_inputs={
                 "vjepa_variant": getattr(args, 'vjepa_variant', "vit_giant"),
                 "vjepa_img_size": int(getattr(args, 'vjepa_img_size', 256)),
@@ -356,7 +342,6 @@ def guidance_sample(pipe, args, init_frame, prompt, negative_prompt, generator=N
                 num_inference_steps=steps,
                 guidance_scale=args.cfg_scale,
                 generator=generator,
-                loss_fn="slice_pred",
                 guidance_step=guidance_step,
                 guidance_lr=guidance_lr,
                 guidance_frequency=args.guidance_frequency,
@@ -373,7 +358,6 @@ def guidance_sample(pipe, args, init_frame, prompt, negative_prompt, generator=N
                 num_inference_steps=steps,
                 guidance_scale=args.cfg_scale,
                 generator=generator,
-                loss_fn="slice_pred",
                 guidance_step=guidance_step,
                 guidance_lr=guidance_lr,
                 guidance_frequency=args.guidance_frequency,
@@ -402,7 +386,6 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
     # Save metadata in experiment folder
     save_experiment_metadata(args, experiment_name, experiment_folder)
 
-    # generator = torch.Generator(device="cuda").manual_seed(42)
     
     # Unpack V-JEPA models for rejection sampling
     encoder, target_encoder, predictor = vjepa_models if vjepa_models else (None, None, None)
@@ -421,8 +404,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
         else:
             # Match t2v naming: "<prompt>.mp4"
             video_path = os.path.join(experiment_folder, f"{safe_prompt}.mp4")
-        print(video_path)
-        print(os.path.exists(video_path))
+
         if os.path.exists(video_path):
             print(f"Video already exists, skipping: {video_path}")
             continue
@@ -436,7 +418,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
 
         # Generate frames
         if args.sampling_method == 'vanilla':
-            generator = torch.Generator(device="cuda").manual_seed(42)
+            generator = torch.Generator(device="cuda").manual_seed(args.seed)
             # Use I2V pipeline in a no-guidance mode by passing zero repeats
             zero_steps = [0] * int(args.num_inference_steps)
             zero_lrs = [0.0] * int(args.num_inference_steps)
@@ -455,7 +437,6 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                     fixed_frames=None,
                     guidance_step=zero_steps,
                     guidance_lr=zero_lrs,
-                    loss_fn="slice_pred",
                     travel_time=(0, 0),
                     additional_inputs={
                         "loss_mode": args.loss_mode,
@@ -470,7 +451,6 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                         num_inference_steps=args.num_inference_steps,
                         guidance_scale=args.cfg_scale,
                         generator=generator,
-                        loss_fn="slice_pred",
                         guidance_step=zero_steps,
                         guidance_lr=zero_lrs,
                         guidance_frequency=args.guidance_frequency,
@@ -487,7 +467,6 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                         num_inference_steps=args.num_inference_steps,
                         guidance_scale=args.cfg_scale,
                         generator=generator,
-                        loss_fn="slice_pred",
                         guidance_step=zero_steps,
                         guidance_lr=zero_lrs,
                         guidance_frequency=args.guidance_frequency,
@@ -498,7 +477,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                     )
             frames = result.frames[0]
         elif args.sampling_method == 'guidance':
-            generator = torch.Generator(device="cuda").manual_seed(42)
+            generator = torch.Generator(device="cuda").manual_seed(args.seed)
             frames = guidance_sample(
                 pipe=pipe,
                 args=args,
@@ -582,7 +561,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                     print(f"    Generating candidate {sample_idx + 1}/{args.rejection_samples}...")
                     
                     # Create unique generator for each sample
-                    sample_generator = torch.Generator(device="cuda").manual_seed(42 + sample_idx)
+                    sample_generator = torch.Generator(device="cuda").manual_seed(args.seed + sample_idx)
                     
                     # Generate using vanilla method (no guidance)
                     zero_steps = [0] * int(args.num_inference_steps)
@@ -603,11 +582,8 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                             fixed_frames=None,
                             guidance_step=zero_steps,
                             guidance_lr=zero_lrs,
-                            loss_fn="slice_pred",
                             travel_time=(0, 0),
-                            additional_inputs={
-                                "loss_mode": getattr(args, 'loss_mode', 'mean'),
-                            },
+                            additional_inputs=None,
                         )
                     elif "Cosmos" in args.model_id:
                         if "5frame" in args.batch_json:
@@ -618,13 +594,10 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                                 num_inference_steps=args.num_inference_steps,
                                 guidance_scale=args.cfg_scale,
                                 generator=sample_generator,
-                                loss_fn="slice_pred",
                                 guidance_step=zero_steps,
                                 guidance_lr=zero_lrs,
                                 guidance_frequency=args.guidance_frequency,
-                                additional_inputs={
-                                    "loss_mode": args.loss_mode,
-                                },
+                                additional_inputs=None,
                                 travel_time=(0, 0),
                             )
                         else:
@@ -635,13 +608,10 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                                 num_inference_steps=args.num_inference_steps,
                                 guidance_scale=args.cfg_scale,
                                 generator=sample_generator,
-                                loss_fn="slice_pred",
                                 guidance_step=zero_steps,
                                 guidance_lr=zero_lrs,
                                 guidance_frequency=args.guidance_frequency,
-                                additional_inputs={
-                                    "loss_mode": getattr(args, 'loss_mode', 'mean'),
-                                },
+                                additional_inputs=None,
                                 travel_time=(0, 0),
                             )
                     
@@ -680,7 +650,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                                 npred=None,
                                 max_context_frames_ratio=None,
                                 is_vae_output=True,
-                                seed=42,
+                                seed=args.seed,
                                 stride=stride,
                                 mode=getattr(args, 'loss_mode', 'mean')
                             )
@@ -730,7 +700,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                 print(f"    Found existing rejection buffer, checking for candidates...")
                 
                 # Load candidates from buffer (check more than needed in case some are missing)
-                for i in range(32):  # Check up to 32 candidates
+                for i in range(16):  # Check up to 32 candidates
                     candidate_path = os.path.join(buffer_rejection_folder, f"candidate_{i+1:02d}.mp4")
                     loss_path = os.path.join(buffer_rejection_folder, f"candidate_{i+1:02d}_loss.txt")
                     if os.path.exists(candidate_path) and os.path.exists(loss_path):
@@ -781,7 +751,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                     print(f"    Generating guided candidate {sample_idx + 1}/{args.rejection_samples}...")
                     
                     # Create unique generator for each sample
-                    sample_generator = torch.Generator(device="cuda").manual_seed(42 + sample_idx)
+                    sample_generator = torch.Generator(device="cuda").manual_seed(args.seed + sample_idx)
                     
                     # Generate using guidance sampling
                     guided_frames = guidance_sample(
@@ -828,7 +798,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                                 npred=None,
                                 max_context_frames_ratio=None,
                                 is_vae_output=True,
-                                seed=42,
+                                seed=args.seed,
                                 stride=stride,
                                 mode=getattr(args, 'loss_mode', 'mean')
                             )
@@ -885,15 +855,12 @@ def resolve_paths(input_video, input_image, output_video, base_dir, dataset_mode
     """Resolve input/output paths based on dataset mode."""
     if dataset_mode == 'physics_iq':
         # Physics-IQ: Use absolute paths, ignore base_dir for inputs
-        input_video_abs = input_video if input_video else None
-        input_image_abs = input_image if input_image else None
+        input_video_abs = os.path.join("/checkpoint/dream/yjianhao/PhysicsIQ/code/physics-IQ-benchmark", input_video) if input_video else None
+        input_image_abs = os.path.join("/checkpoint/dream/yjianhao/PhysicsIQ/code/physics-IQ-benchmark", input_image) if input_image else None
         # Output can still be relative to base_dir
-        output_video_abs = output_video if os.path.isabs(output_video) else os.path.join(base_dir, output_video)
+        output_video_abs = output_video
     else:
-        # DreamBench: Use relative paths with base_dir
-        input_video_abs = os.path.join(base_dir, input_video) if input_video else None
-        input_image_abs = os.path.join(base_dir, input_image) if input_image else None
-        output_video_abs = os.path.join(base_dir, output_video)
+        pass
     
     return input_video_abs, input_image_abs, output_video_abs
 
@@ -959,12 +926,12 @@ def main():
     # Rejection sampling parameters (only used when sampling_method='rejection')
     parser.add_argument('--rejection_samples', type=int, default=3, 
                        help='Number of samples to generate for rejection sampling.')
+    parser.add_argument('--seed', type=int, default=42, help='Seed for reproducibility.')
     
     args = parser.parse_args()
 
     # Set deterministic behavior for reproducibility
-    # set_deterministic(seed=42)
-    # print("Deterministic mode enabled (seed=42)")
+    set_deterministic(seed=args.seed)
     if "Cosmos" in args.model_id:
         args.fps = 16
     elif "CogVideoX" in args.model_id:
@@ -972,44 +939,8 @@ def main():
     else:
         args.fps = 8
 
-    # Validation
-    if args.sampling_method == 'vanilla_lora' and not args.lora_path:
-        raise ValueError("lora_path must be specified when using vanilla_lora sampling method")
-    
-    # In batch mode, per-item inputs are provided from JSON. Otherwise, require one of init_image/init_video
-    if not args.batch_json:
-        if not args.init_image and not args.init_video:
-            raise ValueError("Provide either --init_image or --init_video for I2V conditioning")
-
-    # Validate V-JEPA parameters for guidance and rejection sampling
-    if args.sampling_method in ['guidance', 'rejection', 'rej_guide']:
-        if args.vjepa_context_frames >= 16:
-            raise ValueError(f"vjepa_context_frames ({args.vjepa_context_frames}) must be less than 16 (torch V-JEPA frames_per_clip)")
-        if 16 > args.num_frames:
-            raise ValueError(f"torch V-JEPA requires at least 16 frames, but num_frames is {args.num_frames}")
-        if args.slice_stride <= 0:
-            raise ValueError(f"slice_stride ({args.slice_stride}) must be positive")
-
-    # Prepare prompts and negative prompt for non-batch mode
-    if not args.batch_json:
-        if args.prompt is not None:
-            prompts = [args.prompt]
-            # Define a negative prompt suitable for CogVideoX
-            if "CogVideoX" in args.model_id:
-                negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
-            elif "Cosmos" in args.model_id:
-                negative_prompt = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
-        else:
-            if not args.prompt_file:
-                raise ValueError("Provide either --prompt or --prompt_file")
-            prompts, negative_prompt = get_prompts(args.prompt_file, args)
-
     # Generate simple experiment name
     experiment_name = get_simple_experiment_name(args)
-    
-    # Non-batch: chunk the prompts for distributed processing
-    if not args.batch_json:
-        chunked_prompts = chunk_prompts(prompts, args.num_gpus, args.gpu_idx)
 
     # Print configuration for this run
     print(f"\n{'='*60}")
@@ -1021,13 +952,11 @@ def main():
     print(f"Frames per video: {args.num_frames}")
     print(f"CFG scale: {args.cfg_scale}")
     print(f"Resolution: {args.height}x{args.width}")
-    if not args.batch_json:
-        print(f"Prompts assigned to this GPU: {len(chunked_prompts)}")
-    else:
-        print(f"Running in batch_json mode. Multi-node setup:")
-        print(f"  - Node {args.node_id + 1}/{args.num_nodes}")
-        print(f"  - Local GPU {args.gpu_idx % args.gpus_per_node}, Global GPU {args.gpu_idx + 1}/{args.num_gpus}")
-        print(f"  - Sharding entries by global GPU index {args.gpu_idx}")
+
+    print(f"Running in batch_json mode. Multi-node setup:")
+    print(f"  - Node {args.node_id + 1}/{args.num_nodes}")
+    print(f"  - Local GPU {args.gpu_idx % args.gpus_per_node}, Global GPU {args.gpu_idx + 1}/{args.num_gpus}")
+    print(f"  - Sharding entries by global GPU index {args.gpu_idx}")
     
     if args.sampling_method == 'guidance':
         print(f"Guidance parameters:")
@@ -1054,81 +983,64 @@ def main():
 
     # Initialize pipeline once per process
     pipe = init_pipeline(args)
-    # pipe = None
     
     # Initialize V-JEPA models for rejection sampling if enabled
     vjepa_models = init_vjepa_models(args)
-    # vjepa_models = None
 
-    if not args.batch_json:
-        # Single or multi-prompt mode using provided init image/video
-        init_frame = load_first_frame(args.init_image, args.init_video)
-        generate_videos(pipe, args, init_frame, chunked_prompts, negative_prompt, experiment_name, fps=args.fps, vjepa_models=vjepa_models)
+
+    # Batch JSON mode: load tasks, shard by index, and process this shard
+    with open(args.batch_json, 'r') as f:
+        entries = json.load(f)
+    # Determine dataset mode and base directory
+    dataset_mode = args.dataset_mode if args.dataset_mode != 'auto' else detect_dataset_mode(args.batch_json)
+    base_dir = args.base_dir
+    
+    print(f"Dataset mode: {dataset_mode}")
+    if dataset_mode == 'physics_iq':
+        print("Using Physics-IQ mode: absolute input paths, relative output paths")
     else:
-        # Batch JSON mode: load tasks, shard by index, and process this shard
-        with open(args.batch_json, 'r') as f:
-            entries = json.load(f)
-        if not isinstance(entries, list):
-            raise ValueError("--batch_json must contain a JSON array of entries")
+        print("Using DreamBench mode: relative paths with base_dir")
+    
+    # Use same chunking mechanism as vanilla/guidance methods for consistent ordering
+    chunked_entries = chunk_prompts(entries, args.num_gpus, args.gpu_idx)
+    if "CogVideoX" in args.model_id:
+        negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
+    elif "Cosmos" in args.model_id:
+        negative_prompt = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
+    
+    processed_count = 0
+    for item in chunked_entries:
+        input_video = item.get('input_video')
+        input_image = item.get('input_image')
+        prompt = item.get('prompt')
+        output_video = item.get('output_video')
+        if prompt is None or output_video is None or (input_video is None and input_image is None):
+            print(f"[skip] Missing required fields in entry: {item}")
+            continue
 
-        # Determine dataset mode and base directory
-        dataset_mode = args.dataset_mode if args.dataset_mode != 'auto' else detect_dataset_mode(args.batch_json)
-        base_dir = args.base_dir or ''
-        
-        print(f"Dataset mode: {dataset_mode}")
-        if dataset_mode == 'physics_iq':
-            print("Using Physics-IQ mode: absolute input paths, relative output paths")
+        # Resolve paths based on dataset mode
+        input_video_abs, input_image_abs, output_video = resolve_paths(
+            input_video, input_image, output_video, base_dir, dataset_mode
+        )
+
+        # Prepare per-item init frame
+        if "5frame" not in args.batch_json:
+            init_frame = load_first_frame(input_image_abs, input_video_abs)
         else:
-            print("Using DreamBench mode: relative paths with base_dir")
+            init_frame = load_video(input_video_abs)
+
+        # Prepare prompts list and negative prompt
+        per_item_prompts = [prompt]
+
+        args.output_path = None
+        args.output_filename = os.path.basename(output_video)
         
-        # Use same chunking mechanism as vanilla/guidance methods for consistent ordering
-        chunked_entries = chunk_prompts(entries, args.num_gpus, args.gpu_idx)
-        
-        processed_count = 0
-        for item in chunked_entries:
+        args.init_image = input_image_abs
+        args.init_video = input_video_abs
 
-            input_video = item.get('input_video')
-            input_image = item.get('input_image')
-            prompt = item.get('prompt')
-            output_video = item.get('output_video')
-            if prompt is None or output_video is None or (input_video is None and input_image is None):
-                print(f"[skip] Missing required fields in entry: {item}")
-                continue
-
-            # Resolve paths based on dataset mode
-            input_video_abs, input_image_abs, output_video_abs = resolve_paths(
-                input_video, input_image, output_video, base_dir, dataset_mode
-            )
-
-            # Prepare per-item init frame
-            if "5frame" not in args.batch_json:
-                init_frame = load_first_frame(input_image_abs, input_video_abs)
-            else:
-                init_frame = load_video(input_video_abs)
-
-            # Prepare prompts list and negative prompt
-            per_item_prompts = [prompt]
-            negative_prompt = (
-                "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
-            )
-
-            # Save under the configured output folder and experiment name.
-            # Use the JSON-provided output filename, but place it inside
-            # <output_folder>/<experiment>/ to match project structure.
-            args.output_path = None
-            args.output_filename = os.path.basename(output_video_abs)
-            
-            args.init_image = input_image_abs
-            args.init_video = input_video_abs
-
-            # print("init_image", args.init_image)
-            # print("init_video", args.init_video)
-            # print("init_frame", init_frame)
-            # import pdb; pdb.set_trace()
-
-            print(f"[GPU {args.gpu_idx}] {os.path.basename(output_video_abs)}")
-            generate_videos(pipe, args, init_frame, per_item_prompts, negative_prompt, experiment_name, fps=args.fps, vjepa_models=vjepa_models)
-            processed_count += 1
+        print(f"[GPU {args.gpu_idx}] {os.path.basename(output_video)}")
+        generate_videos(pipe, args, init_frame, per_item_prompts, negative_prompt, experiment_name, fps=args.fps, vjepa_models=vjepa_models)
+        processed_count += 1
 
         print(f"Node {args.node_id} processed {processed_count} entries on global GPU index {args.gpu_idx}.")
 

@@ -362,7 +362,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Physics-IQ Results to LaTeX and Markdown Converter")
     parser.add_argument('--model_cat', type=str, default='Cosmos-Predict2-2B-Video2World',
                       help='Model category')
-    parser.add_argument('--models', nargs='+', default=['cogvideox5b_i2v'],
+    parser.add_argument('--models', nargs='+', default=[''],
                       help='List of model names (if not provided, will auto-discover)')
     parser.add_argument('--auto_discover', action='store_true', default=True,
                       help='Automatically discover models from results directories')

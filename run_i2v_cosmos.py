@@ -88,7 +88,7 @@ parser.add_argument("--model_id", type=str, default="nvidia/Cosmos-Predict2-2B-V
 parser.add_argument("--num_frames", type=int, default=93)
 parser.add_argument("--height", type=int, default=704)
 parser.add_argument("--width", type=int, default=1280)
-parser.add_argument("--steps", type=int, default=50)
+parser.add_argument("--steps", type=int, default=35)
 parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--guidance_scale", type=float, default=7.0)
 # Guidance scheduling

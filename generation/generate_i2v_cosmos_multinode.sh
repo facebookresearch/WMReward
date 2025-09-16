@@ -10,10 +10,10 @@
 #SBATCH --cpus-per-task=48            # Adjust based on your cluster
 #SBATCH --mem=512G                    # Adjust based on your cluster
 #SBATCH --time=24:00:00               # Adjust based on expected runtime
-#SBATCH --output=jobs/cosmos_guide_node_%A_%a.out
-#SBATCH --error=jobs/cosmos_guide_node_%A_%a.err
+#SBATCH --output=jobs/cosmos_node_%A_%a.out
+#SBATCH --error=jobs/cosmos_node_%A_%a.err
 
-source /home/yjianhao/miniconda3/bin/activate
+source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
 conda activate vg
 nvidia-smi
 
@@ -31,23 +31,14 @@ TRIPLETS=(
     "16 8 8"   # window=16, context_frames=8, stride=4
 )
 
-# Guidance step/lr patterns and frequency (match run_vjepa_slicepred.py defaults)
-# GUIDANCE_STEP_PATTERN="0x3,2x12,1x10,1x10"
-# GUIDANCE_LR_PATTERN="4.0x15,3.0x10,2.0x10"
-# GUIDANCE_STEP_PATTERN="0x35"
-# GUIDANCE_LR_PATTERN="0x35"
+
 GUIDANCE_STEP_PATTERN="0x3,2x12,3x10,1x10"
-GUIDANCE_LR_PATTERN="0.001x35"
+GUIDANCE_LR_PATTERN="0.05x35"
 GUIDANCE_FREQUENCY=1
 
 # CFG scale values for classifier-free guidance ablation
 CFG_SCALES=(
-    # "1.0"
-    # "2.0"
-    # "3.0"
-    # "6.0"
     "7.0"
-    # "10.0"
 )
 
 # Guidance range values for range ablation (format: "start end") in GLOBAL steps [0..49]
@@ -66,9 +57,8 @@ BATCH_JSON_LIST=(
     # "./prompts/physics_iq_5frame.json"
 )
 BASEDIR=""
-OUTPUT_FOLDER="./generated_videos"
-SAMPLE_METHODS=("guidance")
-# SAMPLE_METHODS=("rejection")
+OUTPUT_FOLDER="/checkpoint/yjianhao/generated_videos"
+SAMPLE_METHODS=("vanilla")
 # SAMPLE_METHODS=("guidance")
 NUM_SAMPLING_STEPS="35"
 REJECTION_SAMPLES="10"  # Number of candidates to generate for rejection sampling 
@@ -79,20 +69,6 @@ REJECTION_SAMPLES="10"  # Number of candidates to generate for rejection samplin
 VJEPA_VARIANT="vit_giant"
 VJEPA_IMG_SIZE=256
 VJEPA_MASKING_MODE="causal"
-VJEPA_MASK_RATIO=0.75
-STYLE_WEIGHT=1.0
-
-# Ablation parameters (adjust these for different experiments):
-# --rejection_samples: Number of candidates to generate for rejection sampling
-# --vjepa_mode: V-JEPA aggregation mode ('mean' or 'max')
-# --cfg_scale: Classifier-free guidance scale (for all methods)
-# --guidance_start/end: Timestep range for applying guidance (now looped via GUIDANCE_RANGES)
-# --guidance_rho_scale: Gradient scaling factor (rho_scale) for guidance (looped via RHO_SCALES)
-# --vjepa_model_type: Use 'torch' for Quentin's V-JEPA implementation
-#
-# This script now performs a full ablation study over:
-# - RHO_SCALES: Different guidance strength values
-# - GUIDANCE_RANGES: Different timestep ranges for when to apply guidance
 
 mkdir -p "$OUTPUT_FOLDER"
 
@@ -101,13 +77,6 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
     for MODEL_NAME in "${MODEL_NAMES[@]}"; do
         # Extract model name for folder organization
         MODEL_BASE_NAME=$(basename "$MODEL_NAME")
-        if [[ "$MODEL_BASE_NAME" == "CogVideoX-2b" ]]; then
-            MODEL_BASE_NAME="cogvideox2b"
-        fi
-        if [[ "$MODEL_BASE_NAME" == "CogVideoX-5b-I2V" ]]; then
-            MODEL_BASE_NAME="cogvideox5b_i2v"
-        fi
-        
         for triplet in "${TRIPLETS[@]}"; do
                 # Split triplet into individual variables
                 read -r SLICE_WINDOW_SIZE CONTEXT_LENGTH STRIDE <<< "$triplet"
@@ -155,8 +124,6 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                                 --vjepa_variant $VJEPA_VARIANT \
                                 --vjepa_img_size $VJEPA_IMG_SIZE \
                                 --vjepa_masking_mode $VJEPA_MASKING_MODE \
-                                --vjepa_mask_ratio $VJEPA_MASK_RATIO \
-                                --style_weight $STYLE_WEIGHT \
                                 --vjepa_context_frames $CONTEXT_LENGTH \
                                 --slice_stride $STRIDE \
                                 --slice_window_size $SLICE_WINDOW_SIZE \

@@ -644,7 +644,6 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
         guidance_step: Union[list[int], int] = 0,
         guidance_lr: Union[float, list[float]] = 1e-2,
         guidance_frequency: int = 1,
-        loss_fn: str = "slice_pred",
         additional_inputs: Optional[Dict[str, Any]] = None,
         travel_time: Tuple[int, int] = (-1, -1),
     ) -> Union[CogVideoXPipelineOutput, Tuple]:
@@ -739,58 +738,33 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
         else:
             assert len(guidance_lr) == num_inference_steps, "guidance_lr must be a list of length num_inference_steps"
         
-        if loss_fn != "slice_pred":
-            raise ValueError("Only 'slice_pred' is supported")
+        # Resolve requested VJEPA config
+        vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
+        img_size: int = int(additional_inputs.get("vjepa_img_size", 256 if vjepa_variant != "vit_giant_384" else 384))
+        vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
+        desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
 
-        # VJEPA-based guidance setup (predictor/slice_pred)
-        vjepa_predictor = None
-        if loss_fn == "slice_pred":
-            assert additional_inputs is not None, "additional_inputs must be provided when loss_fn is 'vjepa_predictor' or 'slice_pred'"
-            # Resolve requested VJEPA config
-            vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
-            img_size: int = int(additional_inputs.get("vjepa_img_size", 256 if vjepa_variant != "vit_giant_384" else 384))
-            vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
-            desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
+        # If already initialized with the same variant, just update dtype/device and transforms
+        if not hasattr(self, "vjepa_encoder") or not hasattr(self, "vjepa_predictor") or not hasattr(self, "vjepa_target_encoder"):
+            load_from = (additional_inputs or {}).get("vjepa_load_from", "hub")
+            if load_from == "source":
+                enc, tgt_enc, pred, _auto_img_size = load_vjepa_model_source(vjepa_variant)
+            else:
+                enc, tgt_enc, pred, _auto_img_size = load_vjepa_models_torchhub(vjepa_variant)
+            self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
+            self.vjepa_target_encoder = tgt_enc.to(self._execution_device, dtype=desired_dtype).eval()
+            self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
+            self.vjepa_resize = T.Resize((img_size, img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
+            self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+            self._vjepa_config = {"variant": vjepa_variant, "img_size": img_size, "dtype": vjepa_dtype_str}
 
-            # If already initialized with the same variant, just update dtype/device and transforms
-            need_load = True
-            if (
-                hasattr(self, "vjepa_encoder")
-                and hasattr(self, "vjepa_predictor")
-                and hasattr(self, "vjepa_target_encoder")
-                and hasattr(self, "_vjepa_config")
-            ):
-                prev_cfg = getattr(self, "_vjepa_config", {})
-                if prev_cfg.get("variant") == vjepa_variant:
-                    # Reuse loaded weights; only adjust dtype/device and transforms
-                    self.vjepa_encoder = self.vjepa_encoder.to(self._execution_device, dtype=desired_dtype).eval()
-                    self.vjepa_target_encoder = self.vjepa_target_encoder.to(self._execution_device, dtype=desired_dtype).eval()
-                    self.vjepa_predictor = self.vjepa_predictor.to(self._execution_device, dtype=desired_dtype).eval()
-                    self.vjepa_resize = T.Resize((img_size, img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
-                    self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
-                    self._vjepa_config = {"variant": vjepa_variant, "img_size": img_size, "dtype": vjepa_dtype_str}
-                    need_load = False
-
-            if need_load:
-                load_from = (additional_inputs or {}).get("vjepa_load_from", "hub")
-                if load_from == "source":
-                    enc, tgt_enc, pred, _auto_img_size = load_vjepa_model_source(vjepa_variant)
-                else:
-                    enc, tgt_enc, pred, _auto_img_size = load_vjepa_models_torchhub(vjepa_variant)
-                self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
-                self.vjepa_target_encoder = tgt_enc.to(self._execution_device, dtype=desired_dtype).eval()
-                self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
-                self.vjepa_resize = T.Resize((img_size, img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
-                self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
-                self._vjepa_config = {"variant": vjepa_variant, "img_size": img_size, "dtype": vjepa_dtype_str}
-
-            # Masking configuration (defaults chosen for causal prediction)
-            masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
-            context_frames: int = int(additional_inputs.get("vjepa_context_frames", 15))
-            mask_ratio: float = float(additional_inputs.get("vjepa_mask_ratio", 0.75))
-            # Slice prediction config
-            slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
-            slice_stride: int = int(additional_inputs.get("slice_stride", 2))
+        # Masking configuration (defaults chosen for causal prediction)
+        masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
+        context_frames: int = int(additional_inputs.get("vjepa_context_frames", 15))
+        mask_ratio: float = float(additional_inputs.get("vjepa_mask_ratio", 0.75))
+        # Slice prediction config
+        slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
+        slice_stride: int = int(additional_inputs.get("slice_stride", 2))
 
         # Optional: save intermediate decoded keyframes for visualization
         save_keyframes = False
@@ -903,8 +877,6 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
             video = self.video_processor.preprocess_video(video, height=height, width=width)
             video = video.to(device=device, dtype=prompt_embeds.dtype) # 1, 3, 49, 480, 720, normalized tensor
 
-        
-
         image = self.video_processor.preprocess(image, height=height, width=width).to(
             device, dtype=prompt_embeds.dtype
         )
@@ -945,14 +917,16 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             # for DPM-solver++
-            old_pred_original_sample = None
-            max_grad_norm = 1.0
             for i, t in enumerate(timesteps):
                 if self.interrupt:
                     continue
 
                 # Determine if we are in the guidance range
-                in_guidance_range = (guidance_step[i] != 0) and ((i % guidance_frequency) == 0)
+                in_guidance_range = (
+                    (additional_inputs is not None)
+                    and (guidance_step[i] != 0)
+                    and ((i % max(1, int(guidance_frequency))) == 0)
+                )
 
                 n_repeats = guidance_step[i]
 
@@ -977,7 +951,6 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                 for rep in range(n_repeats+1):
                     # Set requires_grad only when within the guidance range
                     latents = latents.detach().requires_grad_(in_guidance_range)
-
 
                     # (1) Prepare model input
                     latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
@@ -1091,7 +1064,6 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         for s in starts:
                             chunk = clip_cthw[:, :, s:s+WSIZE]
                             Tchunk = chunk.size(2)
-                            grid_depth = int(Tchunk // tube)
 
                             ctxt_positions, tgt_positions = generate_vjepa_masks(
                                 masking_mode=masking_mode,
@@ -1100,7 +1072,6 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                                 frames_per_clip=Tchunk,
                                 encoder=self.vjepa_encoder,
                                 context_frames=context_frames,
-                                mask_ratio=mask_ratio,
                                 device=device_sw,
                             )
 
@@ -1116,7 +1087,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                                     z = F.layer_norm(z, (z.size(-1),))
                                     return z
 
-                            def loss_fn_v2(z, h):
+                            def loss_fn(z, h):
                                 h = apply_masks(h, tgt_positions, concat=False)
                                 loss = 1 - F.cosine_similarity(z, h[0], dim=1).mean()
                                 return loss
@@ -1125,7 +1096,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                             z_pred = forward_context(chunk)
 
                             z_chunk = z_pred.to(h_tokens.device)
-                            chunk_loss = loss_fn_v2(z_chunk, h_tokens)
+                            chunk_loss = loss_fn(z_chunk, h_tokens)
                             chunk_losses.append(chunk_loss)
 
                         if len(chunk_losses) == 0:
@@ -1138,31 +1109,25 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                             total_loss = torch.stack(chunk_losses).max()
 
                         total_loss.backward()
-                        print("total_loss", total_loss.item())
                         grad = latents.grad.clone()
                         latents.grad = None  # Clear the gradients
 
                         # Apply gradient clipping
-                        grad_norm = grad.norm(2)
-                        rho = 1 / grad_norm
-
-                        print("grad_norm", grad_norm.item())
-                        print("latents", latents.norm(2).item())
+                        scaling = (latents.norm(2) / grad.norm(2) + 1e-8)
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
-                            # print("Time travel!")
                             with torch.no_grad():
                                 x_prev = a_t * latents + b_t * pred_original_sample
-                                x_prev = x_prev - guidance_lr[i] * rho * grad
+                                x_prev = x_prev - guidance_lr[i] * scaling * grad
                                 noise = randn_tensor(latents.shape, generator=generator, device=device, dtype=latents.dtype)
                                 coef_x_prev = (alpha_prod_t / alpha_prod_t_prev) ** 0.5
                                 coef_noise = (1 - alpha_prod_t / alpha_prod_t_prev) ** 0.5
                                 latents = x_prev * coef_x_prev + noise * coef_noise
                         else:
-                            # print("DLO!")
                             with torch.no_grad():
-                                latents = latents - guidance_lr[i] * rho * grad
-
+                                
+                                latents = latents - guidance_lr[i] * scaling * grad
+                        print("timestep", t, "scaling", scaling.item(), "loss", total_loss.item(), "grad", grad.norm(2).item(), "latents", latents.norm(2).item())
                         torch.cuda.empty_cache()
                     else:
                         # If outside guidance range, skip repeated updates

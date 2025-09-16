@@ -63,7 +63,7 @@ def main():
     ap.add_argument("--vae_decode_scale", type=float, default=0.8)
     ap.add_argument("--loss_mode", type=str, default="max", choices=["mean","max"])
     # IO
-    ap.add_argument("--out_dir", type=str, default="results/i2v_cogvideox")
+    ap.add_argument("--out_dir", type=str, default="results")
     ap.add_argument("--run_name", type=str, default="")
     ap.add_argument("--fps", type=int, default=8)
     args = ap.parse_args()
