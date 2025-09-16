@@ -19,7 +19,7 @@ source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
 conda activate vg
 ```
 3. (Optional) Debug with a single prompt run
-### Quick start (single prompt for debug)
+Quick start (single prompt for debug)
 Use these script entrypoints for quick local runs.
 
 - CogVideoX:
@@ -33,7 +33,7 @@ python run_i2v_cosmos.py
 ```
 
 4. Send Batch Generation Jobs
-### Batch mode - PhysicsIQ generation
+Batch mode - PhysicsIQ generation
 - SLURM multi-node (guidance and vanilla sampling example):
 ```bash
 sbatch generation/generate_i2v_cosmos_multinode.sh
