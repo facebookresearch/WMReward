@@ -6,7 +6,7 @@ Minimal tooling to run image-to-video (I2V) generation with three modes:
 - guidance: V-JEPA surprise guidance during sampling
 - rejection: generate k candidates, score with V-JEPA, keep best
 
-Supports both CogVideoX and NVIDIA Cosmos I2V checkpoints via customized pipelines in `pipelines/`.
+Supports both CogVideoX and Cosmos I2V via customized pipelines in `pipelines/`.
 
 ## Usage
 1. pull the repo
