@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from PIL import Image
 from dataclasses import dataclass
 from pipelines.pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
+# from pipeline.diffusers_pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
 from diffusers import CogVideoXDDIMScheduler
 from diffusers.utils import export_to_video, load_image
 import os
@@ -323,7 +324,7 @@ def main():
         num_inference_steps=NUM_STEPS,
         guidance_scale=GUIDANCE_SCALE,
         use_dynamic_cfg=True,
-        num_videos_per_prompt=N_PARTICLES,
+        num_videos_per_prompt=1,
         eta=1.0,
         generator=gens,
         callback_on_step_end=fk_callback,

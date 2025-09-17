@@ -88,6 +88,18 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "loss_mode": getattr(args, 'loss_mode', 'mean'),
         })
     
+    # Add SMC parameters
+    if args.sampling_method == 'smc':
+        metadata["parameters"].update({
+            "smc_num_particles": getattr(args, 'smc_num_particles', 16),
+            "smc_beta_const": getattr(args, 'smc_beta_const', 24.0),
+            "smc_ess_threshold": getattr(args, 'smc_ess_threshold', 0.97),
+            "smc_early_frac": getattr(args, 'smc_early_frac', 0.10),
+            "smc_late_frac": getattr(args, 'smc_late_frac', 0.70),
+            "smc_step_stride": getattr(args, 'smc_step_stride', 5),
+            "smc_potential_mode": getattr(args, 'smc_potential_mode', 'max'),
+        })
+    
     # Save metadata file
     metadata_path = os.path.join(experiment_folder, "experiment_config.json")
     with open(metadata_path, 'w') as f:
@@ -120,6 +132,11 @@ def get_simple_experiment_name(args):
             name += f"_{vjepa_short}"
     elif args.sampling_method == 'rejection':
         name = f"{args.sampling_method}_{version}_f{args.num_frames}_s{args.num_inference_steps}_cfg{args.cfg_scale}"
+    elif args.sampling_method == 'smc':
+        name = (
+            f"smc_{version}_f{args.num_frames}_s{args.num_inference_steps}"
+            f"_cfg{args.cfg_scale}_N{getattr(args, 'smc_num_particles', 16)}"
+        )
 
     # Add rejection samples suffix if using rejection sampling
     if args.sampling_method == 'rejection':
@@ -224,7 +241,7 @@ def init_pipeline(args):
 
 def init_vjepa_models(args):
     """Initialize V-JEPA models for rejection sampling evaluation."""
-    if args.sampling_method != 'rejection':
+    if args.sampling_method not in ['rejection', 'smc']:
         return None, None, None
     
     print(f"Loading V-JEPA models for rejection sampling ({args.vjepa_variant})...")
@@ -340,6 +357,242 @@ def guidance_sample(pipe, args, init_frame, prompt, negative_prompt, generator=N
             )
         
     return result.frames[0]
+
+def _ensure_btchw(x: torch.Tensor) -> torch.Tensor:
+    if x.ndim != 5:
+        raise RuntimeError(f"expected 5D video, got {x.shape}")
+    if x.shape[1] == 3:
+        return x
+    if x.shape[2] == 3:
+        return x.permute(0, 2, 1, 3, 4).contiguous()
+    if x.shape[-1] == 3:
+        return x.permute(0, 4, 1, 2, 3).contiguous()
+    raise RuntimeError(f"Cannot infer channel dim in {x.shape}; expected channel==3 at dim 1/2/-1.")
+
+def _to_minus1_1(x: torch.Tensor) -> torch.Tensor:
+    if x.dtype != torch.float32:
+        x = x.float()
+    xmin = float(x.min())
+    xmax = float(x.max())
+    if -0.05 <= xmin and xmax <= 1.05:
+        return x * 2.0 - 1.0
+    if 0.0 <= xmin and xmax <= 255.0:
+        return (x / 127.5) - 1.0
+    return x
+
+@torch.inference_mode()
+def _decode_full(pipe, latents):
+    latents = latents.to(device=pipe.vae.device, dtype=pipe.vae.dtype)
+    frames = pipe.decode_latents(latents)
+    if not isinstance(frames, torch.Tensor) or frames.ndim != 5:
+        raise RuntimeError(f"Unexpected decoded shape/type: {type(frames)} {getattr(frames,'shape',None)}")
+    frames = _ensure_btchw(frames)
+    frames = _to_minus1_1(frames)
+    return frames
+
+def _ess_normed(weights: torch.Tensor) -> float:
+    return float(1.0 / (weights.pow(2).sum() + 1e-8))
+
+def _weight_entropy_bits(weights: torch.Tensor) -> float:
+    w = weights.clamp_min(1e-12)
+    H = -torch.sum(w * torch.log2(w))
+    return float(H)
+
+@torch.inference_mode()
+def _vjepa_surprise_batch(vids_btchw: torch.Tensor, encoder, target_encoder, predictor, args) -> torch.Tensor:
+    vids_btchw = _ensure_btchw(vids_btchw).to(dtype=torch.float32)
+    B = vids_btchw.shape[0]
+    out = torch.empty(B, device=vids_btchw.device, dtype=torch.float32)
+    for i in range(0, B):
+        loss = compute_vjepa_loss_sliding_window(
+            video_tensor=vids_btchw[i:i+1],
+            encoder=encoder,
+            target_encoder=target_encoder,
+            predictor=predictor,
+            img_size=getattr(args, 'vjepa_img_size', 256),
+            window_size=int(getattr(args, 'slice_window_size', 16)),
+            loss_exp=2,
+            masking_mode=str(getattr(args, 'vjepa_masking_mode', 'causal')),
+            context_frames=int(getattr(args, 'vjepa_context_frames', 8)),
+            mask_ratio=float(getattr(args, 'vjepa_mask_ratio', 0.75)),
+            spatial_pred_mask_scale=None,
+            temporal_pred_mask_scale=None,
+            aspect_ratio=None,
+            npred=None,
+            max_context_frames_ratio=None,
+            is_vae_output=True,
+            seed=int(getattr(args, 'seed', 42)),
+            stride=int(getattr(args, 'slice_stride', 8)),
+            mode=str(getattr(args, 'loss_mode', 'max')),
+        )
+        out[i] = float(loss)
+    return out
+
+def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, generator=None):
+    if "CogVideoX" not in args.model_id:
+        raise NotImplementedError("SMC sampling is currently implemented for CogVideoX only.")
+
+    encoder, target_encoder, predictor = vjepa_models if vjepa_models else (None, None, None)
+    if encoder is None or target_encoder is None or predictor is None:
+        raise RuntimeError("V-JEPA models must be loaded for SMC; set sampling_method=smc to trigger loading.")
+
+    steps = int(args.num_inference_steps)
+    num_particles = int(getattr(args, 'smc_num_particles', 16))
+    beta_const = float(getattr(args, 'smc_beta_const', 24.0))
+    ess_threshold = float(getattr(args, 'smc_ess_threshold', 0.97))
+    early_frac = float(getattr(args, 'smc_early_frac', 0.20))
+    late_frac = float(getattr(args, 'smc_late_frac', 0.90))
+    step_stride = int(getattr(args, 'smc_step_stride', 5))
+
+    start = int(round(steps * early_frac))
+    end = int(round(steps * late_frac))
+    check_steps = list(range(start, end, max(1, step_stride)))
+    freeze_after_step = end
+
+    generators = [torch.Generator(device="cuda").manual_seed(int(args.seed) + i) for i in range(num_particles)]
+    weights = torch.full((num_particles,), 1.0 / num_particles, device="cuda", dtype=torch.float32)
+    running_max = torch.full((num_particles,), -torch.inf, device="cuda", dtype=torch.float32)
+    lineage = torch.arange(num_particles, device="cuda")
+    product_of_potentials = torch.ones(num_particles, device="cuda", dtype=torch.float32)
+    population_rs = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
+    frozen_idx = None
+
+    @torch.inference_mode()
+    def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
+        nonlocal running_max, frozen_idx, weights, product_of_potentials, population_rs, lineage
+
+        latents = callback_kwargs.get("latents", None)
+        if latents is None:
+            raise RuntimeError("Pipeline must expose 'latents' via callback_on_step_end_tensor_inputs=['latents'].")
+
+        if step >= freeze_after_step:
+            if frozen_idx is None:
+                vids_full = _decode_full(pipe_obj, latents)
+                surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
+                frozen_idx = int(torch.argmin(surprise_t).item())
+                print(f"[FK] FREEZE at step {step}: locking particle {frozen_idx}")
+
+            idx = torch.full((latents.shape[0],), frozen_idx, device=latents.device, dtype=torch.long)
+            latents = latents.index_select(0, idx)
+            weights.fill_(1.0 / weights.numel())
+            return {"latents": latents}
+
+        if step in check_steps:
+            vids_full = _decode_full(pipe_obj, latents)  # (B,3,T,H,W) in [-1,1]
+            surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
+            phi_t = 1.0 - surprise_t
+
+            running_max = torch.maximum(running_max, phi_t)
+            phi = running_max
+
+            pot_term = torch.exp((beta_const * phi).clamp(min=-60.0, max=60.0))
+            product_of_potentials = product_of_potentials * pot_term
+            population_rs = phi
+
+            last_check_step = check_steps[-1] if len(check_steps) > 0 else -1
+            is_final_point = (step == last_check_step) or (step == (steps - 1))
+            if is_final_point:
+                w = torch.exp((beta_const * population_rs).clamp(min=-60.0, max=60.0)) / (product_of_potentials + 1e-8)
+                w = torch.clamp(w, 0.0, 1e10)
+                w[w.isnan()] = 0.0
+
+                normalized_w = w / (w.sum() + 1e-8)
+                ess = 1.0 / (normalized_w.pow(2).sum() + 1e-8)
+                print(f"      [final-correction] ESS={float(ess):.3f}")
+
+                if ess < 0.5 * num_particles:
+                    print(f"      [final-correction] RESAMPLE at step {step} with ESS={float(ess):.3f}")
+                    idx = torch.multinomial(w, num_samples=w.numel(), replacement=True)
+                    latents = latents.index_select(0, idx)
+                    weights.fill_(1.0 / w.numel())
+                    running_max = running_max.index_select(0, idx)
+                    product_of_potentials = product_of_potentials.index_select(0, idx)
+                    population_rs = population_rs.index_select(0, idx)
+                    lineage.copy_(lineage.index_select(0, idx))
+                else:
+                    weights.copy_(normalized_w)
+
+                return {"latents": latents}
+
+            z = beta_const * phi
+            z = z - z.max()
+            incr = torch.exp(z.clamp(min=-60.0))
+            new_w = weights * incr
+            new_w = new_w / (new_w.sum() + 1e-8)
+
+            ess_over_n = _ess_normed(new_w) / new_w.numel()
+            ent_bits = _weight_entropy_bits(new_w)
+            best_loss = float(surprise_t.min())
+            best_idx = int(surprise_t.argmin())
+            worst_loss = float(surprise_t.max())
+            mean_loss = float(surprise_t.mean())
+            std_loss = float(surprise_t.std(unbiased=False))
+            do_resample = (ess_over_n < ess_threshold)
+
+            print(
+                f"[FK] step={step:02d} (t={int(timestep)}), "
+                f"loss min/mean±std/max= {best_loss:.4f} / {mean_loss:.4f}±{std_loss:.4f} / {worst_loss:.4f}, "
+                f"beta={beta_const:.1f}, ESS/N={ess_over_n:.3f}, H(bits)={ent_bits:.2f}, resample={do_resample}"
+            )
+
+            if do_resample:
+                idx = torch.multinomial(new_w, num_samples=new_w.numel(), replacement=True)
+                latents = latents.index_select(0, idx)
+                weights.fill_(1.0 / new_w.numel())
+                running_max = running_max.index_select(0, idx)
+                product_of_potentials = product_of_potentials.index_select(0, idx)
+                population_rs = population_rs.index_select(0, idx)
+                lineage.copy_(lineage.index_select(0, idx))
+                print(f"      RESAMPLE (multinomial)! -> weights reset")
+            else:
+                weights.copy_(new_w)
+                print(f"      no resample (ESS/N={ess_over_n:.3f} ≥ {ess_threshold:.3f})")
+
+            return {"latents": latents}
+
+        return {}
+
+    zero_steps = [0] * steps
+    zero_lrs = [0.0] * steps
+    out = pipe(
+        video=[init_frame] * num_particles,
+        prompt=[prompt] * num_particles,
+        negative_prompt=None,
+        num_frames=args.num_frames,
+        num_inference_steps=steps,
+        guidance_scale=args.cfg_scale,
+        use_dynamic_cfg=True,
+        num_videos_per_prompt=1,
+        eta=0.01,
+        generator=generators,
+        callback_on_step_end=fk_callback,
+        callback_on_step_end_tensor_inputs=["latents"],
+        guidance_step=zero_steps,
+        guidance_lr=zero_lrs,
+        guidance_frequency=1,
+        additional_inputs=None,
+        travel_time=(0, 0),
+    )
+
+    if not out.frames:
+        raise RuntimeError("No frames returned from SMC inference!")
+
+    vids_btchw_list = []
+    for particle_frames in out.frames:
+        frame_tensors = []
+        for pil_frame in particle_frames:
+            frame_np = np.array(pil_frame)
+            frame_tensor = torch.from_numpy(frame_np).float().permute(2, 0, 1)
+            frame_tensor = (frame_tensor / 255.0) * 2.0 - 1.0
+            frame_tensors.append(frame_tensor)
+        particle_video = torch.stack(frame_tensors, dim=0).permute(1, 0, 2, 3)
+        vids_btchw_list.append(particle_video)
+
+    vids_btchw = torch.stack(vids_btchw_list, dim=0).cuda()
+    final_surprise = _vjepa_surprise_batch(vids_btchw, encoder, target_encoder, predictor, args)
+    best_idx = int(final_surprise.argmin().item())
+    print(f"[FK] FINAL best particle: {best_idx}  V-JEPA loss: {float(final_surprise[best_idx]):.6f}")
+    return out.frames[best_idx]
 
 def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment_name, fps=8, vjepa_models=None):
     """Generate videos for each prompt and save them to the output folder."""
@@ -575,7 +828,18 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
             frames = candidate_frames[best_idx]
             best_loss = candidate_losses[best_idx]
             print(f"    Selected candidate {best_idx + 1} with lowest V-JEPA loss: {best_loss:.6f}")
-        
+
+        elif args.sampling_method == 'smc':
+            generator = torch.Generator(device="cuda").manual_seed(args.seed)
+            frames = smc_sample(
+                pipe=pipe,
+                args=args,
+                init_frame=init_frame,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                vjepa_models=vjepa_models,
+                generator=generator
+            )
 
         # Export to video
         export_to_video(frames, video_path, fps=fps)
@@ -641,7 +905,7 @@ def main():
     parser.add_argument('--node_id', type=int, default=0, help='Index of the current node (0 to num_nodes-1).')
     parser.add_argument('--gpus_per_node', type=int, default=8, help='Number of GPUs per node.')
     parser.add_argument('--sampling_method', type=str, default='vanilla', 
-                       choices=['vanilla', 'guidance', 'rejection'],
+                       choices=['vanilla', 'guidance', 'rejection', 'smc'],
                        help='Sampling method to use.')
     parser.add_argument('--init_image', type=str, default=None, help='Path to the initial image for I2V conditioning.')
     parser.add_argument('--init_video', type=str, default=None, help='Path to the initial video for I2V conditioning (first frame used).')
@@ -677,6 +941,14 @@ def main():
     # Rejection sampling parameters (only used when sampling_method='rejection')
     parser.add_argument('--rejection_samples', type=int, default=3, 
                        help='Number of samples to generate for rejection sampling.')
+
+    # SMC parameters (only used when sampling_method='smc')
+    parser.add_argument('--smc_num_particles', type=int, default=16, help='Number of SMC particles.')
+    parser.add_argument('--smc_beta_const', type=float, default=24.0, help='FK potential temperature beta.')
+    parser.add_argument('--smc_ess_threshold', type=float, default=0.97, help='Resample when ESS/N < threshold.')
+    parser.add_argument('--smc_early_frac', type=float, default=0.10, help='Start of mid-window as frac of steps.')
+    parser.add_argument('--smc_late_frac', type=float, default=0.70, help='End of mid-window as frac of steps.')
+    parser.add_argument('--smc_step_stride', type=int, default=5, help='Check every k steps in mid-window.')
 
     parser.add_argument('--seed', type=int, default=42, help='Seed for reproducibility.')
     args = parser.parse_args()
@@ -720,6 +992,13 @@ def main():
         print(f"Rejection sampling enabled:")
         print(f"  - Number of samples: {args.rejection_samples}")
         print(f"  - Using existing V-JEPA parameters for evaluation")
+    
+    if args.sampling_method == 'smc':
+        print(f"SMC steering enabled:")
+        print(f"  - Particles: {args.smc_num_particles}")
+        print(f"  - Beta: {args.smc_beta_const}")
+        print(f"  - ESS threshold: {args.smc_ess_threshold}")
+        print(f"  - Mid-window: [{args.smc_early_frac}, {args.smc_late_frac}), stride {args.smc_step_stride}")
     
     print(f"{'='*60}\n")
 

@@ -50,7 +50,7 @@ def main():
     ap.add_argument("--guidance_scale", type=float, default=6.0)
     ap.add_argument("--guidance_step_pattern", type=str, default="0x3,1x47")
     # ap.add_argument("--guidance_step_pattern", type=str, default="0x50")
-    ap.add_argument("--guidance_lr_pattern", type=str, default="0.001x50")
+    ap.add_argument("--guidance_lr_pattern", type=str, default="0.002x50")
     # ap.add_argument("--guidance_lr_pattern", type=str, default="3x50")
     ap.add_argument("--guidance_frequency", type=int, default=1)
     ap.add_argument("--travel_time", type=str, default="0,0")
@@ -59,7 +59,6 @@ def main():
     ap.add_argument("--vjepa_img_size", type=int, default=256)
     ap.add_argument("--vjepa_masking_mode", type=str, default="causal", choices=["causal","random"])
     ap.add_argument("--vjepa_context_frames", type=int, default=8)
-    ap.add_argument("--vjepa_mask_ratio", type=float, default=0.75)
     ap.add_argument("--slice_window_size", type=int, default=16)
     ap.add_argument("--slice_stride", type=int, default=8)
     ap.add_argument("--vae_decode_scale", type=float, default=0.8)
@@ -105,7 +104,6 @@ def main():
             "vjepa_img_size": args.vjepa_img_size,
             "vjepa_masking_mode": args.vjepa_masking_mode,
             "vjepa_context_frames": args.vjepa_context_frames,
-            "vjepa_mask_ratio": args.vjepa_mask_ratio,
             "slice_window_size": args.slice_window_size,
             "slice_stride": args.slice_stride,
             "vae_decode_scale": args.vae_decode_scale,

@@ -379,7 +379,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
         if isinstance(generator, list):
             image_latents = [
-                retrieve_latents(self.vae.encode(image[i].unsqueeze(0)), generator[i]) for i in range(batch_size)
+                retrieve_latents(self.vae.encode(image[0].unsqueeze(0)), generator[i]) for i in range(batch_size)
             ]
         else:
             image_latents = [retrieve_latents(self.vae.encode(img.unsqueeze(0)), generator) for img in image]
@@ -412,7 +412,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
         if latents is None:
             if isinstance(generator, list):
                 init_latents = [
-                    retrieve_latents(self.vae.encode(video[i].unsqueeze(0)), generator[i]) for i in range(batch_size)
+                    retrieve_latents(self.vae.encode(video[0].unsqueeze(0)), generator[i]) for i in range(batch_size)
                 ]
             else:
                 init_latents = [retrieve_latents(self.vae.encode(vid.unsqueeze(0)), generator) for vid in video]
@@ -829,6 +829,8 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
         device = self._execution_device
 
+        print(f"batch_size: {batch_size}")
+
         # here `guidance_scale` is defined analog to the guidance weight `w` of equation (2)
         # of the Imagen paper: https://arxiv.org/pdf/2205.11487.pdf . `guidance_scale = 1`
         # corresponds to doing no classifier free guidance.
@@ -1147,6 +1149,16 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                 with torch.no_grad():
                     latents = a_t * latents + b_t * pred_original_sample
                     # latents = a_t * latents + b_t * ((alpha_prod_t**0.5) * latents - (beta_prod_t**0.5) * noise_pred)
+                    if eta > 0:
+                        beta_prod_t_prev = 1 - alpha_prod_t_prev
+                        variance = (beta_prod_t_prev / beta_prod_t) * (1 - alpha_prod_t / alpha_prod_t_prev)
+                        std_dev_t = 0.01 * variance ** (0.5)
+                        noise = randn_tensor(latents.shape, generator=generator, device=device, dtype=latents.dtype)
+                        variance = std_dev_t * noise
+                        # print("alpha_prod_t", alpha_prod_t.item())
+                        # print("std_dev_t", std_dev_t.item())
+                        # print("variance", variance.norm(2).item(), latents.norm(2).item())
+                        latents = latents + variance
                 
                 latents = latents.to(prompt_embeds.dtype)
 

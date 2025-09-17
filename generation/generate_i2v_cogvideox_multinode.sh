@@ -36,12 +36,17 @@ TRIPLETS=(
 
 GUIDANCE_STEP_PATTERN="0x3,1x47"
 GUIDANCE_LR_PATTERNS=(
+  "0.001x50"  
   "0.003x50"
+  "0.005x50"
 )
 GUIDANCE_FREQUENCY=1
 
 # CFG scale values for classifier-free guidance ablation
 CFG_SCALES=(
+    "1.0"
+    "2.0"
+    "4.0"
     "6.0"
 )
 
