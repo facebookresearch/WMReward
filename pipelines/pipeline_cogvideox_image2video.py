@@ -1114,6 +1114,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
                         # Apply gradient clipping
                         scaling = (latents.norm(2) / (grad.norm(2) + 1e-8))
+                        scaling = scaling * (1 / (a_t ** 0.5))
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
                             with torch.no_grad():
@@ -1127,7 +1128,8 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                             with torch.no_grad():
                                 
                                 latents = latents - guidance_lr[i] * scaling * grad
-                        print("timestep", t, "scaling", scaling.item(), "loss", total_loss.item(), "grad", grad.norm(2).item(), "latents", latents.norm(2).item())
+                                # noise_pred = noise_pred - guidance_lr[i] * scaling * grad
+                        print("timestep", t, "a_t", a_t, "scaling", scaling.item(), "loss", total_loss.item(), "grad", grad.norm(2).item(), "latents", latents.norm(2).item())
                         torch.cuda.empty_cache()
                     else:
                         # If outside guidance range, skip repeated updates
@@ -1143,6 +1145,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                 #   - This step is applied once per timestep, even outside guidance range
                 with torch.no_grad():
                     latents = a_t * latents + b_t * pred_original_sample
+                    # latents = a_t * latents + b_t * ((alpha_prod_t**0.5) * latents - (beta_prod_t**0.5) * noise_pred)
                 
                 latents = latents.to(prompt_embeds.dtype)
 

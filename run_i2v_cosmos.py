@@ -117,7 +117,7 @@ pipe.transformer.enable_gradient_checkpointing()
 pipe.vae.enable_tiling()
 pipe.vae.enable_slicing()
 
-negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
+negative_prompt = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
 
 # Build guidance schedules
 def build_seq(pattern: str, steps: int, is_float: bool):
@@ -184,9 +184,9 @@ result = pipe(
         "vae_decode_scale": args.vae_decode_scale,
         "loss_mode": args.loss_mode,
         # Optional intermediate saving controls
-        # "save_intermediate": False,
-        # "intermediate_save_dir": os.path.join(args.out_dir, f"{run_name}_intermediate"),
-        # "intermediate_fps": args.fps,
+        "save_intermediate": True,
+        "intermediate_save_dir": os.path.join(args.out_dir, f"{run_name}_intermediate"),
+        "intermediate_fps": args.fps,
     },
     fps=args.fps,
     travel_time=travel_time,
