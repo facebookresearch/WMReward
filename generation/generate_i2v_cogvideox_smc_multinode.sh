@@ -2,7 +2,7 @@
 
 # SLURM job array configuration for multi-node execution (SMC steering)
 #SBATCH --job-name=cogvideox_smc
-#SBATCH --array=0-2                    # nodes 0..2
+#SBATCH --array=0-0                    # nodes 0..2
 #SBATCH --nodes=1                      # Each job uses 1 node
 #SBATCH --qos=dream_high
 #SBATCH --ntasks-per-node=1           # 1 task per node
@@ -18,7 +18,7 @@ conda activate vg
 nvidia-smi
 
 # Multi-node configuration
-NUM_NODES=3                           # Total number of nodes
+NUM_NODES=1                           # Total number of nodes
 NUM_GPUS_PER_NODE=8                   # GPUs per node
 TOTAL_GPUS=$((NUM_NODES * NUM_GPUS_PER_NODE))
 NODE_ID=${SLURM_ARRAY_TASK_ID}
@@ -32,7 +32,7 @@ TRIPLETS=(
 )
 
 # SMC parameters
-SMC_NUM_PARTICLES_LIST=(4 8 16)
+SMC_NUM_PARTICLES_LIST=(4 8)
 SMC_BETA_CONST=24.0
 SMC_ESS_THRESHOLD=0.97
 SMC_EARLY_FRAC=0.2
