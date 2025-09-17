@@ -739,32 +739,33 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
             assert len(guidance_lr) == num_inference_steps, "guidance_lr must be a list of length num_inference_steps"
         
         # Resolve requested VJEPA config
-        vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
-        img_size: int = int(additional_inputs.get("vjepa_img_size", 256 if vjepa_variant != "vit_giant_384" else 384))
-        vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
-        desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
+        if additional_inputs is not None:
+            vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
+            img_size: int = int(additional_inputs.get("vjepa_img_size", 256 if vjepa_variant != "vit_giant_384" else 384))
+            vjepa_dtype_str = str(additional_inputs.get("vjepa_dtype", "fp32")).lower()
+            desired_dtype = torch.float32 if vjepa_dtype_str != "bf16" else torch.bfloat16
 
-        # If already initialized with the same variant, just update dtype/device and transforms
-        if not hasattr(self, "vjepa_encoder") or not hasattr(self, "vjepa_predictor") or not hasattr(self, "vjepa_target_encoder"):
-            load_from = (additional_inputs or {}).get("vjepa_load_from", "hub")
-            if load_from == "source":
-                enc, tgt_enc, pred, _auto_img_size = load_vjepa_model_source(vjepa_variant)
-            else:
-                enc, tgt_enc, pred, _auto_img_size = load_vjepa_models_torchhub(vjepa_variant)
-            self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
-            self.vjepa_target_encoder = tgt_enc.to(self._execution_device, dtype=desired_dtype).eval()
-            self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
-            self.vjepa_resize = T.Resize((img_size, img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
-            self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
-            self._vjepa_config = {"variant": vjepa_variant, "img_size": img_size, "dtype": vjepa_dtype_str}
+            # If already initialized with the same variant, just update dtype/device and transforms
+            if not hasattr(self, "vjepa_encoder") or not hasattr(self, "vjepa_predictor") or not hasattr(self, "vjepa_target_encoder"):
+                load_from = (additional_inputs or {}).get("vjepa_load_from", "hub")
+                if load_from == "source":
+                    enc, tgt_enc, pred, _auto_img_size = load_vjepa_model_source(vjepa_variant)
+                else:
+                    enc, tgt_enc, pred, _auto_img_size = load_vjepa_models_torchhub(vjepa_variant)
+                self.vjepa_encoder = enc.to(self._execution_device, dtype=desired_dtype).eval()
+                self.vjepa_target_encoder = tgt_enc.to(self._execution_device, dtype=desired_dtype).eval()
+                self.vjepa_predictor = pred.to(self._execution_device, dtype=desired_dtype).eval()
+                self.vjepa_resize = T.Resize((img_size, img_size), interpolation=InterpolationMode.BILINEAR, antialias=True)
+                self.vjepa_normalize = T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+                self._vjepa_config = {"variant": vjepa_variant, "img_size": img_size, "dtype": vjepa_dtype_str}
 
-        # Masking configuration (defaults chosen for causal prediction)
-        masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
-        context_frames: int = int(additional_inputs.get("vjepa_context_frames", 15))
-        mask_ratio: float = float(additional_inputs.get("vjepa_mask_ratio", 0.75))
-        # Slice prediction config
-        slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
-        slice_stride: int = int(additional_inputs.get("slice_stride", 2))
+            # Masking configuration (defaults chosen for causal prediction)
+            masking_mode: str = str(additional_inputs.get("vjepa_masking_mode", "causal")).lower()
+            context_frames: int = int(additional_inputs.get("vjepa_context_frames", 15))
+            mask_ratio: float = float(additional_inputs.get("vjepa_mask_ratio", 0.75))
+            # Slice prediction config
+            slice_window_size: int = int(additional_inputs.get("slice_window_size", 16))
+            slice_stride: int = int(additional_inputs.get("slice_stride", 2))
 
         # Optional: save intermediate decoded keyframes for visualization
         save_keyframes = False

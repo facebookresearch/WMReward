@@ -3,9 +3,8 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 from dataclasses import dataclass
-# from diffusers import CogVideoXImageToVideoPipeline
-from pipelines.pipeline_cogvideox_image2video_vjepa import CogVideoXImageToVideoPipeline
-from schedulers.cogvideox_ddim import CogVideoXDDIMScheduler
+from pipelines.pipeline_cogvideox_image2video import CogVideoXImageToVideoPipeline
+from diffusers import CogVideoXDDIMScheduler
 from diffusers.utils import export_to_video, load_image
 import os
 
@@ -141,9 +140,6 @@ def vjepa_surprise_batch(vids_btchw: torch.Tensor,
         )
         out[i] = float(loss)
     return out  # (B,)
-
-# (Distributed inference removed for single-GPU simplification)
-
 
 # ===================== main ======================
 def main():
@@ -320,8 +316,9 @@ def main():
 
     # --- 5) Run steered sampling (single GPU, batched particles)
     out = pipe(
-        video=[init_image],
-        prompt=[PROMPT],
+        video=[init_image] * N_PARTICLES,
+        prompt=[PROMPT] * N_PARTICLES,
+        # negative_prompt=[NEG_PROMPT] * N_PARTICLES,
         num_frames=NUM_FRAMES,
         num_inference_steps=NUM_STEPS,
         guidance_scale=GUIDANCE_SCALE,
@@ -331,11 +328,10 @@ def main():
         generator=gens,
         callback_on_step_end=fk_callback,
         callback_on_step_end_tensor_inputs=["latents"],
-        loss_fn="slice_pred",
         guidance_step=build_seq("0x50", NUM_STEPS, is_float=False),
         guidance_lr=build_seq("0x50", NUM_STEPS, is_float=True),
         guidance_frequency=1,
-        additional_inputs={},
+        additional_inputs=None,
     )
 
     # --- 6) Final pick via V-JEPA (FAIL HARD for debugging)

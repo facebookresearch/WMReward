@@ -1,7 +1,7 @@
 # from pipelines.pipeline_cosmos_image2video_14b import Cosmos2VideoToWorldPipeline
 # from pipelines.pipeline_cosmos_image2video_savemem import Cosmos2VideoToWorldPipeline
 # from pipelines.pipeline_cosmos_image2video_v1 import Cosmos2VideoToWorldPipeline
-from pipelines.pipeline_cosmos_image2video_v2 import Cosmos2VideoToWorldPipeline
+from pipelines.pipeline_cosmos_image2video import Cosmos2VideoToWorldPipeline
 import os
 import torch
 from datetime import datetime
