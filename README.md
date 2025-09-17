@@ -15,6 +15,7 @@ git clone https://github.com/fairinternal/video_guidance.git
 cd ./vejap2
 git clone https://github.com/facebookresearch/vjepa2.git
 ```
+-- To run Cosmos, need approval from HF: https://huggingface.co/nvidia/Cosmos-Predict2-14B-Video2World
 2. (Optional) Activate conda env locally to debug
 ```bash
 source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
