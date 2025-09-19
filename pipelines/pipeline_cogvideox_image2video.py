@@ -1135,7 +1135,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
                         total_loss.backward()
                         grad = latents.grad.clone()
-                        # grads = grads.clip(-0.1, 0.1)
+                        grad = grad.clip(-0.1, 0.1)
                         latents.grad = None  # Clear the gradients
 
                         # Apply gradient clipping
@@ -1169,6 +1169,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                 #
                 #   - Uses noise_pred and pred_original_sample from the last repeat iteration
                 #   - This step is applied once per timestep, even outside guidance range
+                eta=0.0
                 with torch.no_grad():
                     latents = a_t * latents + b_t * pred_original_sample
                     # latents = a_t * latents + b_t * ((alpha_prod_t**0.5) * latents - (beta_prod_t**0.5) * noise_pred)
