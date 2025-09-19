@@ -8,17 +8,10 @@
 #SBATCH --ntasks-per-node=1           # 1 task per node
 #SBATCH --gres=gpu:8                  # 8 GPUs per node
 #SBATCH --cpus-per-task=48            # Adjust based on your cluster
-<<<<<<< Updated upstream
-#SBATCH --mem=512G                    # Adjust based on your cluster
-#SBATCH --time=24:00:00               # Adjust based on expected runtime
-#SBATCH --output=./jobs/smc_node_%A_%a.out
-#SBATCH --error=./jobs/smc_%A_%a.err
-=======
 #SBATCH --mem=0G                    # Adjust based on your cluster
 #SBATCH --time=48:00:00               # Adjust based on expected runtime
 #SBATCH --output=jobs/smc_node_%A_%a.out
 #SBATCH --error=jobs/smc_%A_%a.err
->>>>>>> Stashed changes
 
 source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
 conda activate vg
