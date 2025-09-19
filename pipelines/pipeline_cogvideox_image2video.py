@@ -959,6 +959,28 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                     latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
                     latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
+                    # Handle case where callback changed batch size of latents
+                    current_batch_size = latents.shape[0]
+                    if image_latents.shape[0] != current_batch_size:
+                        # Adjust image_latents to match current batch size (e.g., after freeze callback)
+                        if current_batch_size == 1:
+                            # Take the first (or best) image latent
+                            image_latents = image_latents[:1]
+                        else:
+                            # Replicate to match batch size
+                            image_latents = image_latents[:1].repeat(current_batch_size, 1, 1, 1, 1)
+                    
+                    # Also handle prompt_embeds batch size mismatch when CFG is enabled
+                    expected_prompt_batch = current_batch_size * (2 if do_classifier_free_guidance else 1)
+                    if prompt_embeds.shape[0] != expected_prompt_batch:
+                        if do_classifier_free_guidance:
+                            # Split negative and positive prompts, take first of each, then recombine
+                            neg_embeds, pos_embeds = prompt_embeds.chunk(2)
+                            prompt_embeds = torch.cat([neg_embeds[:current_batch_size], pos_embeds[:current_batch_size]], dim=0)
+                        else:
+                            # Just take the first batch entries
+                            prompt_embeds = prompt_embeds[:current_batch_size]
+                    
                     latent_image_input = torch.cat([image_latents] * 2) if do_classifier_free_guidance else image_latents
                     latent_model_input = torch.cat([latent_model_input, latent_image_input], dim=2)
 
@@ -1113,11 +1135,12 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
                         total_loss.backward()
                         grad = latents.grad.clone()
+                        # grads = grads.clip(-0.1, 0.1)
                         latents.grad = None  # Clear the gradients
 
                         # Apply gradient clipping
                         scaling = (latents.norm(2) / (grad.norm(2) + 1e-8))
-                        scaling = scaling * (1 / (a_t ** 0.5))
+                        # scaling = scaling * (1 / (a_t ** 0.5))
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
                             with torch.no_grad():

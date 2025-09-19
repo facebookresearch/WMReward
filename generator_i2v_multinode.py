@@ -124,7 +124,7 @@ def get_simple_experiment_name(args):
         name = (
             f"guidance_{version}_f{args.num_frames}_s{args.num_inference_steps}"
             f"_c{getattr(args, 'vjepa_context_frames', 8)}"
-            f"_cfg{args.cfg_scale}_{loss_mode}"
+            f"_cfg{args.cfg_scale}_gsp{getattr(args, 'guidance_step_pattern', '')}_glp{getattr(args, 'guidance_lr_pattern', '')}_gf{getattr(args, 'guidance_frequency', '')}_{loss_mode}"
         )
         
         # Add vjepa variant if not default
