@@ -41,10 +41,9 @@ TRIPLETS=(
 # SMC parameters
 SMC_NUM_PARTICLES_LIST=(2 12 16)
 SMC_BETA_CONST=24.0
-SMC_ESS_THRESHOLD=0.97
 SMC_EARLY_FRAC=0.2
 SMC_LATE_FRAC=0.8
-SMC_STEP_STRIDE=3
+SMC_STEP_STRIDE=3  # Check and resample every 3 steps (deterministic)
 
 # Base model and data
 MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")
@@ -116,7 +115,6 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
                             --loss_mode "$LOSS_MODE" \
                             --smc_num_particles $N_PARTICLES \
                             --smc_beta_const $SMC_BETA_CONST \
-                            --smc_ess_threshold $SMC_ESS_THRESHOLD \
                             --smc_early_frac $SMC_EARLY_FRAC \
                             --smc_late_frac $SMC_LATE_FRAC \
                             --smc_step_stride $SMC_STEP_STRIDE &

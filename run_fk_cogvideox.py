@@ -25,13 +25,11 @@ FPS            = 8
 # ===================== FK/SMC (mid-window; freeze after late_frac) ======================
 N_PARTICLES    = 4
 BETA_CONST     = 24.0       # temperature β (increase for more aggressive pruning)
-ESS_THRESHOLD  = 0.97        # resample when ESS/N < this
+EARLY_FRAC     = 0.30       # start of mid-window (fraction of steps)
+LATE_FRAC      = 0.90       # freeze from this fraction of steps (end of SMC, start single particle)  
+STEP_STRIDE    = 5          # check and resample every k steps within [EARLY_FRAC, LATE_FRAC) (deterministic)
 
-EARLY_FRAC     = 0.10       # start of mid-window (fraction of steps)
-LATE_FRAC      = 0.48      # freeze from this fraction of steps (end of SMC, start single particle)
-STEP_STRIDE    = 5          # check every k steps within [EARLY_FRAC, LATE_FRAC)
-
-POTENTIAL_MODE = "max"      # fixed: running max φ
+POTENTIAL_MODE = "current"  # Use current step reward (no running max)
 SEED0          = 42
 
 # =============== DEBUG CONFIG =================
@@ -164,13 +162,11 @@ def main():
     )
     encoder.eval().cuda(); target_encoder.eval().cuda(); predictor.eval().cuda()
 
-    # --- 3) Particles, weights, running max φ, lineage
+    # --- 3) Particles, weights, current rewards, lineage
     gens = [torch.Generator(device="cuda").manual_seed(SEED0 + i) for i in range(N_PARTICLES)]
     weights     = torch.full((N_PARTICLES,), 1.0 / N_PARTICLES, device="cuda", dtype=torch.float32)
-    running_max = torch.full((N_PARTICLES,), -torch.inf, device="cuda", dtype=torch.float32)
     lineage     = torch.arange(N_PARTICLES, device="cuda")
-    # Track product of potentials for final-step correction
-    product_of_potentials = torch.ones(N_PARTICLES, device="cuda", dtype=torch.float32)
+    # Track current rewards only (no accumulation across steps)
     population_rs = torch.zeros(N_PARTICLES, device="cuda", dtype=torch.float32)
 
     # --- 3b) Mid-window checks + freeze boundary
@@ -182,13 +178,13 @@ def main():
 
     print(f"[FK] checkpoints (0-based): {CHECK_STEPS}")
     print(f"[FK] freeze from step >= {FREEZE_AFTER_STEP}")
-    print(f"[FK] N={N_PARTICLES}  beta={BETA_CONST}  ESS_th={ESS_THRESHOLD}  mode={POTENTIAL_MODE}")
+    print(f"[FK] N={N_PARTICLES}  beta={BETA_CONST}  mode={POTENTIAL_MODE}  (deterministic resample every {STEP_STRIDE} steps)")
     print(f"[FK] Single-GPU FK/SMC steering with {N_PARTICLES} particles in one batch")
 
     # --- 4) FK/SMC callback
     @torch.inference_mode()
     def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
-        nonlocal running_max, frozen_idx, weights, product_of_potentials, population_rs
+        nonlocal frozen_idx, weights, population_rs
 
         latents = callback_kwargs.get("latents", None)  # (B, F, C, H, W)
         if latents is None:
@@ -220,38 +216,30 @@ def main():
             surprise_t = vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor)  # (B,)
             phi_t = 1.0 - surprise_t     # higher is better
 
-            # 2) Potential: running max
-            running_max = torch.maximum(running_max, phi_t)
-            phi = running_max
+            # 2) Potential: use current step reward directly
+            phi = phi_t  # Use current step reward, not running max
 
-            # Maintain product of potentials (un-normalized) for final-step correction
-            pot_term = torch.exp((BETA_CONST * phi).clamp(min=-60.0, max=60.0))
-            product_of_potentials = product_of_potentials * pot_term
+            # Use current reward only (no accumulation)
             population_rs = phi
 
-            # If this is the final point, use corrected weight BEFORE any resampling
+            # If this is the final point, use current reward for resampling
             last_check_step = CHECK_STEPS[-1] if len(CHECK_STEPS) > 0 else -1
             is_final_point = (step == last_check_step) or (step == (NUM_STEPS - 1))
             if is_final_point:
-                w = torch.exp((BETA_CONST * population_rs).clamp(min=-60.0, max=60.0)) / (product_of_potentials + 1e-8)
+                # Use current reward directly for final resampling
+                w = torch.exp((BETA_CONST * population_rs).clamp(min=-60.0, max=60.0))
                 w = torch.clamp(w, 0.0, 1e10)
                 w[w.isnan()] = 0.0
 
                 normalized_w = w / (w.sum() + 1e-8)
-                ess = 1.0 / (normalized_w.pow(2).sum() + 1e-8)
-                print(f"      [final-correction] ESS={float(ess):.3f}")
-
-                if ess < 0.5 * N_PARTICLES:
-                    print(f"      [final-correction] RESAMPLE at step {step} with ESS={float(ess):.3f}")
-                    idx = torch.multinomial(w, num_samples=w.numel(), replacement=True)
-                    latents = latents.index_select(0, idx)
-                    weights.fill_(1.0 / w.numel())
-                    running_max = running_max.index_select(0, idx)
-                    product_of_potentials = product_of_potentials.index_select(0, idx)
-                    population_rs = population_rs.index_select(0, idx)
-                    lineage.copy_(lineage.index_select(0, idx))
-                else:
-                    weights.copy_(normalized_w)
+                print(f"      [final-correction] Final step: always resample regardless of stride")
+                
+                # Always resample at final step (deterministic)
+                idx = torch.multinomial(w, num_samples=w.numel(), replacement=True)
+                latents = latents.index_select(0, idx)
+                weights.fill_(1.0 / w.numel())
+                population_rs = population_rs.index_select(0, idx)
+                lineage.copy_(lineage.index_select(0, idx))
 
                 return {"latents": latents}
 
@@ -262,25 +250,21 @@ def main():
             new_w = weights * incr
             new_w = new_w / (new_w.sum() + 1e-8)
 
-            # 4) ESS-based resampling (no forced-first)
-            ess_over_n = ess_normed(new_w) / new_w.numel()
-            ent_bits   = weight_entropy_bits(new_w)
+            # 4) Deterministic resampling every STEP_STRIDE steps
             best_loss, best_idx = float(surprise_t.min()), int(surprise_t.argmin())
             worst_loss          = float(surprise_t.max())
             mean_loss           = float(surprise_t.mean())
             std_loss            = float(surprise_t.std(unbiased=False))
 
-            do_resample = (ess_over_n < ESS_THRESHOLD)
-
             print(
                 f"[FK] step={step:02d} (t={int(timestep)}), "
                 f"loss min/mean±std/max= {best_loss:.4f} / {mean_loss:.4f}±{std_loss:.4f} / {worst_loss:.4f}, "
-                f"beta={BETA_CONST:.1f}, ESS/N={ess_over_n:.3f}, H(bits)={ent_bits:.2f}, resample={do_resample}"
+                f"beta={BETA_CONST:.1f}, stride={STEP_STRIDE} (deterministic resample)"
             )
             if DEBUG_TOPK > 0:
-                topk_phi_t = torch.topk(phi_t, k=min(DEBUG_TOPK, phi_t.numel()))
-                print(f"      top{topk_phi_t.values.numel()} φ_t idx={topk_phi_t.indices.tolist()} "
-                      f"vals={[f'{v:.4f}' for v in topk_phi_t.values.tolist()]} (best_loss idx={best_idx})")
+                topk_phi = torch.topk(phi, k=min(DEBUG_TOPK, phi.numel()))
+                print(f"      top{topk_phi.values.numel()} φ (current) idx={topk_phi.indices.tolist()} "
+                      f"vals={[f'{v:.4f}' for v in topk_phi.values.tolist()]} (best_loss idx={best_idx})")
                 topk_w = torch.topk(new_w, k=min(DEBUG_TOPK, new_w.numel()))
                 print(f"      top{topk_w.values.numel()} w   idx={topk_w.indices.tolist()} "
                       f"vals={[f'{v:.3f}' for v in topk_w.values.tolist()]}")
@@ -288,55 +272,31 @@ def main():
             if PRINT_WEIGHTS:
                 print(f"      w = {[float(x) for x in new_w.tolist()]}")
 
-            # 5) Resampling
-            if do_resample:
-                # --- multinomial ---
-                idx = torch.multinomial(new_w, num_samples=new_w.numel(), replacement=True)
-                latents = latents.index_select(0, idx)
+            # 5) Deterministic resampling (always resample at checkpoint steps)
+            # --- multinomial ---
+            idx = torch.multinomial(new_w, num_samples=new_w.numel(), replacement=True)
+            latents = latents.index_select(0, idx)
 
-                # reset weights; propagate running_max and lineage
-                weights.fill_(1.0 / new_w.numel())
-                running_max = running_max.index_select(0, idx)
-                product_of_potentials = product_of_potentials.index_select(0, idx)
-                population_rs = population_rs.index_select(0, idx)
-                lineage.copy_(lineage.index_select(0, idx))
+            # reset weights; propagate lineage
+            weights.fill_(1.0 / new_w.numel())
+            population_rs = population_rs.index_select(0, idx)
+            lineage.copy_(lineage.index_select(0, idx))
 
-                # lineage histogram (debug)
-                print(f"      RESAMPLE (multinomial)! idx[:{PRINT_IDX_HEAD}]={idx[:PRINT_IDX_HEAD].tolist()} -> weights reset")
-                counts = torch.bincount(lineage, minlength=N_PARTICLES).cpu().numpy()
-                head_bins = min(LINEAGE_HIST_MAX, len(counts))
-                hist_str = ", ".join([f"{i}:{int(c)}" for i, c in enumerate(counts[:head_bins]) if c > 0])
-                tail_nonzero = [(i, int(c)) for i, c in enumerate(counts[head_bins:]) if c > 0]
-                if hist_str or tail_nonzero:
-                    print(f"      lineage copies (orig_seed_id:count) head -> {hist_str}" +
-                          (f" ... +{len(tail_nonzero)} more" if tail_nonzero else ""))
-            else:
-                weights.copy_(new_w)
-                print(f"      no resample (ESS/N={ess_over_n:.3f} ≥ {ESS_THRESHOLD:.3f})")
+            # lineage histogram (debug)
+            print(f"      RESAMPLE (multinomial, every {STEP_STRIDE} steps)! idx[:{PRINT_IDX_HEAD}]={idx[:PRINT_IDX_HEAD].tolist()} -> weights reset")
+            counts = torch.bincount(lineage, minlength=N_PARTICLES).cpu().numpy()
+            head_bins = min(LINEAGE_HIST_MAX, len(counts))
+            hist_str = ", ".join([f"{i}:{int(c)}" for i, c in enumerate(counts[:head_bins]) if c > 0])
+            tail_nonzero = [(i, int(c)) for i, c in enumerate(counts[head_bins:]) if c > 0]
+            if hist_str or tail_nonzero:
+                print(f"      lineage copies (orig_seed_id:count) head -> {hist_str}" +
+                      (f" ... +{len(tail_nonzero)} more" if tail_nonzero else ""))
 
             return {"latents": latents}
 
         return {}  # outside mid-window: no-op
 
     # --- 5) Run steered sampling (single GPU, batched particles)
-    # out = pipe(
-    #     video=[init_image] * N_PARTICLES,
-    #     prompt=[PROMPT] * N_PARTICLES,
-    #     # negative_prompt=[NEG_PROMPT] * N_PARTICLES,
-    #     num_frames=NUM_FRAMES,
-    #     num_inference_steps=NUM_STEPS,
-    #     guidance_scale=GUIDANCE_SCALE,
-    #     use_dynamic_cfg=True,
-    #     num_videos_per_prompt=1,
-    #     eta=1.0,
-    #     generator=gens,
-    #     callback_on_step_end=fk_callback,
-    #     callback_on_step_end_tensor_inputs=["latents"],
-    #     guidance_step=build_seq("0x50", NUM_STEPS, is_float=False),
-    #     guidance_lr=build_seq("0x50", NUM_STEPS, is_float=True),
-    #     guidance_frequency=1,
-    #     additional_inputs=None,
-    # )
     out = pipe(
         video=[init_image] * N_PARTICLES,
         prompt=[PROMPT] * N_PARTICLES,
@@ -350,11 +310,29 @@ def main():
         generator=gens,
         callback_on_step_end=fk_callback,
         callback_on_step_end_tensor_inputs=["latents"],
-        guidance_step=build_seq("0x25,1x25", NUM_STEPS, is_float=False),
-        guidance_lr=build_seq("0x25,0.003x25", NUM_STEPS, is_float=True),
-        guidance_frequency=3,
+        guidance_step=build_seq("0x50", NUM_STEPS, is_float=False),
+        guidance_lr=build_seq("0x50", NUM_STEPS, is_float=True),
+        guidance_frequency=1,
         additional_inputs=None,
     )
+    # out = pipe(
+    #     video=[init_image] * N_PARTICLES,
+    #     prompt=[PROMPT] * N_PARTICLES,
+    #     # negative_prompt=[NEG_PROMPT] * N_PARTICLES,
+    #     num_frames=NUM_FRAMES,
+    #     num_inference_steps=NUM_STEPS,
+    #     guidance_scale=GUIDANCE_SCALE,
+    #     use_dynamic_cfg=True,
+    #     num_videos_per_prompt=1,
+    #     eta=1.0,
+    #     generator=gens,
+    #     callback_on_step_end=fk_callback,
+    #     callback_on_step_end_tensor_inputs=["latents"],
+    #     guidance_step=build_seq("0x25,1x25", NUM_STEPS, is_float=False),
+    #     guidance_lr=build_seq("0x25,0.003x25", NUM_STEPS, is_float=True),
+    #     guidance_frequency=3,
+    #     additional_inputs=None,
+    # )
 
     # --- 6) Final pick via V-JEPA (FAIL HARD for debugging)
     if not out.frames:

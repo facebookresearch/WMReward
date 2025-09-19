@@ -93,11 +93,10 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
         metadata["parameters"].update({
             "smc_num_particles": getattr(args, 'smc_num_particles', 16),
             "smc_beta_const": getattr(args, 'smc_beta_const', 24.0),
-            "smc_ess_threshold": getattr(args, 'smc_ess_threshold', 0.97),
-            "smc_early_frac": getattr(args, 'smc_early_frac', 0.10),
-            "smc_late_frac": getattr(args, 'smc_late_frac', 0.70),
+            "smc_early_frac": getattr(args, 'smc_early_frac', 0.40),
+            "smc_late_frac": getattr(args, 'smc_late_frac', 0.90),
             "smc_step_stride": getattr(args, 'smc_step_stride', 5),
-            "smc_potential_mode": getattr(args, 'smc_potential_mode', 'max'),
+            "smc_potential_mode": getattr(args, 'smc_potential_mode', 'current'),
         })
     
     # Save metadata file
@@ -136,6 +135,7 @@ def get_simple_experiment_name(args):
         name = (
             f"smc_{version}_f{args.num_frames}_s{args.num_inference_steps}"
             f"_cfg{args.cfg_scale}_N{getattr(args, 'smc_num_particles', 16)}"
+            f"_stride{getattr(args, 'smc_step_stride', 5)}"
         )
 
     # Add rejection samples suffix if using rejection sampling
@@ -439,10 +439,9 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
     steps = int(args.num_inference_steps)
     num_particles = int(getattr(args, 'smc_num_particles', 16))
     beta_const = float(getattr(args, 'smc_beta_const', 24.0))
-    ess_threshold = float(getattr(args, 'smc_ess_threshold', 0.97))
     early_frac = float(getattr(args, 'smc_early_frac', 0.20))
     late_frac = float(getattr(args, 'smc_late_frac', 0.90))
-    step_stride = int(getattr(args, 'smc_step_stride', 5))
+    step_stride = int(getattr(args, 'smc_step_stride', 5))  # Check and resample every m steps
 
     start = int(round(steps * early_frac))
     end = int(round(steps * late_frac))
@@ -451,15 +450,14 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
 
     generators = [torch.Generator(device="cuda").manual_seed(int(args.seed) + i) for i in range(num_particles)]
     weights = torch.full((num_particles,), 1.0 / num_particles, device="cuda", dtype=torch.float32)
-    running_max = torch.full((num_particles,), -torch.inf, device="cuda", dtype=torch.float32)
     lineage = torch.arange(num_particles, device="cuda")
-    product_of_potentials = torch.ones(num_particles, device="cuda", dtype=torch.float32)
+    # Track current rewards only (no accumulation across steps)
     population_rs = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
     frozen_idx = None
 
     @torch.inference_mode()
     def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
-        nonlocal running_max, frozen_idx, weights, product_of_potentials, population_rs, lineage
+        nonlocal frozen_idx, weights, population_rs, lineage
 
         latents = callback_kwargs.get("latents", None)
         if latents is None:
@@ -482,35 +480,29 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
             surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
             phi_t = 1.0 - surprise_t
 
-            running_max = torch.maximum(running_max, phi_t)
-            phi = running_max
+            # Use current step reward directly (no running max)
+            phi = phi_t
 
-            pot_term = torch.exp((beta_const * phi).clamp(min=-60.0, max=60.0))
-            product_of_potentials = product_of_potentials * pot_term
+            # Use current reward only (no accumulation)
             population_rs = phi
 
             last_check_step = check_steps[-1] if len(check_steps) > 0 else -1
             is_final_point = (step == last_check_step) or (step == (steps - 1))
             if is_final_point:
-                w = torch.exp((beta_const * population_rs).clamp(min=-60.0, max=60.0)) / (product_of_potentials + 1e-8)
+                # Use current reward directly for final resampling
+                w = torch.exp((beta_const * population_rs).clamp(min=-60.0, max=60.0))
                 w = torch.clamp(w, 0.0, 1e10)
                 w[w.isnan()] = 0.0
 
                 normalized_w = w / (w.sum() + 1e-8)
-                ess = 1.0 / (normalized_w.pow(2).sum() + 1e-8)
-                print(f"      [final-correction] ESS={float(ess):.3f}")
-
-                if ess < 0.5 * num_particles:
-                    print(f"      [final-correction] RESAMPLE at step {step} with ESS={float(ess):.3f}")
-                    idx = torch.multinomial(w, num_samples=w.numel(), replacement=True)
-                    latents = latents.index_select(0, idx)
-                    weights.fill_(1.0 / w.numel())
-                    running_max = running_max.index_select(0, idx)
-                    product_of_potentials = product_of_potentials.index_select(0, idx)
-                    population_rs = population_rs.index_select(0, idx)
-                    lineage.copy_(lineage.index_select(0, idx))
-                else:
-                    weights.copy_(normalized_w)
+                print(f"      [final-correction] Final step: always resample regardless of frequency")
+                
+                # Always resample at final step (deterministic)
+                idx = torch.multinomial(w, num_samples=w.numel(), replacement=True)
+                latents = latents.index_select(0, idx)
+                weights.fill_(1.0 / w.numel())
+                population_rs = population_rs.index_select(0, idx)
+                lineage.copy_(lineage.index_select(0, idx))
 
                 return {"latents": latents}
 
@@ -520,33 +512,25 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
             new_w = weights * incr
             new_w = new_w / (new_w.sum() + 1e-8)
 
-            ess_over_n = _ess_normed(new_w) / new_w.numel()
-            ent_bits = _weight_entropy_bits(new_w)
             best_loss = float(surprise_t.min())
             best_idx = int(surprise_t.argmin())
             worst_loss = float(surprise_t.max())
             mean_loss = float(surprise_t.mean())
             std_loss = float(surprise_t.std(unbiased=False))
-            do_resample = (ess_over_n < ess_threshold)
-
+            
             print(
                 f"[FK] step={step:02d} (t={int(timestep)}), "
                 f"loss min/mean±std/max= {best_loss:.4f} / {mean_loss:.4f}±{std_loss:.4f} / {worst_loss:.4f}, "
-                f"beta={beta_const:.1f}, ESS/N={ess_over_n:.3f}, H(bits)={ent_bits:.2f}, resample={do_resample}"
+                f"beta={beta_const:.1f}, stride={step_stride} (deterministic resample)"
             )
 
-            if do_resample:
-                idx = torch.multinomial(new_w, num_samples=new_w.numel(), replacement=True)
-                latents = latents.index_select(0, idx)
-                weights.fill_(1.0 / new_w.numel())
-                running_max = running_max.index_select(0, idx)
-                product_of_potentials = product_of_potentials.index_select(0, idx)
-                population_rs = population_rs.index_select(0, idx)
-                lineage.copy_(lineage.index_select(0, idx))
-                print(f"      RESAMPLE (multinomial)! -> weights reset")
-            else:
-                weights.copy_(new_w)
-                print(f"      no resample (ESS/N={ess_over_n:.3f} ≥ {ess_threshold:.3f})")
+            # Always resample at check steps (deterministic)
+            idx = torch.multinomial(new_w, num_samples=new_w.numel(), replacement=True)
+            latents = latents.index_select(0, idx)
+            weights.fill_(1.0 / new_w.numel())
+            population_rs = population_rs.index_select(0, idx)
+            lineage.copy_(lineage.index_select(0, idx))
+            print(f"      RESAMPLE (multinomial, every {step_stride} steps)! -> weights reset")
 
             return {"latents": latents}
 
@@ -563,7 +547,7 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
         guidance_scale=args.cfg_scale,
         use_dynamic_cfg=True,
         num_videos_per_prompt=1,
-        eta=0.01,
+        eta=1.0,
         generator=generators,
         callback_on_step_end=fk_callback,
         callback_on_step_end_tensor_inputs=["latents"],
@@ -945,10 +929,9 @@ def main():
     # SMC parameters (only used when sampling_method='smc')
     parser.add_argument('--smc_num_particles', type=int, default=16, help='Number of SMC particles.')
     parser.add_argument('--smc_beta_const', type=float, default=24.0, help='FK potential temperature beta.')
-    parser.add_argument('--smc_ess_threshold', type=float, default=0.97, help='Resample when ESS/N < threshold.')
     parser.add_argument('--smc_early_frac', type=float, default=0.10, help='Start of mid-window as frac of steps.')
     parser.add_argument('--smc_late_frac', type=float, default=0.70, help='End of mid-window as frac of steps.')
-    parser.add_argument('--smc_step_stride', type=int, default=5, help='Check every k steps in mid-window.')
+    parser.add_argument('--smc_step_stride', type=int, default=5, help='Check and resample every k steps in mid-window (deterministic).')
 
     parser.add_argument('--seed', type=int, default=42, help='Seed for reproducibility.')
     args = parser.parse_args()
@@ -997,8 +980,8 @@ def main():
         print(f"SMC steering enabled:")
         print(f"  - Particles: {args.smc_num_particles}")
         print(f"  - Beta: {args.smc_beta_const}")
-        print(f"  - ESS threshold: {args.smc_ess_threshold}")
         print(f"  - Mid-window: [{args.smc_early_frac}, {args.smc_late_frac}), stride {args.smc_step_stride}")
+        print(f"  - Deterministic resampling: every {args.smc_step_stride} steps")
     
     print(f"{'='*60}\n")
 

@@ -1169,19 +1169,17 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                 #
                 #   - Uses noise_pred and pred_original_sample from the last repeat iteration
                 #   - This step is applied once per timestep, even outside guidance range
-                eta=0.0
                 with torch.no_grad():
                     latents = a_t * latents + b_t * pred_original_sample
                     # latents = a_t * latents + b_t * ((alpha_prod_t**0.5) * latents - (beta_prod_t**0.5) * noise_pred)
                     if eta > 0:
+                        
                         beta_prod_t_prev = 1 - alpha_prod_t_prev
                         variance = (beta_prod_t_prev / beta_prod_t) * (1 - alpha_prod_t / alpha_prod_t_prev)
-                        std_dev_t = 0.01 * variance ** (0.5)
+                        std_dev_t = eta * variance ** (0.5) / 14.6
                         noise = randn_tensor(latents.shape, generator=generator, device=device, dtype=latents.dtype)
                         variance = std_dev_t * noise
-                        # print("alpha_prod_t", alpha_prod_t.item())
-                        # print("std_dev_t", std_dev_t.item())
-                        # print("variance", variance.norm(2).item(), latents.norm(2).item())
+                        # print("Stochastic Add", eta, "std_dev_t", std_dev_t)
                         latents = latents + variance
                 
                 latents = latents.to(prompt_embeds.dtype)
