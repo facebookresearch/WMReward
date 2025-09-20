@@ -21,8 +21,8 @@ nvidia-smi
 NUM_NODES=4                           # Total number of nodes
 NUM_GPUS_PER_NODE=8                   # GPUs per node
 TOTAL_GPUS=$((NUM_NODES * NUM_GPUS_PER_NODE))
-# NODE_ID=${SLURM_ARRAY_TASK_ID}
-NODE_ID=0
+NODE_ID=${SLURM_ARRAY_TASK_ID}
+# NODE_ID=0
 
 echo "Starting node ${NODE_ID} of ${NUM_NODES} (GPUs per node: ${NUM_GPUS_PER_NODE}, Total GPUs: ${TOTAL_GPUS})"
 
