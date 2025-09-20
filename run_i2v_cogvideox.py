@@ -48,7 +48,7 @@ def main():
     ap.add_argument("--steps", type=int, default=50)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--guidance_scale", type=float, default=6.0)
-    ap.add_argument("--guidance_step_pattern", type=str, default="0x5,1x45")
+    ap.add_argument("--guidance_step_pattern", type=str, default="0x3,1x47")
     # ap.add_argument("--guidance_step_pattern", type=str, default="0x50")
     ap.add_argument("--guidance_lr_pattern", type=str, default="0.003x50")
     # ap.add_argument("--guidance_lr_pattern", type=str, default="3x50")
@@ -108,7 +108,6 @@ def main():
             "slice_stride": args.slice_stride,
             "vae_decode_scale": args.vae_decode_scale,
             "loss_mode": args.loss_mode,
-            # Uncomment to save intermediate MP4s per step:
             "save_intermediate_keyframes": True,
             "intermediate_fps": args.fps,
             "intermediate_save_dir": os.path.join(args.out_dir, f"{run_name}_intermediate"),

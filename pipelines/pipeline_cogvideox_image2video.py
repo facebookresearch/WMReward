@@ -1135,12 +1135,18 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
                         total_loss.backward()
                         grad = latents.grad.clone()
-                        grad = grad.clip(-0.1, 0.1)
+
+                        # print("grad range", grad.min().item(), grad.max().item())   
+
+                        # grad = grad.clip(-0.1, 0.1)
                         latents.grad = None  # Clear the gradients
 
                         # Apply gradient clipping
                         scaling = (latents.norm(2) / (grad.norm(2) + 1e-8))
-                        # scaling = scaling * (1 / (a_t ** 0.5))
+                        scaling = scaling * (1 / (a_t ** 0.5))
+
+                        scaling = torch.clamp(scaling, max=15000)
+                        
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
                             with torch.no_grad():

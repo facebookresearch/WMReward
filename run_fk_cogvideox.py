@@ -26,7 +26,7 @@ FPS            = 8
 N_PARTICLES    = 4
 BETA_CONST     = 24.0       # temperature β (increase for more aggressive pruning)
 EARLY_FRAC     = 0.30       # start of mid-window (fraction of steps)
-LATE_FRAC      = 0.90       # freeze from this fraction of steps (end of SMC, start single particle)  
+LATE_FRAC      = 0.60       # freeze from this fraction of steps (end of SMC, start single particle)  
 STEP_STRIDE    = 5          # check and resample every k steps within [EARLY_FRAC, LATE_FRAC) (deterministic)
 
 POTENTIAL_MODE = "current"  # Use current step reward (no running max)
@@ -297,24 +297,6 @@ def main():
         return {}  # outside mid-window: no-op
 
     # --- 5) Run steered sampling (single GPU, batched particles)
-    out = pipe(
-        video=[init_image] * N_PARTICLES,
-        prompt=[PROMPT] * N_PARTICLES,
-        # negative_prompt=[NEG_PROMPT] * N_PARTICLES,
-        num_frames=NUM_FRAMES,
-        num_inference_steps=NUM_STEPS,
-        guidance_scale=GUIDANCE_SCALE,
-        use_dynamic_cfg=True,
-        num_videos_per_prompt=1,
-        eta=1.0,
-        generator=gens,
-        callback_on_step_end=fk_callback,
-        callback_on_step_end_tensor_inputs=["latents"],
-        guidance_step=build_seq("0x50", NUM_STEPS, is_float=False),
-        guidance_lr=build_seq("0x50", NUM_STEPS, is_float=True),
-        guidance_frequency=1,
-        additional_inputs=None,
-    )
     # out = pipe(
     #     video=[init_image] * N_PARTICLES,
     #     prompt=[PROMPT] * N_PARTICLES,
@@ -328,11 +310,43 @@ def main():
     #     generator=gens,
     #     callback_on_step_end=fk_callback,
     #     callback_on_step_end_tensor_inputs=["latents"],
-    #     guidance_step=build_seq("0x25,1x25", NUM_STEPS, is_float=False),
-    #     guidance_lr=build_seq("0x25,0.003x25", NUM_STEPS, is_float=True),
-    #     guidance_frequency=3,
+    #     guidance_step=build_seq("0x50", NUM_STEPS, is_float=False),
+    #     guidance_lr=build_seq("0x50", NUM_STEPS, is_float=True),
+    #     guidance_frequency=1,
     #     additional_inputs=None,
     # )
+
+    out = pipe(
+        video=[init_image] * N_PARTICLES,
+        prompt=[PROMPT] * N_PARTICLES,
+        # negative_prompt=[NEG_PROMPT] * N_PARTICLES,
+        num_frames=NUM_FRAMES,
+        num_inference_steps=NUM_STEPS,
+        guidance_scale=GUIDANCE_SCALE,
+        use_dynamic_cfg=True,
+        num_videos_per_prompt=1,
+        eta=1.0,
+        generator=gens,
+        callback_on_step_end=fk_callback,
+        callback_on_step_end_tensor_inputs=["latents"],
+        guidance_step=build_seq("0x31,1x19", NUM_STEPS, is_float=False),
+        guidance_lr=build_seq("0x31,0.003x19", NUM_STEPS, is_float=True),
+        guidance_frequency=1,
+        additional_inputs={
+            "vjepa_variant": "vit_giant",
+            "vjepa_img_size": 256,
+            "vjepa_masking_mode": "causal",
+            "vjepa_context_frames": 8,
+            "slice_window_size": 16,
+            "slice_stride": 8,
+            "vae_decode_scale": 0.8,
+            "loss_mode": "max",
+            "save_intermediate_keyframes": False,
+            "intermediate_fps": 8,
+            "intermediate_save_dir": None,
+        },
+        travel_time=(-1, -1),
+    )
 
     # --- 6) Final pick via V-JEPA (FAIL HARD for debugging)
     if not out.frames:
