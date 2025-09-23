@@ -2,7 +2,7 @@
 
 # SLURM job array configuration for multi-node execution (SMC and SMC+Guidance)
 #SBATCH --job-name=cogvideox_smc_hybrid
-#SBATCH --array=0-3                    # nodes 0..3
+#SBATCH --array=0-2                    # nodes 0..3
 #SBATCH --nodes=1                      # Each job uses 1 node
 #SBATCH --qos=dream_high
 #SBATCH --ntasks-per-node=1           # 1 task per node
@@ -18,7 +18,7 @@ conda activate vg
 nvidia-smi
 
 # Multi-node configuration
-NUM_NODES=4                           # Total number of nodes
+NUM_NODES=3                           # Total number of nodes
 NUM_GPUS_PER_NODE=8                   # GPUs per node
 TOTAL_GPUS=$((NUM_NODES * NUM_GPUS_PER_NODE))
 NODE_ID=${SLURM_ARRAY_TASK_ID}
@@ -33,9 +33,9 @@ TRIPLETS=(
 
 # SMC parameters
 SMC_NUM_PARTICLES_LIST=(4 8)
-SMC_BETA_CONST=10.0
-SMC_EARLY_FRAC=0.3
-SMC_LATE_FRAC=0.6
+SMC_BETA_CONST=8.0
+SMC_EARLY_FRAC=0.1
+SMC_LATE_FRAC=0.7
 SMC_STEP_STRIDE=5  # Check and resample every 7 steps (deterministic)
 
 # Guidance parameters (combined with SMC)
@@ -43,7 +43,7 @@ GUIDANCE_STEP_PATTERNS=(
     "0x31,1x19"     # Like run_fk_cogvideox.py
 )
 GUIDANCE_LR_PATTERNS=(
-    "0x31,0.003x19"  # Like run_fk_cogvideox.py
+    "0x31,0.001x19"  # Like run_fk_cogvideox.py
 )
 GUIDANCE_FREQUENCY=1
 
@@ -53,7 +53,7 @@ GUIDANCE_RANGES=(
 )
 
 # Sampling methods to test
-SAMPLING_METHODS=("smc" "smc_guid")
+SAMPLING_METHODS=("smc")
 
 # Base model and data
 MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")
@@ -70,7 +70,7 @@ CFG_SCALES=("6.0")
 VJEPA_VARIANTS=("vit_giant")
 VJEPA_IMG_SIZE=256
 VJEPA_MASKING_MODE="causal"
-LOSS_MODES=("max")
+LOSS_MODES=("mean")
 
 mkdir -p "$OUTPUT_FOLDER"
 

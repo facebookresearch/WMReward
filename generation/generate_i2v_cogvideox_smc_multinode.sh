@@ -32,11 +32,11 @@ TRIPLETS=(
 )
 
 # SMC parameters
-SMC_NUM_PARTICLES_LIST=(4 8 16)
+SMC_NUM_PARTICLES_LIST=(4 8)
 SMC_BETA_CONST=10.0
 SMC_EARLY_FRAC=0.3
-SMC_LATE_FRAC=0.7
-SMC_STEP_STRIDE=7  # Check and resample every 3 steps (deterministic)
+SMC_LATE_FRAC=0.95
+SMC_STEP_STRIDE=5  # Check and resample every 3 steps (deterministic)
 
 # Base model and data
 MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")

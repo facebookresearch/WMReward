@@ -29,7 +29,7 @@ EARLY_FRAC     = 0.30       # start of mid-window (fraction of steps)
 LATE_FRAC      = 0.60       # freeze from this fraction of steps (end of SMC, start single particle)  
 STEP_STRIDE    = 5          # check and resample every k steps within [EARLY_FRAC, LATE_FRAC) (deterministic)
 
-POTENTIAL_MODE = "current"  # Use current step reward (no running max)
+POTENTIAL_MODE = "sum"  # Use cumulative sum of rewards across checkpoints
 SEED0          = 42
 
 # =============== DEBUG CONFIG =================
@@ -166,8 +166,9 @@ def main():
     gens = [torch.Generator(device="cuda").manual_seed(SEED0 + i) for i in range(N_PARTICLES)]
     weights     = torch.full((N_PARTICLES,), 1.0 / N_PARTICLES, device="cuda", dtype=torch.float32)
     lineage     = torch.arange(N_PARTICLES, device="cuda")
-    # Track current rewards only (no accumulation across steps)
+    # Track cumulative sum of rewards across checkpoints (SMC with sum potential)
     population_rs = torch.zeros(N_PARTICLES, device="cuda", dtype=torch.float32)
+    running_sum   = torch.zeros(N_PARTICLES, device="cuda", dtype=torch.float32)
 
     # --- 3b) Mid-window checks + freeze boundary
     start = int(round(NUM_STEPS * EARLY_FRAC))
@@ -184,7 +185,7 @@ def main():
     # --- 4) FK/SMC callback
     @torch.inference_mode()
     def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
-        nonlocal frozen_idx, weights, population_rs
+        nonlocal frozen_idx, weights, population_rs, running_sum
 
         latents = callback_kwargs.get("latents", None)  # (B, F, C, H, W)
         if latents is None:
@@ -216,17 +217,18 @@ def main():
             surprise_t = vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor)  # (B,)
             phi_t = 1.0 - surprise_t     # higher is better
 
-            # 2) Potential: use current step reward directly
-            phi = phi_t  # Use current step reward, not running max
+            # 2) Potential: cumulative sum across checkpoints
+            running_sum = running_sum + phi_t
+            phi = running_sum
 
-            # Use current reward only (no accumulation)
+            # Keep population_rs in sync with the potential used for weights
             population_rs = phi
 
             # If this is the final point, use current reward for resampling
             last_check_step = CHECK_STEPS[-1] if len(CHECK_STEPS) > 0 else -1
             is_final_point = (step == last_check_step) or (step == (NUM_STEPS - 1))
             if is_final_point:
-                # Use current reward directly for final resampling
+                # Use cumulative-sum potential for final resampling
                 w = torch.exp((BETA_CONST * population_rs).clamp(min=-60.0, max=60.0))
                 w = torch.clamp(w, 0.0, 1e10)
                 w[w.isnan()] = 0.0
@@ -239,6 +241,7 @@ def main():
                 latents = latents.index_select(0, idx)
                 weights.fill_(1.0 / w.numel())
                 population_rs = population_rs.index_select(0, idx)
+                running_sum = running_sum.index_select(0, idx)
                 lineage.copy_(lineage.index_select(0, idx))
 
                 return {"latents": latents}
@@ -263,7 +266,7 @@ def main():
             )
             if DEBUG_TOPK > 0:
                 topk_phi = torch.topk(phi, k=min(DEBUG_TOPK, phi.numel()))
-                print(f"      top{topk_phi.values.numel()} φ (current) idx={topk_phi.indices.tolist()} "
+                print(f"      top{topk_phi.values.numel()} φ (sum) idx={topk_phi.indices.tolist()} "
                       f"vals={[f'{v:.4f}' for v in topk_phi.values.tolist()]} (best_loss idx={best_idx})")
                 topk_w = torch.topk(new_w, k=min(DEBUG_TOPK, new_w.numel()))
                 print(f"      top{topk_w.values.numel()} w   idx={topk_w.indices.tolist()} "
@@ -280,6 +283,7 @@ def main():
             # reset weights; propagate lineage
             weights.fill_(1.0 / new_w.numel())
             population_rs = population_rs.index_select(0, idx)
+            running_sum = running_sum.index_select(0, idx)
             lineage.copy_(lineage.index_select(0, idx))
 
             # lineage histogram (debug)

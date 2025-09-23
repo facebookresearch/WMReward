@@ -412,14 +412,6 @@ def _decode_full(pipe, latents):
     frames = _to_minus1_1(frames)
     return frames
 
-def _ess_normed(weights: torch.Tensor) -> float:
-    return float(1.0 / (weights.pow(2).sum() + 1e-8))
-
-def _weight_entropy_bits(weights: torch.Tensor) -> float:
-    w = weights.clamp_min(1e-12)
-    H = -torch.sum(w * torch.log2(w))
-    return float(H)
-
 @torch.inference_mode()
 def _vjepa_surprise_batch(vids_btchw: torch.Tensor, encoder, target_encoder, predictor, args) -> torch.Tensor:
     vids_btchw = _ensure_btchw(vids_btchw).to(dtype=torch.float32)
@@ -475,6 +467,7 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
     weights = torch.full((num_particles,), 1.0 / num_particles, device="cuda", dtype=torch.float32)
     lineage = torch.arange(num_particles, device="cuda")
     population_rs = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
+    running_sum = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
     frozen_idx = None
 
     # Guidance parameters (reuse from guidance_sample)
@@ -490,7 +483,7 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
 
     @torch.inference_mode()
     def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
-        nonlocal frozen_idx, weights, population_rs, lineage
+        nonlocal frozen_idx, weights, population_rs, lineage, running_sum
 
         latents = callback_kwargs.get("latents", None)
         if latents is None:
@@ -517,8 +510,9 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
             surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
             phi_t = 1.0 - surprise_t
 
-            # Use current step reward directly
-            phi = phi_t
+            # Cumulative-sum potential across checkpoints
+            running_sum = running_sum + phi_t
+            phi = running_sum
             population_rs = phi
 
             # Final point handling
@@ -535,6 +529,7 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
                 latents = latents.index_select(0, idx)
                 weights.fill_(1.0 / w.numel())
                 population_rs = population_rs.index_select(0, idx)
+                running_sum = running_sum.index_select(0, idx)
                 lineage.copy_(lineage.index_select(0, idx))
 
                 return {"latents": latents}
@@ -563,6 +558,7 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
             latents = latents.index_select(0, idx)
             weights.fill_(1.0 / new_w.numel())
             population_rs = population_rs.index_select(0, idx)
+            running_sum = running_sum.index_select(0, idx)
             lineage.copy_(lineage.index_select(0, idx))
             print(f"      RESAMPLE (multinomial, every {step_stride} steps)! -> weights reset")
 
@@ -580,7 +576,7 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
         guidance_scale=args.cfg_scale,
         use_dynamic_cfg=True,
         num_videos_per_prompt=1,
-        eta=1.0,
+        eta=0.0,
         generator=generators,
         callback_on_step_end=fk_callback,
         callback_on_step_end_tensor_inputs=["latents"],
@@ -630,11 +626,11 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
         raise RuntimeError("V-JEPA models must be loaded for SMC; set sampling_method=smc to trigger loading.")
 
     steps = int(args.num_inference_steps)
-    num_particles = int(getattr(args, 'smc_num_particles', 16))
-    beta_const = float(getattr(args, 'smc_beta_const', 24.0))
-    early_frac = float(getattr(args, 'smc_early_frac', 0.20))
-    late_frac = float(getattr(args, 'smc_late_frac', 0.90))
-    step_stride = int(getattr(args, 'smc_step_stride', 5))  # Check and resample every m steps
+    num_particles = args.smc_num_particles
+    beta_const = args.smc_beta_const
+    early_frac = args.smc_early_frac
+    late_frac = args.smc_late_frac
+    step_stride = args.smc_step_stride  # Check and resample every m steps
 
     start = int(round(steps * early_frac))
     end = int(round(steps * late_frac))
@@ -644,13 +640,14 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
     generators = [torch.Generator(device="cuda").manual_seed(int(args.seed) + i) for i in range(num_particles)]
     weights = torch.full((num_particles,), 1.0 / num_particles, device="cuda", dtype=torch.float32)
     lineage = torch.arange(num_particles, device="cuda")
-    # Track current rewards only (no accumulation across steps)
+    # Track cumulative sum across checkpoints for sum potential
     population_rs = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
+    running_sum = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
     frozen_idx = None
 
     @torch.inference_mode()
     def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
-        nonlocal frozen_idx, weights, population_rs, lineage
+        nonlocal frozen_idx, weights, population_rs, lineage, running_sum
 
         latents = callback_kwargs.get("latents", None)
         if latents is None:
@@ -673,16 +670,17 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
             surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
             phi_t = 1.0 - surprise_t
 
-            # Use current step reward directly (no running max)
-            phi = phi_t
+            # Sum potential across checkpoints
+            running_sum = running_sum + phi_t
+            phi = running_sum
 
-            # Use current reward only (no accumulation)
+            # Keep population_rs aligned with the potential used for weights
             population_rs = phi
 
             last_check_step = check_steps[-1] if len(check_steps) > 0 else -1
             is_final_point = (step == last_check_step) or (step == (steps - 1))
             if is_final_point:
-                # Use current reward directly for final resampling
+                # Use cumulative-sum potential for final resampling
                 w = torch.exp((beta_const * population_rs).clamp(min=-60.0, max=60.0))
                 w = torch.clamp(w, 0.0, 1e10)
                 w[w.isnan()] = 0.0
@@ -695,6 +693,7 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
                 latents = latents.index_select(0, idx)
                 weights.fill_(1.0 / w.numel())
                 population_rs = population_rs.index_select(0, idx)
+                running_sum = running_sum.index_select(0, idx)
                 lineage.copy_(lineage.index_select(0, idx))
 
                 return {"latents": latents}
@@ -722,6 +721,7 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
             latents = latents.index_select(0, idx)
             weights.fill_(1.0 / new_w.numel())
             population_rs = population_rs.index_select(0, idx)
+            running_sum = running_sum.index_select(0, idx)
             lineage.copy_(lineage.index_select(0, idx))
             print(f"      RESAMPLE (multinomial, every {step_stride} steps)! -> weights reset")
 
@@ -740,7 +740,7 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
         guidance_scale=args.cfg_scale,
         use_dynamic_cfg=True,
         num_videos_per_prompt=1,
-        eta=1.0,
+        eta=0.0,
         generator=generators,
         callback_on_step_end=fk_callback,
         callback_on_step_end_tensor_inputs=["latents"],
@@ -1007,7 +1007,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
             print(f"    Selected candidate {best_idx + 1} with lowest V-JEPA loss: {best_loss:.6f}")
 
         elif args.sampling_method == 'smc':
-            generator = torch.Generator(device="cuda").manual_seed(args.seed)
+            # generator = torch.Generator(device="cuda").manual_seed(args.seed)
             frames = smc_sample(
                 pipe=pipe,
                 args=args,
@@ -1015,11 +1015,11 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                 prompt=prompt,
                 negative_prompt=negative_prompt,
                 vjepa_models=vjepa_models,
-                generator=generator
+                generator=None
             )
 
         elif args.sampling_method == 'smc_guid':
-            generator = torch.Generator(device="cuda").manual_seed(args.seed)
+            # generator = torch.Generator(device="cuda").manual_seed(args.seed)
             frames = smc_guid_sample(
                 pipe=pipe,
                 args=args,
@@ -1027,7 +1027,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                 prompt=prompt,
                 negative_prompt=negative_prompt,
                 vjepa_models=vjepa_models,
-                generator=generator
+                generator=None
             )
 
         # Export to video

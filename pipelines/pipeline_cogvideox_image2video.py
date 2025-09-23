@@ -1179,7 +1179,6 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                     latents = a_t * latents + b_t * pred_original_sample
                     # latents = a_t * latents + b_t * ((alpha_prod_t**0.5) * latents - (beta_prod_t**0.5) * noise_pred)
                     if eta > 0:
-                        
                         beta_prod_t_prev = 1 - alpha_prod_t_prev
                         variance = (beta_prod_t_prev / beta_prod_t) * (1 - alpha_prod_t / alpha_prod_t_prev)
                         std_dev_t = eta * variance ** (0.5) / 14.6
