@@ -11,6 +11,7 @@ import numpy as np
 import re
 from PIL import Image
 from utils import compute_vjepa_loss_sliding_window, load_vjepa_models_torchhub
+from dataclasses import dataclass
 
 IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
@@ -32,15 +33,6 @@ def parse_float_range_pair(text: str):
     a, b = (text.split(",", 1) if "," in text else text.split("-", 1))
     return float(a.strip()), float(b.strip())
 
-def load_grid_config(config_path="grid_config.json"):
-    """Load grid search configuration from JSON file."""
-    try:
-        with open(config_path, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"Warning: Config file {config_path} not found, using defaults")
-        return {"current_version": "v1", "experiment_versions": {}}
-
 def save_experiment_metadata(args, experiment_name, experiment_folder):
     """Save experiment metadata as JSON file in the experiment folder."""
     
@@ -48,7 +40,7 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
     metadata = {
         "experiment_name": experiment_name,
         "timestamp": datetime.now().isoformat(),
-        "config_version": getattr(args, 'config_version', 'v1'),
+        "config_version": getattr(args, 'config_version', 'v2'),
         "parameters": {
             "sampling_method": args.sampling_method,
             "num_frames": args.num_frames,
@@ -114,6 +106,24 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "travel_time": getattr(args, 'travel_time', None),
         })
     
+    # Add DSearch parameters
+    if args.sampling_method == 'dsearch':
+        metadata["parameters"].update({
+            "dsearch_num_beams": getattr(args, 'dsearch_num_beams', 3),
+            "dsearch_branch_k": getattr(args, 'dsearch_branch_k', 2),
+            "dsearch_stride": getattr(args, 'dsearch_stride', 5),
+            "loss_mode": getattr(args, 'loss_mode', 'max'),
+        })
+    
+    # Add SVDD parameters
+    if args.sampling_method == 'svdd':
+        metadata["parameters"].update({
+            "svdd_branch_k": getattr(args, 'svdd_branch_k', 4),
+            "svdd_beta": getattr(args, 'svdd_beta', 10.0),
+            "svdd_stride": getattr(args, 'svdd_stride', 5),
+            "loss_mode": getattr(args, 'loss_mode', 'max'),
+        })
+    
     # Save metadata file
     metadata_path = os.path.join(experiment_folder, "experiment_config.json")
     with open(metadata_path, 'w') as f:
@@ -124,7 +134,7 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
 def get_simple_experiment_name(args):
     """Generate a clean, short experiment folder name (with optional version tag)."""
 
-    version = getattr(args, 'config_version', 'v1')
+    version = getattr(args, 'config_version', 'v2')
 
     # Base name with method and key params
     if args.sampling_method == 'vanilla':
@@ -158,6 +168,18 @@ def get_simple_experiment_name(args):
             f"_cfg{args.cfg_scale}_N{getattr(args, 'smc_num_particles', 16)}"
             f"_stride{getattr(args, 'smc_step_stride', 5)}"
             f"_gsp{getattr(args, 'guidance_step_pattern', '')}_glp{getattr(args, 'guidance_lr_pattern', '')}"
+        )
+    elif args.sampling_method == 'dsearch':
+        name = (
+            f"dsearch_{version}_f{args.num_frames}_s{args.num_inference_steps}"
+            f"_cfg{args.cfg_scale}_B{getattr(args, 'dsearch_num_beams', 3)}"
+            f"_K{getattr(args, 'dsearch_branch_k', 2)}_stride{getattr(args, 'dsearch_stride', 5)}"
+        )
+    elif args.sampling_method == 'svdd':
+        name = (
+            f"svdd_{version}_f{args.num_frames}_s{args.num_inference_steps}"
+            f"_cfg{args.cfg_scale}_K{getattr(args, 'svdd_branch_k', 4)}"
+            f"_beta{getattr(args, 'svdd_beta', 10.0)}_stride{getattr(args, 'svdd_stride', 5)}"
         )
 
     # Add rejection samples suffix if using rejection sampling
@@ -263,7 +285,7 @@ def init_pipeline(args):
 
 def init_vjepa_models(args):
     """Initialize V-JEPA models for rejection sampling evaluation."""
-    if args.sampling_method not in ['rejection', 'smc', 'smc_guid']:
+    if args.sampling_method not in ['rejection', 'smc', 'smc_guid', 'dsearch', 'svdd']:
         return None, None, None
     
     print(f"Loading V-JEPA models for rejection sampling ({args.vjepa_variant})...")
@@ -290,6 +312,249 @@ def _build_seq(pattern: str, steps: int, is_float: bool):
     if len(seq) != steps:
         raise ValueError(f"bad pattern len {len(seq)} vs {steps}")
     return seq
+
+# ===================== unified search config ======================
+@dataclass
+class SearchCfg:
+    # Topology
+    num_beams: int = 1          # B
+    branch_K: int = 4           # K children per beam
+    keep_beams: int = 1         # how many beams to keep after per-beam selection (<= num_beams)
+    # Scoring / selection
+    accumulate: bool = False    # cumulative over steps (DSearch) vs instantaneous (SVDD-like)
+    select_softmax: bool = True # per-beam: pick child by softmax(beta*obj) if True; else argmax
+    beta: float = 10.0          # temperature for softmax (ignored if select_softmax=False)
+    # Schedule
+    stride: int = 5             # evaluate every k steps
+    start_frac: float = 0.0     # start of search window [0,1]
+    end_frac: float = 1.0       # end of search window [0,1]
+    freeze_tail: bool = False   # after end_frac: collapse to best global child and finish with batch=1
+    # Reward compute
+    eval_decode_stride: int = 2 # temporal stride during reward
+    print_topk: int = 4
+
+# Presets
+def svdd_preset(K=4, beta=10.0, stride=5) -> SearchCfg:
+    return SearchCfg(
+        num_beams=1, branch_K=K, keep_beams=1,
+        accumulate=False, select_softmax=True, beta=beta,
+        stride=stride, start_frac=0.0, end_frac=1.0,
+        freeze_tail=False, eval_decode_stride=2, print_topk=4
+    )
+
+def dsearch_preset(B=3, K=2, stride=5) -> SearchCfg:
+    return SearchCfg(
+        num_beams=B, branch_K=K, keep_beams=B,
+        accumulate=False, select_softmax=False, beta=0.0,
+        stride=stride, start_frac=0.0, end_frac=1.0,
+        freeze_tail=True, eval_decode_stride=2, print_topk=4
+    )
+
+# ===================== unified callback ======================
+def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor, num_steps: int):
+    state = {"cumulative": None, "frozen": False, "check_steps": None, "freeze_from": None, "active_beams": None}
+
+    def _maybe_init_schedule(pipe_obj):
+        if state["check_steps"] is not None:
+            return
+        total = num_steps
+        start = int(round(total * cfg.start_frac))
+        end   = int(round(total * cfg.end_frac))
+        state["check_steps"] = list(range(start, end, max(1, cfg.stride)))
+        # Freeze RIGHT AFTER the last scored checkpoint, clamped to last step index
+        last_chk = state["check_steps"][-1] if state["check_steps"] else 0
+        state["freeze_from"] = min(num_steps - 1, last_chk + 1)
+        print(f"[UNIFIED] checkpoints: {state['check_steps']}  freeze_from={state['freeze_from']}, "
+              f"B={cfg.num_beams}, K={cfg.branch_K}, keep={cfg.keep_beams}, "
+              f"accumulate={cfg.accumulate}, softmax={cfg.select_softmax}, beta={cfg.beta}")
+
+    @torch.inference_mode()
+    def cb(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
+        _maybe_init_schedule(pipe_obj)
+        latents = callback_kwargs.get("latents", None)
+        if latents is None:
+            raise RuntimeError("Pipeline must expose 'latents' via callback_on_step_end_tensor_inputs=['latents'].")
+
+        K = cfg.branch_K
+        # Initialize active beams on first call
+        if state["active_beams"] is None:
+            state["active_beams"] = cfg.num_beams
+        
+        current_B = state["active_beams"]
+        expected_batch = current_B * K
+        assert latents.shape[0] == expected_batch or state["frozen"], \
+            f"Expected batch {expected_batch}, got {latents.shape[0]} (unless frozen)."
+
+        # lazy init cumulative
+        if state["cumulative"] is None or state["cumulative"].shape[0] != latents.shape[0]:
+            state["cumulative"] = torch.zeros(latents.shape[0], device=latents.device, dtype=torch.float32)
+
+        # --------- Freeze tail (optional; works for any config) ----------
+        if (cfg.freeze_tail) and (step >= state["freeze_from"]) and not state["frozen"]:
+            vids = _decode_full(pipe_obj, latents)
+            if cfg.eval_decode_stride > 1:
+                vids = vids[:, :, ::cfg.eval_decode_stride, :, :]
+            # Safety: ensure enough frames after subsample
+            T = vids.shape[2]
+            if T < 2:
+                raise RuntimeError(f"Too few frames for V-JEPA eval after stride: T={T}, need≥2")
+            surprise = _vjepa_surprise_batch(vids, encoder, target_encoder, predictor, None)
+            # Keep your cosine-sim convention
+            reward = 1.0 - torch.clamp(surprise, -1.0, 1.0)
+            if cfg.accumulate:
+                state["cumulative"] = state["cumulative"] + reward
+                best_idx = int(torch.argmax(state["cumulative"]).item())
+            else:
+                best_idx = int(torch.argmax(reward).item())
+            print(f"[UNIFIED] FREEZE step={step}: best={best_idx} "
+                  f"score={float(state['cumulative'][best_idx]) if cfg.accumulate else float(reward[best_idx]):.4f}")
+            new_latents = latents[best_idx:best_idx+1]
+            state["active_beams"] = 1
+            state["frozen"] = True
+            return {"latents": new_latents}
+
+        if (state["check_steps"] is None) or (step not in state["check_steps"]) or state["frozen"]:
+            return {}
+
+        # 1) decode + reward
+        vids = _decode_full(pipe_obj, latents)
+        if cfg.eval_decode_stride > 1:
+            vids = vids[:, :, ::cfg.eval_decode_stride, :, :]
+        # Safety: ensure enough frames after subsample
+        T = vids.shape[2]
+        if T < 2:
+            raise RuntimeError(f"Too few frames for V-JEPA eval after stride: T={T}, need≥2")
+
+        surprise = _vjepa_surprise_batch(vids, encoder, target_encoder, predictor, None)
+        step_reward = 1.0 - torch.clamp(surprise, -1.0, 1.0)
+
+        # 2) update objective
+        obj = state["cumulative"] + step_reward if cfg.accumulate else step_reward
+
+        # 3) per-beam selection
+        obj_g = obj.view(current_B, K)  # (current_B, K)
+
+        # ======================= SVDD (paper-faithful) =======================
+        if (not cfg.accumulate) and cfg.select_softmax and cfg.beta > 0:
+            if current_B != 1:
+                raise RuntimeError("SVDD expects num_beams=1 (single active path).")
+            z = cfg.beta * obj_g
+            z = z - z.max(dim=1, keepdim=True).values
+            z = torch.clamp(z, min=-60.0, max=20.0)
+            w = torch.softmax(z, dim=1)                         # (1, K)
+            # Sample ONE child (swap for argmax(w, dim=1) if you want deterministic hard-SVDD)
+            idx = torch.multinomial(w.squeeze(0), num_samples=1)  # (1,)
+            chosen = latents[idx]                                # (1, C, T, H, W)
+            new_latents = chosen.repeat_interleave(K, dim=0)     # re-expand to K proposals next step
+            state["cumulative"] = torch.zeros(new_latents.shape[0], device=new_latents.device, dtype=torch.float32)
+            state["active_beams"] = 1
+            return {"latents": new_latents}
+
+        # ======================= DSearch / greedy per-beam ===================
+        child_idx = torch.argmax(obj_g, dim=1)  # (current_B,)
+        base = torch.arange(obj_g.shape[0], device=obj.device) * K
+        best_abs = base + child_idx  # (current_B,)
+
+        # 4) keep top 'keep_beams' beams by their chosen-child score
+        best_vals = obj.index_select(0, best_abs)
+        keep = min(cfg.keep_beams, best_vals.numel())
+        order = torch.topk(best_vals, k=keep, largest=True).indices
+        chosen_abs = best_abs.index_select(0, order)  # (keep,)
+
+        # 5) replicate each kept child K times to form next batch
+        chosen_latents = latents.index_select(0, chosen_abs)          # (keep, ...)
+        new_latents = chosen_latents.repeat_interleave(K, dim=0)      # (keep*K, ...)
+
+        # 6) propagate cumulative in lockstep with new batch
+        if cfg.accumulate:
+            kept_vals = best_vals.index_select(0, order)              # (keep,)
+            state["cumulative"] = kept_vals.repeat_interleave(K, dim=0).contiguous()
+        else:
+            state["cumulative"] = torch.zeros(new_latents.shape[0], device=new_latents.device, dtype=torch.float32)
+        
+        # 7) update active beam count
+        state["active_beams"] = keep
+
+        # Logs
+        if cfg.print_topk > 0:
+            tkv, tki = torch.topk(best_vals, k=min(cfg.print_topk, best_vals.numel()))
+            print(f"[UNIFIED] step={step:02d} t={int(timestep)} "
+                  f"surprise[min/mean/max]={float(surprise.min()):.4f}/"
+                  f"{float(surprise.mean()):.4f}/"
+                  f"{float(surprise.max()):.4f}  "
+                  f"keep={keep}  top-beams idx={tki.tolist()} vals={[f'{v:.4f}' for v in tkv.tolist()]}")
+
+        return {"latents": new_latents}
+
+    return cb
+
+def unified_search_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, cfg: SearchCfg, generator=None):
+    """Unified search sampling supporting both SVDD and DSearch modes."""
+    if "CogVideoX" not in args.model_id:
+        raise NotImplementedError("Unified search is currently implemented for CogVideoX only.")
+
+    encoder, target_encoder, predictor = vjepa_models if vjepa_models else (None, None, None)
+    if encoder is None or target_encoder is None or predictor is None:
+        raise RuntimeError("V-JEPA models must be loaded for unified search; set sampling_method=dsearch/svdd to trigger loading.")
+
+    steps = int(args.num_inference_steps)
+    N = cfg.num_beams * cfg.branch_K
+    
+    # Create generators for each beam/branch
+    generators = [torch.Generator(device="cuda").manual_seed(int(args.seed) + i) for i in range(N)]
+    
+    # Create unified callback
+    cb = make_unified_callback(cfg, encoder, target_encoder, predictor, steps)
+
+    # Run pipeline with unified search
+    out = pipe(
+        video=[init_frame] * N,
+        prompt=[prompt] * N,
+        negative_prompt=negative_prompt,
+        num_frames=args.num_frames,
+        height=args.height,
+        width=args.width,
+        num_inference_steps=steps,
+        guidance_scale=args.cfg_scale,
+        use_dynamic_cfg=True,
+        num_videos_per_prompt=1,
+        eta=1.0,  # Deterministic DDIM for reproducible beam search
+        generator=generators,
+        callback_on_step_end=cb,
+        callback_on_step_end_tensor_inputs=["latents"],
+        # Keep pacing from SMC (zero guidance)
+        guidance_step=[0] * steps,
+        guidance_lr=[0.0] * steps,
+        guidance_frequency=1,
+        additional_inputs=None,
+        travel_time=(-1, -1),
+    )
+
+    # Final pick via V-JEPA
+    if not out.frames:
+        raise RuntimeError("No frames returned from unified search inference!")
+
+    vids_btchw_list = []
+    for i, particle_frames in enumerate(out.frames):
+        if particle_frames is None:
+            raise RuntimeError(f"Particle {i} returned None frames!")
+        frame_tensors = []
+        for j, pil_frame in enumerate(particle_frames):
+            if pil_frame is None:
+                raise RuntimeError(f"Particle {i}, frame {j} is None!")
+            frame_np = np.array(pil_frame)
+            frame_tensor = torch.from_numpy(frame_np).float().permute(2, 0, 1)  # (C,H,W)
+            frame_tensor = (frame_tensor / 255.0) * 2.0 - 1.0
+            frame_tensors.append(frame_tensor)
+        particle_video = torch.stack(frame_tensors, dim=0).permute(1, 0, 2, 3)  # (C,T,H,W)
+        vids_btchw_list.append(particle_video)
+
+    vids_btchw = torch.stack(vids_btchw_list, dim=0).cuda()
+    final_surprise = _vjepa_surprise_batch(vids_btchw, encoder, target_encoder, predictor, args)
+    best_idx = int(final_surprise.argmin().item())
+    print(f"[UNIFIED] FINAL best particle: {best_idx}  V-JEPA loss: {float(final_surprise[best_idx]):.6f}")
+
+    return out.frames[best_idx]
 
 
 def guidance_sample(pipe, args, init_frame, prompt, negative_prompt, generator=None):
@@ -442,15 +707,17 @@ def _vjepa_surprise_batch(vids_btchw: torch.Tensor, encoder, target_encoder, pre
         out[i] = float(loss)
     return out
 
-def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, generator=None):
-    """SMC sampling with optional guidance - combines particle filtering with V-JEPA guidance."""
+def unified_smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, use_guidance=False, generator=None):
+    """Unified SMC sampling with optional guidance support."""
     if "CogVideoX" not in args.model_id:
-        raise NotImplementedError("SMC+guidance sampling is currently implemented for CogVideoX only.")
+        raise NotImplementedError("SMC sampling is currently implemented for CogVideoX only.")
 
     encoder, target_encoder, predictor = vjepa_models if vjepa_models else (None, None, None)
     if encoder is None or target_encoder is None or predictor is None:
-        raise RuntimeError("V-JEPA models must be loaded for SMC+guidance; set sampling_method=smc_guid to trigger loading.")
+        method_name = "SMC+guidance" if use_guidance else "SMC"
+        raise RuntimeError(f"V-JEPA models must be loaded for {method_name}; set sampling_method=smc/smc_guid to trigger loading.")
 
+    # Unified parameter extraction with defaults
     steps = int(args.num_inference_steps)
     num_particles = int(getattr(args, 'smc_num_particles', 16))
     beta_const = float(getattr(args, 'smc_beta_const', 24.0))
@@ -470,16 +737,30 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
     running_sum = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
     frozen_idx = None
 
-    # Guidance parameters (reuse from guidance_sample)
-    step_pattern = getattr(args, 'guidance_step_pattern', "0x31,1x19")
-    lr_pattern = getattr(args, 'guidance_lr_pattern', "0x31,0.003x19")
-    guidance_step = _build_seq(step_pattern, steps, is_float=False)
-    guidance_lr = _build_seq(lr_pattern, steps, is_float=True)
-    travel_time = (0,0)
-    context_frames, stride, window_size = _resolve_sliding_window_params(args)
-
-    print(f"[SMC+GUID] N={num_particles} particles, beta={beta_const}, mid-window=[{early_frac},{late_frac}), stride={step_stride}")
-    print(f"[SMC+GUID] Guidance: step_pattern={step_pattern}, lr_pattern={lr_pattern}, travel_time={travel_time}")
+    # Guidance parameters (only used if use_guidance=True)
+    if use_guidance:
+        step_pattern = getattr(args, 'guidance_step_pattern', "0x31,1x19")
+        lr_pattern = getattr(args, 'guidance_lr_pattern', "0x31,0.003x19")
+        guidance_step = _build_seq(step_pattern, steps, is_float=False)
+        guidance_lr = _build_seq(lr_pattern, steps, is_float=True)
+        context_frames, stride, window_size = _resolve_sliding_window_params(args)
+        additional_inputs = {
+            "vjepa_variant": getattr(args, 'vjepa_variant', "vit_giant"),
+            "vjepa_img_size": int(getattr(args, 'vjepa_img_size', 256)),
+            "vjepa_masking_mode": str(getattr(args, 'vjepa_masking_mode', 'causal')),
+            "vjepa_context_frames": context_frames,
+            "slice_window_size": window_size,
+            "slice_stride": stride,
+            "vae_decode_scale": float(getattr(args, 'vae_decode_scale', 0.7)),
+            "loss_mode": getattr(args, 'loss_mode', 'mean'),
+        }
+        print(f"[SMC+GUID] N={num_particles} particles, beta={beta_const}, mid-window=[{early_frac},{late_frac}), stride={step_stride}")
+        print(f"[SMC+GUID] Guidance: step_pattern={step_pattern}, lr_pattern={lr_pattern}")
+    else:
+        guidance_step = [0] * steps
+        guidance_lr = [0.0] * steps
+        additional_inputs = None
+        print(f"[SMC] N={num_particles} particles, beta={beta_const}, mid-window=[{early_frac},{late_frac}), stride={step_stride}")
 
     @torch.inference_mode()
     def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
@@ -495,14 +776,16 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
                 vids_full = _decode_full(pipe_obj, latents)
                 surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
                 frozen_idx = int(torch.argmin(surprise_t).item())
-                print(f"[SMC+GUID] FREEZE at step {step}: locking particle {frozen_idx}")
+                prefix = "[SMC+GUID]" if use_guidance else "[SMC]"
+                print(f"{prefix} FREEZE at step {step}: locking particle {frozen_idx}")
 
-                # Keep only the best particle
+                # if use_guidance:
+                # SMC+GUID: keep only best particle
                 latents = latents[frozen_idx:frozen_idx+1]
                 weights = torch.ones(1, device="cuda", dtype=torch.float32)
                 return {"latents": latents}
-            
-            # After first freeze step, let pipeline handle single particle
+
+            # After first freeze step, let pipeline handle
             return {}
 
         if step in check_steps:
@@ -523,9 +806,10 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
                 w = torch.clamp(w, 0.0, 1e10)
                 w[w.isnan()] = 0.0
 
-                print(f"      [SMC+GUID final-correction] Final step: always resample")
+                prefix = "[SMC+GUID final-correction]" if use_guidance else "[SMC final-correction]"
+                print(f"      {prefix} Final step: pick the best particle")
                 
-                idx = torch.multinomial(w, num_samples=w.numel(), replacement=True)
+                idx = w.argmax().unsqueeze(0).expand(w.numel())
                 latents = latents.index_select(0, idx)
                 weights.fill_(1.0 / w.numel())
                 population_rs = population_rs.index_select(0, idx)
@@ -542,13 +826,13 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
             new_w = new_w / (new_w.sum() + 1e-8)
 
             best_loss = float(surprise_t.min())
-            best_idx = int(surprise_t.argmin())
             worst_loss = float(surprise_t.max())
             mean_loss = float(surprise_t.mean())
             std_loss = float(surprise_t.std(unbiased=False))
             
+            prefix = "[SMC+GUID]" if use_guidance else "[SMC]"
             print(
-                f"[SMC+GUID] step={step:02d} (t={int(timestep)}), "
+                f"{prefix} step={step:02d} (t={int(timestep)}), "
                 f"loss min/mean±std/max= {best_loss:.4f} / {mean_loss:.4f}±{std_loss:.4f} / {worst_loss:.4f}, "
                 f"beta={beta_const:.1f}, stride={step_stride}"
             )
@@ -566,7 +850,7 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
 
         return {}
 
-    # Run pipeline with both SMC callback and guidance
+    # Run pipeline with SMC callback
     out = pipe(
         video=[init_frame] * num_particles,
         prompt=[prompt] * num_particles,
@@ -576,184 +860,21 @@ def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_model
         guidance_scale=args.cfg_scale,
         use_dynamic_cfg=True,
         num_videos_per_prompt=1,
-        eta=0.0,
+        eta=1.0,
         generator=generators,
         callback_on_step_end=fk_callback,
         callback_on_step_end_tensor_inputs=["latents"],
         guidance_step=guidance_step,
         guidance_lr=guidance_lr,
-        guidance_frequency=getattr(args, 'guidance_frequency', 1),
-        additional_inputs={
-            "vjepa_variant": getattr(args, 'vjepa_variant', "vit_giant"),
-            "vjepa_img_size": int(getattr(args, 'vjepa_img_size', 256)),
-            "vjepa_masking_mode": str(getattr(args, 'vjepa_masking_mode', 'causal')),
-            "vjepa_context_frames": context_frames,
-            "slice_window_size": window_size,
-            "slice_stride": stride,
-            "vae_decode_scale": float(getattr(args, 'vae_decode_scale', 0.7)),
-            "loss_mode": getattr(args, 'loss_mode', 'max'),
-        },
+        guidance_frequency=getattr(args, 'guidance_frequency', 1) if use_guidance else 1,
+        additional_inputs=additional_inputs,
         travel_time=(0,0),
-    )
-
-    if not out.frames:
-        raise RuntimeError("No frames returned from SMC+guidance inference!")
-
-    # Final selection using V-JEPA (reuse logic from smc_sample)
-    vids_btchw_list = []
-    for particle_frames in out.frames:
-        frame_tensors = []
-        for pil_frame in particle_frames:
-            frame_np = np.array(pil_frame)
-            frame_tensor = torch.from_numpy(frame_np).float().permute(2, 0, 1)
-            frame_tensor = (frame_tensor / 255.0) * 2.0 - 1.0
-            frame_tensors.append(frame_tensor)
-        particle_video = torch.stack(frame_tensors, dim=0).permute(1, 0, 2, 3)
-        vids_btchw_list.append(particle_video)
-
-    vids_btchw = torch.stack(vids_btchw_list, dim=0).cuda()
-    final_surprise = _vjepa_surprise_batch(vids_btchw, encoder, target_encoder, predictor, args)
-    best_idx = int(final_surprise.argmin().item())
-    print(f"[SMC+GUID] FINAL best particle: {best_idx}  V-JEPA loss: {float(final_surprise[best_idx]):.6f}")
-    return out.frames[best_idx]
-
-def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, generator=None):
-    if "CogVideoX" not in args.model_id:
-        raise NotImplementedError("SMC sampling is currently implemented for CogVideoX only.")
-
-    encoder, target_encoder, predictor = vjepa_models if vjepa_models else (None, None, None)
-    if encoder is None or target_encoder is None or predictor is None:
-        raise RuntimeError("V-JEPA models must be loaded for SMC; set sampling_method=smc to trigger loading.")
-
-    steps = int(args.num_inference_steps)
-    num_particles = args.smc_num_particles
-    beta_const = args.smc_beta_const
-    early_frac = args.smc_early_frac
-    late_frac = args.smc_late_frac
-    step_stride = args.smc_step_stride  # Check and resample every m steps
-
-    start = int(round(steps * early_frac))
-    end = int(round(steps * late_frac))
-    check_steps = list(range(start, end, max(1, step_stride)))
-    freeze_after_step = end
-
-    generators = [torch.Generator(device="cuda").manual_seed(int(args.seed) + i) for i in range(num_particles)]
-    weights = torch.full((num_particles,), 1.0 / num_particles, device="cuda", dtype=torch.float32)
-    lineage = torch.arange(num_particles, device="cuda")
-    # Track cumulative sum across checkpoints for sum potential
-    population_rs = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
-    running_sum = torch.zeros(num_particles, device="cuda", dtype=torch.float32)
-    frozen_idx = None
-
-    @torch.inference_mode()
-    def fk_callback(pipe_obj, step: int, timestep: int, callback_kwargs: dict, **_):
-        nonlocal frozen_idx, weights, population_rs, lineage, running_sum
-
-        latents = callback_kwargs.get("latents", None)
-        if latents is None:
-            raise RuntimeError("Pipeline must expose 'latents' via callback_on_step_end_tensor_inputs=['latents'].")
-
-        if step >= freeze_after_step:
-            if frozen_idx is None:
-                vids_full = _decode_full(pipe_obj, latents)
-                surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
-                frozen_idx = int(torch.argmin(surprise_t).item())
-                print(f"[FK] FREEZE at step {step}: locking particle {frozen_idx}")
-
-            idx = torch.full((latents.shape[0],), frozen_idx, device=latents.device, dtype=torch.long)
-            latents = latents.index_select(0, idx)
-            weights.fill_(1.0 / weights.numel())
-            return {"latents": latents}
-
-        if step in check_steps:
-            vids_full = _decode_full(pipe_obj, latents)  # (B,3,T,H,W) in [-1,1]
-            surprise_t = _vjepa_surprise_batch(vids_full, encoder, target_encoder, predictor, args)
-            phi_t = 1.0 - surprise_t
-
-            # Sum potential across checkpoints
-            running_sum = running_sum + phi_t
-            phi = running_sum
-
-            # Keep population_rs aligned with the potential used for weights
-            population_rs = phi
-
-            last_check_step = check_steps[-1] if len(check_steps) > 0 else -1
-            is_final_point = (step == last_check_step) or (step == (steps - 1))
-            if is_final_point:
-                # Use cumulative-sum potential for final resampling
-                w = torch.exp((beta_const * population_rs).clamp(min=-60.0, max=60.0))
-                w = torch.clamp(w, 0.0, 1e10)
-                w[w.isnan()] = 0.0
-
-                normalized_w = w / (w.sum() + 1e-8)
-                print(f"      [final-correction] Final step: always resample regardless of frequency")
-                
-                # Always resample at final step (deterministic)
-                idx = torch.multinomial(w, num_samples=w.numel(), replacement=True)
-                latents = latents.index_select(0, idx)
-                weights.fill_(1.0 / w.numel())
-                population_rs = population_rs.index_select(0, idx)
-                running_sum = running_sum.index_select(0, idx)
-                lineage.copy_(lineage.index_select(0, idx))
-
-                return {"latents": latents}
-
-            z = beta_const * phi
-            z = z - z.max()
-            incr = torch.exp(z.clamp(min=-60.0))
-            new_w = weights * incr
-            new_w = new_w / (new_w.sum() + 1e-8)
-
-            best_loss = float(surprise_t.min())
-            best_idx = int(surprise_t.argmin())
-            worst_loss = float(surprise_t.max())
-            mean_loss = float(surprise_t.mean())
-            std_loss = float(surprise_t.std(unbiased=False))
-            
-            print(
-                f"[FK] step={step:02d} (t={int(timestep)}), "
-                f"loss min/mean±std/max= {best_loss:.4f} / {mean_loss:.4f}±{std_loss:.4f} / {worst_loss:.4f}, "
-                f"beta={beta_const:.1f}, stride={step_stride} (deterministic resample)"
-            )
-
-            # Always resample at check steps (deterministic)
-            idx = torch.multinomial(new_w, num_samples=new_w.numel(), replacement=True)
-            latents = latents.index_select(0, idx)
-            weights.fill_(1.0 / new_w.numel())
-            population_rs = population_rs.index_select(0, idx)
-            running_sum = running_sum.index_select(0, idx)
-            lineage.copy_(lineage.index_select(0, idx))
-            print(f"      RESAMPLE (multinomial, every {step_stride} steps)! -> weights reset")
-
-            return {"latents": latents}
-
-        return {}
-
-    zero_steps = [0] * steps
-    zero_lrs = [0.0] * steps
-    out = pipe(
-        video=[init_frame] * num_particles,
-        prompt=[prompt] * num_particles,
-        negative_prompt=None,
-        num_frames=args.num_frames,
-        num_inference_steps=steps,
-        guidance_scale=args.cfg_scale,
-        use_dynamic_cfg=True,
-        num_videos_per_prompt=1,
-        eta=0.0,
-        generator=generators,
-        callback_on_step_end=fk_callback,
-        callback_on_step_end_tensor_inputs=["latents"],
-        guidance_step=zero_steps,
-        guidance_lr=zero_lrs,
-        guidance_frequency=1,
-        additional_inputs=None,
-        travel_time=(0, 0),
     )
 
     if not out.frames:
         raise RuntimeError("No frames returned from SMC inference!")
 
+    # Final selection using V-JEPA
     vids_btchw_list = []
     for particle_frames in out.frames:
         frame_tensors = []
@@ -768,8 +889,17 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
     vids_btchw = torch.stack(vids_btchw_list, dim=0).cuda()
     final_surprise = _vjepa_surprise_batch(vids_btchw, encoder, target_encoder, predictor, args)
     best_idx = int(final_surprise.argmin().item())
-    print(f"[FK] FINAL best particle: {best_idx}  V-JEPA loss: {float(final_surprise[best_idx]):.6f}")
+    prefix = "[SMC+GUID]" if use_guidance else "[SMC]"
+    print(f"{prefix} FINAL best particle: {best_idx}  V-JEPA loss: {float(final_surprise[best_idx]):.6f}")
     return out.frames[best_idx]
+
+def smc_guid_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, generator=None):
+    """SMC sampling with guidance - wrapper for unified_smc_sample."""
+    return unified_smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, use_guidance=True, generator=generator)
+
+def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, generator=None):
+    """SMC sampling without guidance - wrapper for unified_smc_sample."""
+    return unified_smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, use_guidance=False, generator=generator)
 
 def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment_name, fps=8, vjepa_models=None):
     """Generate videos for each prompt and save them to the output folder."""
@@ -1030,6 +1160,42 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                 generator=None
             )
 
+        elif args.sampling_method == 'dsearch':
+            print(f"  Generating with DSearch (B={getattr(args, 'dsearch_num_beams', 3)}, K={getattr(args, 'dsearch_branch_k', 2)})...")
+            cfg = dsearch_preset(
+                B=getattr(args, 'dsearch_num_beams', 3),
+                K=getattr(args, 'dsearch_branch_k', 2),
+                stride=getattr(args, 'dsearch_stride', 5)
+            )
+            frames = unified_search_sample(
+                pipe=pipe,
+                args=args,
+                init_frame=init_frame,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                vjepa_models=vjepa_models,
+                cfg=cfg,
+                generator=None
+            )
+
+        elif args.sampling_method == 'svdd':
+            print(f"  Generating with SVDD (K={getattr(args, 'svdd_branch_k', 4)}, beta={getattr(args, 'svdd_beta', 10.0)})...")
+            cfg = svdd_preset(
+                K=getattr(args, 'svdd_branch_k', 4),
+                beta=getattr(args, 'svdd_beta', 10.0),
+                stride=getattr(args, 'svdd_stride', 5)
+            )
+            frames = unified_search_sample(
+                pipe=pipe,
+                args=args,
+                init_frame=init_frame,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                vjepa_models=vjepa_models,
+                cfg=cfg,
+                generator=None
+            )
+
         # Export to video
         export_to_video(frames, video_path, fps=fps)
         if args.sampling_method == 'rejection':
@@ -1083,7 +1249,7 @@ def main():
     parser.add_argument('--output_folder', type=str, required=False, default="generated_videos", help='Folder to save the generated videos. If --output_path is set, its directory will be used instead.')
     parser.add_argument('--output_path', type=str, default=None, help='Explicit output video path (mp4) when using a single prompt.')
     parser.add_argument('--output_filename', type=str, default=None, help='Output filename (e.g., name.mp4) to use under the experiment folder when using a single prompt.')
-    parser.add_argument('--config_version', type=str, default='v1', help='Configuration version tag for experiment naming and tracking.')
+    parser.add_argument('--config_version', type=str, default='v2', help='Configuration version tag for experiment naming and tracking.')
     parser.add_argument('--batch_json', type=str, default=None, help='Optional: JSON file with list of {input_video|input_image, prompt, output_video} entries to process. Entries will be sharded across GPUs by index modulo num_gpus.')
     parser.add_argument('--base_dir', type=str, default=None, help='Optional: Base directory to prepend to input/output paths in --batch_json.')
     parser.add_argument('--dataset_mode', type=str, default='auto', choices=['auto', 'dreambench', 'physics_iq'], 
@@ -1094,7 +1260,7 @@ def main():
     parser.add_argument('--node_id', type=int, default=0, help='Index of the current node (0 to num_nodes-1).')
     parser.add_argument('--gpus_per_node', type=int, default=8, help='Number of GPUs per node.')
     parser.add_argument('--sampling_method', type=str, default='vanilla', 
-                       choices=['vanilla', 'guidance', 'rejection', 'smc', 'smc_guid'],
+                       choices=['vanilla', 'guidance', 'rejection', 'smc', 'smc_guid', 'dsearch', 'svdd'],
                        help='Sampling method to use.')
     parser.add_argument('--init_image', type=str, default=None, help='Path to the initial image for I2V conditioning.')
     parser.add_argument('--init_video', type=str, default=None, help='Path to the initial video for I2V conditioning (first frame used).')
@@ -1138,7 +1304,17 @@ def main():
     parser.add_argument('--smc_late_frac', type=float, default=0.70, help='End of mid-window as frac of steps.')
     parser.add_argument('--smc_step_stride', type=int, default=5, help='Check and resample every k steps in mid-window (deterministic).')
 
-    parser.add_argument('--seed', type=int, default=42, help='Seed for reproducibility.')
+    # DSearch parameters (only used when sampling_method='dsearch')
+    parser.add_argument('--dsearch_num_beams', type=int, default=3, help='Number of beams for DSearch.')
+    parser.add_argument('--dsearch_branch_k', type=int, default=2, help='Number of children per beam for DSearch.')
+    parser.add_argument('--dsearch_stride', type=int, default=5, help='Evaluation stride for DSearch.')
+
+    # SVDD parameters (only used when sampling_method='svdd')
+    parser.add_argument('--svdd_branch_k', type=int, default=4, help='Number of branches for SVDD.')
+    parser.add_argument('--svdd_beta', type=float, default=10.0, help='Temperature parameter for SVDD softmax.')
+    parser.add_argument('--svdd_stride', type=int, default=5, help='Evaluation stride for SVDD.')
+
+    parser.add_argument('--seed', type=int, default=1234, help='Seed for reproducibility.')
     args = parser.parse_args()
 
     # Set deterministic behavior for reproducibility
@@ -1197,6 +1373,20 @@ def main():
         print(f"  - LR pattern: {args.guidance_lr_pattern}")
         print(f"  - Travel time: {args.travel_time}")
         print(f"  - Deterministic resampling: every {args.smc_step_stride} steps")
+    
+    if args.sampling_method == 'dsearch':
+        print(f"DSearch enabled:")
+        print(f"  - Beams: {args.dsearch_num_beams}")
+        print(f"  - Children per beam: {args.dsearch_branch_k}")
+        print(f"  - Evaluation stride: {args.dsearch_stride}")
+        print(f"  - Cumulative rewards with hard selection")
+    
+    if args.sampling_method == 'svdd':
+        print(f"SVDD enabled:")
+        print(f"  - Branches: {args.svdd_branch_k}")
+        print(f"  - Beta (softmax temp): {args.svdd_beta}")
+        print(f"  - Evaluation stride: {args.svdd_stride}")
+        print(f"  - Instantaneous rewards with soft fusion")
     
     print(f"{'='*60}\n")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unified_search_vjepa_cogvideox.py
-# One callback to rule them all: SVDD and DSearch are just configs.
+# One callback to rule them all: SVDD (paper-faithful) and DSearch via configs.
 
 import os
 import numpy as np
@@ -47,8 +47,9 @@ class SearchCfg:
     eval_decode_stride: int = 2 # temporal stride during reward
     print_topk: int = 4
 
-# Presets (no branching; just choose a cfg)
+# Presets
 def svdd_preset(K=4, beta=10.0, stride=5) -> SearchCfg:
+    # Paper-faithful SVDD: single active path, soft selection (or argmax) per step; no averaging.
     return SearchCfg(
         num_beams=1, branch_K=K, keep_beams=1,
         accumulate=False, select_softmax=True, beta=beta,
@@ -57,6 +58,7 @@ def svdd_preset(K=4, beta=10.0, stride=5) -> SearchCfg:
     )
 
 def dsearch_preset(B=3, K=2, stride=5) -> SearchCfg:
+    # DSearch: small beam with greedy selection and cumulative objective; freeze tail.
     return SearchCfg(
         num_beams=B, branch_K=K, keep_beams=B,
         accumulate=True, select_softmax=False, beta=0.0,
@@ -138,12 +140,13 @@ def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor):
     def _maybe_init_schedule(pipe_obj):
         if state["check_steps"] is not None:
             return
-        # NUM_STEPS is provided externally; we still compute using cfg and trust the loop's step index
         total = NUM_STEPS
         start = int(round(total * cfg.start_frac))
         end   = int(round(total * cfg.end_frac))
         state["check_steps"] = list(range(start, end, max(1, cfg.stride)))
-        state["freeze_from"] = end
+        # Freeze right AFTER the last scored checkpoint, clamped to last step index
+        last_chk = state["check_steps"][-1] if state["check_steps"] else 0
+        state["freeze_from"] = min(NUM_STEPS - 1, last_chk + 1)
         print(f"[UNIFIED] checkpoints: {state['check_steps']}  freeze_from={state['freeze_from']}, "
               f"B={cfg.num_beams}, K={cfg.branch_K}, keep={cfg.keep_beams}, "
               f"accumulate={cfg.accumulate}, softmax={cfg.select_softmax}, beta={cfg.beta}")
@@ -174,16 +177,22 @@ def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor):
             vids = decode_full(pipe_obj, latents)
             if cfg.eval_decode_stride > 1:
                 vids = vids[:, :, ::cfg.eval_decode_stride, :, :]
+            # Safety: ensure enough frames after sub-sample
+            T = vids.shape[2]
+            if T < 2:
+                raise RuntimeError(f"Too few frames for V-JEPA eval after stride: T={T}, need≥2")
             surprise = vjepa_surprise_batch(vids, encoder, target_encoder, predictor)
-            reward = 1.0 - surprise
+            # Keep your cosine-similarity loss convention: reward = 1 - surprise (clamped)
+            reward = 1.0 - torch.clamp(surprise, -1.0, 1.0)
             if cfg.accumulate:
                 state["cumulative"] = state["cumulative"] + reward
                 best_idx = int(torch.argmax(state["cumulative"]).item())
             else:
-                # In instantaneous mode, pick the best current reward
                 best_idx = int(torch.argmax(reward).item())
-            print(f"[UNIFIED] FREEZE step={step}: best={best_idx} cum={float(state['cumulative'][best_idx]) if cfg.accumulate else float(reward[best_idx]):.4f}")
+            print(f"[UNIFIED] FREEZE step={step}: best={best_idx} "
+                  f"score={float(state['cumulative'][best_idx]) if cfg.accumulate else float(reward[best_idx]):.4f}")
             new_latents = latents[best_idx:best_idx+1]
+            state["active_beams"] = 1
             state["frozen"] = True
             return {"latents": new_latents}
 
@@ -194,35 +203,40 @@ def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor):
         vids = decode_full(pipe_obj, latents)
         if cfg.eval_decode_stride > 1:
             vids = vids[:, :, ::cfg.eval_decode_stride, :, :]
+        # Safety: ensure enough frames after sub-sample
+        T = vids.shape[2]
+        if T < 2:
+            raise RuntimeError(f"Too few frames for V-JEPA eval after stride: T={T}, need≥2")
+
         surprise = vjepa_surprise_batch(vids, encoder, target_encoder, predictor)
-        step_reward = 1.0 - surprise
+        # Keep cosine-sim convention
+        step_reward = 1.0 - torch.clamp(surprise, -1.0, 1.0)
 
         # 2) update objective
         obj = state["cumulative"] + step_reward if cfg.accumulate else step_reward
 
         # 3) per-beam fusion/selection
         obj_g = obj.view(current_B, K)  # (current_B, K)
+
+        # === SVDD (paper-faithful): single path, soft selection (or argmax), NO averaging ===
         if (not cfg.accumulate) and cfg.select_softmax and cfg.beta > 0:
-            # SVDD-style soft mix
+            # SVDD expects one active beam
+            if current_B != 1:
+                raise RuntimeError("SVDD expects num_beams=1 (single active path).")
             z = cfg.beta * obj_g
             z = z - z.max(dim=1, keepdim=True).values
-            w = torch.softmax(torch.clamp(z, min=-60.0), dim=1)  # (current_B, K)
-            # Weighted fuse latents per beam (preserve original dtype)
-            new_latents_list = []
-            for b in range(w.shape[0]):
-                wb = w[b].view(K, *([1] * (latents.ndim - 1))).to(dtype=latents.dtype)  # Match latents dtype
-                lb = latents[b*K:(b+1)*K]                                 # (K, C, T, H, W)
-                fused = torch.sum(wb * lb, dim=0, keepdim=True)           # (1, C, T, H, W) - preserves bfloat16
-                new_latents_list.append(fused)
-            new_latents = torch.cat(new_latents_list, dim=0)              # (current_B, ...)
-            # Repeat each fused beam K times to keep batch = current_B*K
-            new_latents = new_latents.repeat_interleave(K, dim=0)         # (current_B*K, ...)
-            # Reset cumulative for instantaneous mode
+            z = torch.clamp(z, min=-60.0, max=20.0)
+            w = torch.softmax(z, dim=1)                       # (1, K)
+            # Sample ONE child (use argmax for deterministic hard-SVDD)
+            idx = torch.multinomial(w.squeeze(0), num_samples=1)  # (1,)
+            chosen = latents[idx]                                # (1, C, T, H, W)
+            new_latents = chosen.repeat_interleave(K, dim=0)     # re-expand to K proposals next step
             state["cumulative"] = torch.zeros(new_latents.shape[0], device=new_latents.device, dtype=torch.float32)
-            # No change in active beam count for SVDD
+            state["active_beams"] = 1
             return {"latents": new_latents}
-        else:
-            child_idx = torch.argmax(obj_g, dim=1)  # (current_B,)
+
+        # === DSearch / greedy per-beam selection ===
+        child_idx = torch.argmax(obj_g, dim=1)  # (current_B,)
 
         base = torch.arange(obj_g.shape[0], device=obj.device) * K
         best_abs = base + child_idx  # (current_B,)
@@ -242,8 +256,7 @@ def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor):
             kept_vals = best_vals.index_select(0, order)              # (keep,)
             state["cumulative"] = kept_vals.repeat_interleave(K, dim=0).contiguous()
         else:
-            # reset cumulative (instantaneous mode): keep zeros so next obj = step_reward
-            state["cumulative"] = torch.zeros_like(new_latents[:, 0, 0, 0, 0], dtype=torch.float32, device=new_latents.device)
+            state["cumulative"] = torch.zeros(new_latents.shape[0], device=new_latents.device, dtype=torch.float32)
         
         # 7) update active beam count
         state["active_beams"] = keep
@@ -279,16 +292,16 @@ def main():
     encoder, target_encoder, predictor, _ = load_vjepa_models_torchhub("vit_giant")
     encoder.eval().cuda(); target_encoder.eval().cuda(); predictor.eval().cuda()
 
-    # ======= Choose ONE config (no branching logic needed) =======
-    # A) SVDD behavior
-    # cfg = svdd_preset(K=4, beta=10.0, stride=5)
+    # ======= Choose ONE config =======
+    # A) SVDD (paper-faithful single-path, soft selection; no averaging)
+    cfg = svdd_preset(K=4, beta=10.0, stride=5)
 
-    # B) DSearch behavior
-    cfg = dsearch_preset(B=3, K=2, stride=5)
+    # B) DSearch (beam)
+    # cfg = dsearch_preset(B=3, K=2, stride=5)
 
     # Prepare
     global NUM_STEPS
-    NUM_STEPS = NUM_STEPS  # already defined at top; kept for clarity
+    NUM_STEPS = NUM_STEPS  # clarity
     N = cfg.num_beams * cfg.branch_K
     gens = [torch.Generator(device="cuda").manual_seed(SEED0 + i) for i in range(N)]
 
@@ -304,7 +317,7 @@ def main():
         guidance_scale=GUIDANCE_SCALE,
         use_dynamic_cfg=True,
         num_videos_per_prompt=1,
-        eta=0.0,
+        eta=0.0,  # for SVDD determinism; if you want more exploration, try 0.1–0.2
         generator=gens,
         callback_on_step_end=cb,
         callback_on_step_end_tensor_inputs=["latents"],
@@ -337,8 +350,10 @@ def main():
 
     vids_btchw = torch.stack(vids_btchw_list, dim=0).cuda()
     final_surprise = vjepa_surprise_batch(vids_btchw, encoder, target_encoder, predictor)
-    best_idx = int(final_surprise.argmin().item())
-    print(f"[UNIFIED] FINAL best particle: {best_idx}  V-JEPA loss: {float(final_surprise[best_idx]):.6f}")
+    # Keep cosine-sim convention when printing a "score"
+    final_score = 1.0 - torch.clamp(final_surprise, -1.0, 1.0)
+    best_idx = int(final_score.argmax().item())
+    print(f"[UNIFIED] FINAL best particle: {best_idx}  score (1 - surprise): {float(final_score[best_idx]):.6f}")
 
     out_path = "output_unified_vjepa.mp4"
     export_to_video(out.frames[best_idx], out_path, fps=FPS)

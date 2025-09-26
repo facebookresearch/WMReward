@@ -33,9 +33,9 @@ TRIPLETS=(
 
 # SMC parameters
 SMC_NUM_PARTICLES_LIST=(4 8)
-SMC_BETA_CONST=10.0
-SMC_EARLY_FRAC=0.3
-SMC_LATE_FRAC=0.95
+SMC_BETA_CONST=6.0
+SMC_EARLY_FRAC=0.0
+SMC_LATE_FRAC=1.0
 SMC_STEP_STRIDE=5  # Check and resample every 3 steps (deterministic)
 
 # Base model and data

@@ -18,7 +18,7 @@ conda activate vg
 nvidia-smi
 
 # Multi-node configuration
-NUM_NODES=3                           # Total number of nodes
+NUM_NODES=3                          # Total number of nodes
 NUM_GPUS_PER_NODE=8                   # GPUs per node
 TOTAL_GPUS=$((NUM_NODES * NUM_GPUS_PER_NODE))
 NODE_ID=${SLURM_ARRAY_TASK_ID}
@@ -32,12 +32,14 @@ TRIPLETS=(
 )
 
 # SMC parameters
-SMC_NUM_PARTICLES_LIST=(4 8)
-SMC_BETA_CONST=8.0
-SMC_EARLY_FRAC=0.1
-SMC_LATE_FRAC=0.7
-SMC_STEP_STRIDE=5  # Check and resample every 7 steps (deterministic)
+SMC_NUM_PARTICLES_LIST=(2 4 8 16)
+SMC_BETA_CONST=3.0
+SMC_EARLY_FRAC=0.3
+SMC_LATE_FRAC=0.9
+SMC_STEP_STRIDE=5  # Check and resample every 3 steps (deterministic)
 
+# Seed values to loop over
+SEED_LIST=(42)
 # Guidance parameters (combined with SMC)
 GUIDANCE_STEP_PATTERNS=(
     "0x31,1x19"     # Like run_fk_cogvideox.py
@@ -53,7 +55,7 @@ GUIDANCE_RANGES=(
 )
 
 # Sampling methods to test
-SAMPLING_METHODS=("smc")
+SAMPLING_METHODS=("vanilla")
 
 # Base model and data
 MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")
@@ -122,11 +124,12 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
                             echo "        Step Pattern=$GUIDANCE_STEP_PATTERN, LR Pattern=$GUIDANCE_LR_PATTERN"
                         fi
 
-                        # Loop over particle counts; launch one worker per GPU on this node
+                        # Loop over seeds and particle counts; launch one worker per GPU on this node
+                        for SEED in "${SEED_LIST[@]}"; do
                         for N_PARTICLES in "${SMC_NUM_PARTICLES_LIST[@]}"; do
                             for ((g=0; g<NUM_GPUS_PER_NODE; g++)); do
                                 GLOBAL_GPU_IDX=$((NODE_ID * NUM_GPUS_PER_NODE + g))
-                                echo "  -> Launching $SAMPLING_METHOD worker on Node $NODE_ID, Local GPU $g (Global GPU $GLOBAL_GPU_IDX), N=$N_PARTICLES"
+                                echo "  -> Launching $SAMPLING_METHOD worker on Node $NODE_ID, Local GPU $g (Global GPU $GLOBAL_GPU_IDX), N=$N_PARTICLES, Seed=$SEED"
                                 CUDA_VISIBLE_DEVICES=$g python generator_i2v_multinode.py \
                                     --model_id "$MODEL_NAME" \
                                     --output_folder "$RUN_OUTPUT_FOLDER" \
@@ -158,9 +161,12 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
                                     --guidance_step_pattern "$GUIDANCE_STEP_PATTERN" \
                                     --guidance_lr_pattern "$GUIDANCE_LR_PATTERN" \
                                     --guidance_frequency $GUIDANCE_FREQUENCY \
-                                    --travel_time "${TRAVEL_TIME}" &
+                                    --travel_time "${TRAVEL_TIME}" \
+                                    --config_version "v1" \
+                                    --seed $SEED &
                             done
                             wait
+                        done
                         done
                     done
                     done
