@@ -45,17 +45,17 @@ CFG_SCALES=(
 
 # Guidance range values for range ablation (format: "start end") in GLOBAL steps [0..49]
 GUIDANCE_RANGES=(
-    "0 0"       
+    "0 0"
 )
 
 MODEL_NAMES=("nvidia/Cosmos-Predict2-2B-Video2World")
-
+SEED_LIST=(42)
 
 # JSON batch describing entries with input image/video, prompt, and output path
 # Add or remove batch JSON files as needed
 BATCH_JSON_LIST=(
 
-    # Physics-IQ dataset 
+    # Physics-IQ dataset
     "./physics_iq.json"
 )
 BASEDIR="/checkpoint/dream/yjianhao/PhysicsIQ/code"
@@ -68,7 +68,7 @@ NUM_SAMPLING_STEPS="50"
 # The script will automatically reuse existing candidates from higher-count experiments
 REJECTION_SAMPLES=(
     16
-) 
+)
 
 # I2V conditioning comes from JSON (input_video or image); no static INIT_IMAGE here
 
@@ -99,7 +99,7 @@ LOSS_MODES=("max")  # Loss aggregation modes for rejection sampling
 mkdir -p "$OUTPUT_FOLDER"
 
 for BATCH_JSON in "${BATCH_JSON_LIST[@]}"; do
-for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do 
+for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
     for MODEL_NAME in "${MODEL_NAMES[@]}"; do
         # Extract model name for folder organization
         MODEL_BASE_NAME=$(basename "$MODEL_NAME")
@@ -109,7 +109,7 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
         if [[ "$MODEL_BASE_NAME" == "CogVideoX-5b-I2V" ]]; then
             MODEL_BASE_NAME="cogvideox5b_i2v"
         fi
-        
+
         for triplet in "${TRIPLETS[@]}"; do
                 # Split triplet into individual variables
                 read -r SLICE_WINDOW_SIZE CONTEXT_LENGTH STRIDE <<< "$triplet"
@@ -140,6 +140,7 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                         fi
 
                         # Launch one worker per GPU on this node; each worker shards the JSON by global index
+                        for SEED in "${SEED_LIST[@]}"; do
                         for ((g=0; g<NUM_GPUS_PER_NODE; g++)); do
                             # Calculate global GPU index across all nodes
                             GLOBAL_GPU_IDX=$((NODE_ID * NUM_GPUS_PER_NODE + g))
@@ -174,6 +175,7 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                                 $REJECTION_ARGS &
                         done
                         wait
+                        done
                         done
                         done
                     done

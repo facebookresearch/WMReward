@@ -38,8 +38,8 @@ DSEARCH_BRANCH_K_LIST=(2)
 DSEARCH_STRIDE_LIST=(5)
 
 # SVDD parameters  
-SVDD_BRANCH_K_LIST=(16)
-SVDD_BETA_LIST=(8.0)
+SVDD_BRANCH_K_LIST=(2 4 8 16)
+SVDD_BETA_LIST=(3.0)
 SVDD_STRIDE_LIST=(5)
 
 # Base model and data
@@ -152,8 +152,8 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
                                 --svdd_branch_k $BRANCH_K \
                                 --svdd_beta $BETA \
                                 --svdd_stride $STRIDE \
-                                --config_version "v3" \
-                                --seed 1 &
+                                --config_version "v1" \
+                                --seed 42 &
                         done
                         wait  # Wait for all GPUs on this node to complete this parameter combination
                     done

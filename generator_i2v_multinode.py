@@ -35,7 +35,7 @@ def parse_float_range_pair(text: str):
 
 def save_experiment_metadata(args, experiment_name, experiment_folder):
     """Save experiment metadata as JSON file in the experiment folder."""
-    
+
     # Create metadata with all relevant parameters
     metadata = {
         "experiment_name": experiment_name,
@@ -53,7 +53,7 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "width": getattr(args, 'width', 720),
         }
     }
-    
+
     # Add guidance-specific parameters
     if args.sampling_method == 'guidance':
         context_frames, stride, window_size = _resolve_sliding_window_params(args)
@@ -72,25 +72,25 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "style_weight": getattr(args, 'style_weight', None),
             "loss_mode": getattr(args, 'loss_mode', None),
         })
-    
+
     # Add rejection sampling parameters
     if args.sampling_method == 'rejection':
         metadata["parameters"].update({
             "rejection_samples": getattr(args, 'rejection_samples', 3),
             "loss_mode": getattr(args, 'loss_mode', 'mean'),
         })
-    
+
     # Add SMC parameters
     if args.sampling_method == 'smc':
         metadata["parameters"].update({
             "smc_num_particles": getattr(args, 'smc_num_particles', 16),
-            "smc_beta_const": getattr(args, 'smc_beta_const', 24.0),
-            "smc_early_frac": getattr(args, 'smc_early_frac', 0.40),
+            "smc_beta_const": getattr(args, 'smc_beta_const', 4.0),
+            "smc_early_frac": getattr(args, 'smc_early_frac', 0.20),
             "smc_late_frac": getattr(args, 'smc_late_frac', 0.90),
             "smc_step_stride": getattr(args, 'smc_step_stride', 5),
-            "smc_potential_mode": getattr(args, 'smc_potential_mode', 'current'),
+            "smc_potential_mode": getattr(args, 'smc_potential_mode', 'cumulative'),
         })
-    
+
     # Add SMC+guidance parameters
     if args.sampling_method == 'smc_guid':
         metadata["parameters"].update({
@@ -105,7 +105,7 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "guidance_frequency": getattr(args, 'guidance_frequency', None),
             "travel_time": getattr(args, 'travel_time', None),
         })
-    
+
     # Add DSearch parameters
     if args.sampling_method == 'dsearch':
         metadata["parameters"].update({
@@ -114,7 +114,7 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "dsearch_stride": getattr(args, 'dsearch_stride', 5),
             "loss_mode": getattr(args, 'loss_mode', 'max'),
         })
-    
+
     # Add SVDD parameters
     if args.sampling_method == 'svdd':
         metadata["parameters"].update({
@@ -123,12 +123,12 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "svdd_stride": getattr(args, 'svdd_stride', 5),
             "loss_mode": getattr(args, 'loss_mode', 'max'),
         })
-    
+
     # Save metadata file
     metadata_path = os.path.join(experiment_folder, "experiment_config.json")
     with open(metadata_path, 'w') as f:
         json.dump(metadata, f, indent=2)
-    
+
     print(f"Saved experiment metadata to: {metadata_path}")
 
 def get_simple_experiment_name(args):
@@ -138,19 +138,19 @@ def get_simple_experiment_name(args):
 
     # Base name with method and key params
     if args.sampling_method == 'vanilla':
-        name = f"vanilla_{version}_f{args.num_frames}_s{args.num_inference_steps}_cfg{args.cfg_scale}"
+        name = f"vanilla_{version}_f{args.num_frames}_s{args.num_inference_steps}_cfg{args.cfg_scale}_seed{args.seed}"
     elif args.sampling_method == 'guidance':
         loss_mode = getattr(args, 'loss_mode', 'mean')
         vjepa_variant = getattr(args, 'vjepa_variant', 'vit_giant')
         # Simplify vjepa variant name for brevity
         vjepa_short = vjepa_variant.replace('vit_', '') if vjepa_variant != 'vit_giant' else ''
-        
+
         name = (
             f"guidance_{version}_f{args.num_frames}_s{args.num_inference_steps}"
             f"_c{getattr(args, 'vjepa_context_frames', 8)}"
-            f"_cfg{args.cfg_scale}_gsp{getattr(args, 'guidance_step_pattern', '')}_glp{getattr(args, 'guidance_lr_pattern', '')}_gf{getattr(args, 'guidance_frequency', '')}_{loss_mode}"
+            f"_cfg{args.cfg_scale}_gsp{getattr(args, 'guidance_step_pattern', '')}_glp{getattr(args, 'guidance_lr_pattern', '')}_gf{getattr(args, 'guidance_frequency', '')}_{loss_mode}_seed{args.seed}"
         )
-        
+
         # Add vjepa variant if not default
         if vjepa_short:
             name += f"_{vjepa_short}"
@@ -189,6 +189,8 @@ def get_simple_experiment_name(args):
     if "5frame" in args.batch_json:
         name += "_5frame"
 
+    # name+=f"_{args.seed}"
+
     return name
 
 def _resolve_sliding_window_params(args):
@@ -204,12 +206,12 @@ def _resolve_sliding_window_params(args):
 def log_experiment_simple(args, experiment_name, status='started'):
     """Simple logging to CSV."""
     log_file = os.path.join(args.output_folder, 'experiments.csv')
-    
+
     # Create header if file doesn't exist
     if not os.path.exists(log_file):
         with open(log_file, 'w') as f:
             f.write('name,method,frames,steps,context_frames,slice_stride,g_step_pattern,g_lr_pattern,g_frequency,travel_time,cfg_scale,timestamp,status\n')
-    
+
     # Add entry
     with open(log_file, 'a') as f:
         context_frames, stride, _ = _resolve_sliding_window_params(args)
@@ -243,13 +245,13 @@ def get_prompts(prompt_file, args):
     """Read prompts and negative prompts from a text file."""
     with open(f"./prompts/{prompt_file}.txt", 'r') as file:
         prompts = [line.strip() for line in file if line.strip()]
-    
+
     # Define a negative prompt suitable for CogVideoX
     if "CogVideoX" in args.model_id:
         negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
     elif "Cosmos" in args.model_id:
         negative_prompt = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
-    
+
     return prompts, negative_prompt
 
 def load_first_frame(image_path: str | None, video_path: str | None) -> Image.Image:
@@ -287,7 +289,7 @@ def init_vjepa_models(args):
     """Initialize V-JEPA models for rejection sampling evaluation."""
     if args.sampling_method not in ['rejection', 'smc', 'smc_guid', 'dsearch', 'svdd']:
         return None, None, None
-    
+
     print(f"Loading V-JEPA models for rejection sampling ({args.vjepa_variant})...")
     encoder, target_encoder, predictor, img_size = load_vjepa_models_torchhub(args.vjepa_variant)
     encoder.eval().cuda()
@@ -351,7 +353,7 @@ def dsearch_preset(B=3, K=2, stride=5) -> SearchCfg:
     )
 
 # ===================== unified callback ======================
-def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor, num_steps: int):
+def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor, num_steps: int, args):
     state = {"cumulative": None, "frozen": False, "check_steps": None, "freeze_from": None, "active_beams": None}
 
     def _maybe_init_schedule(pipe_obj):
@@ -379,7 +381,7 @@ def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor, nu
         # Initialize active beams on first call
         if state["active_beams"] is None:
             state["active_beams"] = cfg.num_beams
-        
+
         current_B = state["active_beams"]
         expected_batch = current_B * K
         assert latents.shape[0] == expected_batch or state["frozen"], \
@@ -398,7 +400,7 @@ def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor, nu
             T = vids.shape[2]
             if T < 2:
                 raise RuntimeError(f"Too few frames for V-JEPA eval after stride: T={T}, need≥2")
-            surprise = _vjepa_surprise_batch(vids, encoder, target_encoder, predictor, None)
+            surprise = _vjepa_surprise_batch(vids, encoder, target_encoder, predictor, args)
             # Keep your cosine-sim convention
             reward = 1.0 - torch.clamp(surprise, -1.0, 1.0)
             if cfg.accumulate:
@@ -471,7 +473,7 @@ def make_unified_callback(cfg: SearchCfg, encoder, target_encoder, predictor, nu
             state["cumulative"] = kept_vals.repeat_interleave(K, dim=0).contiguous()
         else:
             state["cumulative"] = torch.zeros(new_latents.shape[0], device=new_latents.device, dtype=torch.float32)
-        
+
         # 7) update active beam count
         state["active_beams"] = keep
 
@@ -499,12 +501,12 @@ def unified_search_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa
 
     steps = int(args.num_inference_steps)
     N = cfg.num_beams * cfg.branch_K
-    
+
     # Create generators for each beam/branch
     generators = [torch.Generator(device="cuda").manual_seed(int(args.seed) + i) for i in range(N)]
-    
+
     # Create unified callback
-    cb = make_unified_callback(cfg, encoder, target_encoder, predictor, steps)
+    cb = make_unified_callback(cfg, encoder, target_encoder, predictor, steps, args)
 
     # Run pipeline with unified search
     out = pipe(
@@ -559,7 +561,7 @@ def unified_search_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa
 
 def guidance_sample(pipe, args, init_frame, prompt, negative_prompt, generator=None):
     """Guidance sampling using slice-predictor loss for I2V pipeline."""
-    
+
     steps = int(args.num_inference_steps)
     step_pattern = getattr(args, 'guidance_step_pattern', "0x3,3x12,2x12,1x23")
     lr_pattern = getattr(args, 'guidance_lr_pattern', "3.0x15,2.0x15,1.0x20")
@@ -642,7 +644,7 @@ def guidance_sample(pipe, args, init_frame, prompt, negative_prompt, generator=N
                 fps=16,
                 travel_time=(0,0),
             )
-        
+
     return result.frames[0]
 
 def _ensure_btchw(x: torch.Tensor) -> torch.Tensor:
@@ -688,21 +690,20 @@ def _vjepa_surprise_batch(vids_btchw: torch.Tensor, encoder, target_encoder, pre
             encoder=encoder,
             target_encoder=target_encoder,
             predictor=predictor,
-            img_size=getattr(args, 'vjepa_img_size', 256),
-            window_size=int(getattr(args, 'slice_window_size', 16)),
+            img_size=args.vjepa_img_size,
+            window_size=int(args.slice_window_size),
             loss_exp=2,
-            masking_mode=str(getattr(args, 'vjepa_masking_mode', 'causal')),
-            context_frames=int(getattr(args, 'vjepa_context_frames', 8)),
-            mask_ratio=float(getattr(args, 'vjepa_mask_ratio', 0.75)),
+            masking_mode=str(args.vjepa_masking_mode),
+            context_frames=int(args.vjepa_context_frames),
             spatial_pred_mask_scale=None,
             temporal_pred_mask_scale=None,
             aspect_ratio=None,
             npred=None,
             max_context_frames_ratio=None,
             is_vae_output=True,
-            seed=int(getattr(args, 'seed', 42)),
-            stride=int(getattr(args, 'slice_stride', 8)),
-            mode=str(getattr(args, 'loss_mode', 'max')),
+            seed=int(args.seed),
+            stride=int(args.slice_stride),
+            mode=str(args.loss_mode),
         )
         out[i] = float(loss)
     return out
@@ -719,11 +720,11 @@ def unified_smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_mo
 
     # Unified parameter extraction with defaults
     steps = int(args.num_inference_steps)
-    num_particles = int(getattr(args, 'smc_num_particles', 16))
-    beta_const = float(getattr(args, 'smc_beta_const', 24.0))
-    early_frac = float(getattr(args, 'smc_early_frac', 0.20))
-    late_frac = float(getattr(args, 'smc_late_frac', 0.90))
-    step_stride = int(getattr(args, 'smc_step_stride', 5))
+    num_particles = int(args.smc_num_particles)
+    beta_const = float(args.smc_beta_const)
+    early_frac = float(args.smc_early_frac)
+    late_frac = float(args.smc_late_frac)
+    step_stride = int(args.smc_step_stride)
 
     start = int(round(steps * early_frac))
     end = int(round(steps * late_frac))
@@ -808,7 +809,7 @@ def unified_smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_mo
 
                 prefix = "[SMC+GUID final-correction]" if use_guidance else "[SMC final-correction]"
                 print(f"      {prefix} Final step: pick the best particle")
-                
+
                 idx = w.argmax().unsqueeze(0).expand(w.numel())
                 latents = latents.index_select(0, idx)
                 weights.fill_(1.0 / w.numel())
@@ -829,7 +830,7 @@ def unified_smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_mo
             worst_loss = float(surprise_t.max())
             mean_loss = float(surprise_t.mean())
             std_loss = float(surprise_t.std(unbiased=False))
-            
+
             prefix = "[SMC+GUID]" if use_guidance else "[SMC]"
             print(
                 f"{prefix} step={step:02d} (t={int(timestep)}), "
@@ -903,23 +904,23 @@ def smc_sample(pipe, args, init_frame, prompt, negative_prompt, vjepa_models, ge
 
 def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment_name, fps=8, vjepa_models=None):
     """Generate videos for each prompt and save them to the output folder."""
-    
+
     # Always ensure experiment folder exists; outputs default here unless output_path is explicitly used
     experiment_folder = get_simple_output_folder(args, experiment_name)
-    
+
     # If explicit output path is provided for single-prompt mode, ensure its directory exists
     if getattr(args, 'output_path', None):
         out_dir = os.path.dirname(args.output_path)
         if out_dir:
             os.makedirs(out_dir, exist_ok=True)
-    
+
     # Log experiment start
     log_experiment_simple(args, experiment_name, 'started')
-    
+
     # Save metadata in experiment folder
     save_experiment_metadata(args, experiment_name, experiment_folder)
 
-    
+
     # Unpack V-JEPA models for rejection sampling
     encoder, target_encoder, predictor = vjepa_models if vjepa_models else (None, None, None)
 
@@ -1020,25 +1021,25 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                 negative_prompt=negative_prompt,
                 generator=generator
             )
-          
+
 
         elif args.sampling_method == 'rejection':
             print(f"  Generating with rejection sampling ({args.rejection_samples} candidates)...")
-            
+
             # Generate multiple samples and select best based on V-JEPA loss
             candidate_frames = []
             candidate_losses = []
-            
+
             for sample_idx in range(args.rejection_samples):
                 print(f"    Generating candidate {sample_idx + 1}/{args.rejection_samples}...")
-                
+
                 # Create unique generator for each sample
                 sample_generator = torch.Generator(device="cuda").manual_seed(args.seed + sample_idx)
-                
+
                 # Generate using vanilla method (no guidance)
                 zero_steps = [0] * int(args.num_inference_steps)
                 zero_lrs = [0.0] * int(args.num_inference_steps)
-                
+
                 if "CogVideoX" in args.model_id:
                     result = pipe(
                         video=[init_frame],
@@ -1087,7 +1088,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                             travel_time=(0, 0),
                         )
                 candidate_frames.append(result.frames[0])
-                
+
                 # Compute V-JEPA loss for this candidate
                 if encoder is not None:
                     # Convert frames to tensor for loss computation
@@ -1095,13 +1096,13 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                     frames_tensor = torch.stack([torch.from_numpy(np.array(frame)).permute(2, 0, 1) for frame in result.frames[0]])
                     frames_tensor = frames_tensor.unsqueeze(0).float()  # Add batch dimension: [T, C, H, W] -> [1, T, C, H, W]
                     frames_tensor = frames_tensor.permute(0, 2, 1, 3, 4)  # [1, T, C, H, W] -> [1, C, T, H, W]
-                    
+
                     # Normalize to [-1, 1] range (assuming frames are in [0, 255])
                     frames_tensor = (frames_tensor / 127.5) - 1.0
-                    
+
                     with torch.no_grad():
                         context_frames, stride, window_size = _resolve_sliding_window_params(args)
-                        
+
                         loss = compute_vjepa_loss_sliding_window(
                             video_tensor=frames_tensor,
                             encoder=encoder,
@@ -1129,7 +1130,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
                 else:
                     print(f"      Warning: V-JEPA models not loaded, using random selection")
                     candidate_losses.append(sample_idx)  # Use index as dummy loss
-            
+
             # Select best candidate based on lowest loss
             best_idx = np.argmin(candidate_losses)
             frames = candidate_frames[best_idx]
@@ -1202,7 +1203,7 @@ def generate_videos(pipe, args, init_frame, prompts, negative_prompt, experiment
             print(f"[{experiment_name}] Generated: {video_path} (selected from {args.rejection_samples} candidates)")
         else:
             print(f"[{experiment_name}] Generated: {video_path}")
-    
+
     # Log experiment completion
     log_experiment_simple(args, experiment_name, 'completed')
     if getattr(args, 'output_path', None) and len(prompts) == 1:
@@ -1214,7 +1215,7 @@ def detect_dataset_mode(batch_json_path):
     """Auto-detect dataset mode from batch JSON filename."""
     if not batch_json_path:
         return 'dreambench'  # default
-    
+
     filename = os.path.basename(batch_json_path).lower()
     if 'physics' in filename:
         return 'physics_iq'
@@ -1231,7 +1232,7 @@ def resolve_paths(input_video, input_image, output_video, base_dir, dataset_mode
         output_video_abs = output_video
     else:
         pass
-    
+
     return input_video_abs, input_image_abs, output_video_abs
 
 def chunk_prompts(prompts, num_chunks, chunk_idx):
@@ -1252,26 +1253,26 @@ def main():
     parser.add_argument('--config_version', type=str, default='v2', help='Configuration version tag for experiment naming and tracking.')
     parser.add_argument('--batch_json', type=str, default=None, help='Optional: JSON file with list of {input_video|input_image, prompt, output_video} entries to process. Entries will be sharded across GPUs by index modulo num_gpus.')
     parser.add_argument('--base_dir', type=str, default=None, help='Optional: Base directory to prepend to input/output paths in --batch_json.')
-    parser.add_argument('--dataset_mode', type=str, default='auto', choices=['auto', 'dreambench', 'physics_iq'], 
+    parser.add_argument('--dataset_mode', type=str, default='auto', choices=['auto', 'dreambench', 'physics_iq'],
                        help='Dataset mode: auto (detect from batch_json name), dreambench (relative paths), physics_iq (absolute paths)')
     parser.add_argument('--num_gpus', type=int, default=1, help='Total number of GPUs available across all nodes.')
     parser.add_argument('--gpu_idx', type=int, default=0, help='Global index of the GPU to use for this process (0 to num_gpus-1).')
     parser.add_argument('--num_nodes', type=int, default=1, help='Total number of nodes available.')
     parser.add_argument('--node_id', type=int, default=0, help='Index of the current node (0 to num_nodes-1).')
     parser.add_argument('--gpus_per_node', type=int, default=8, help='Number of GPUs per node.')
-    parser.add_argument('--sampling_method', type=str, default='vanilla', 
+    parser.add_argument('--sampling_method', type=str, default='vanilla',
                        choices=['vanilla', 'guidance', 'rejection', 'smc', 'smc_guid', 'dsearch', 'svdd'],
                        help='Sampling method to use.')
     parser.add_argument('--init_image', type=str, default=None, help='Path to the initial image for I2V conditioning.')
     parser.add_argument('--init_video', type=str, default=None, help='Path to the initial video for I2V conditioning (first frame used).')
-    
+
     # CogVideoX specific parameters
     parser.add_argument('--num_inference_steps', type=int, default=50, help='Number of inference steps.')
     parser.add_argument('--num_frames', type=int, default=49, help='Number of frames to generate (CogVideoX default: 49).')
     parser.add_argument('--height', type=int, default=480, help='Height of the generated videos.')
     parser.add_argument('--width', type=int, default=720, help='Width of the generated videos.')
     parser.add_argument('--cfg_scale', type=float, default=6.0, help='Classifier-free guidance scale.')
-    
+
     # Guidance sampling parameters
     parser.add_argument('--guidance_start', type=int, default=0, help='Timestep to start applying guidance (0..1001).')
     parser.add_argument('--guidance_end', type=int, default=1001, help='Timestep to end applying guidance (0..1001).')
@@ -1292,9 +1293,9 @@ def main():
     parser.add_argument('--slice_stride', type=int, default=4)
     parser.add_argument('--vae_decode_scale', type=float, default=0.7, help='VAE decode scale factor.')
     parser.add_argument('--loss_mode', type=str, default='max', choices=['mean', 'max'], help='V-JEPA loss aggregation mode.')
-    
+
     # Rejection sampling parameters (only used when sampling_method='rejection')
-    parser.add_argument('--rejection_samples', type=int, default=3, 
+    parser.add_argument('--rejection_samples', type=int, default=3,
                        help='Number of samples to generate for rejection sampling.')
 
     # SMC parameters (only used when sampling_method='smc')
@@ -1314,7 +1315,7 @@ def main():
     parser.add_argument('--svdd_beta', type=float, default=10.0, help='Temperature parameter for SVDD softmax.')
     parser.add_argument('--svdd_stride', type=int, default=5, help='Evaluation stride for SVDD.')
 
-    parser.add_argument('--seed', type=int, default=1234, help='Seed for reproducibility.')
+    parser.add_argument('--seed', type=int, default=42, help='Seed for reproducibility.')
     args = parser.parse_args()
 
     # Set deterministic behavior for reproducibility
@@ -1351,19 +1352,19 @@ def main():
         print(f"  - LR pattern: {args.guidance_lr_pattern}")
         print(f"  - Frequency: {args.guidance_frequency}")
         print(f"  - Travel time: {args.travel_time}")
-    
+
     if args.sampling_method == 'rejection':
         print(f"Rejection sampling enabled:")
         print(f"  - Number of samples: {args.rejection_samples}")
         print(f"  - Using existing V-JEPA parameters for evaluation")
-    
+
     if args.sampling_method == 'smc':
         print(f"SMC steering enabled:")
         print(f"  - Particles: {args.smc_num_particles}")
         print(f"  - Beta: {args.smc_beta_const}")
         print(f"  - Mid-window: [{args.smc_early_frac}, {args.smc_late_frac}), stride {args.smc_step_stride}")
         print(f"  - Deterministic resampling: every {args.smc_step_stride} steps")
-    
+
     if args.sampling_method == 'smc_guid':
         print(f"SMC+Guidance steering enabled:")
         print(f"  - Particles: {args.smc_num_particles}")
@@ -1373,26 +1374,26 @@ def main():
         print(f"  - LR pattern: {args.guidance_lr_pattern}")
         print(f"  - Travel time: {args.travel_time}")
         print(f"  - Deterministic resampling: every {args.smc_step_stride} steps")
-    
+
     if args.sampling_method == 'dsearch':
         print(f"DSearch enabled:")
         print(f"  - Beams: {args.dsearch_num_beams}")
         print(f"  - Children per beam: {args.dsearch_branch_k}")
         print(f"  - Evaluation stride: {args.dsearch_stride}")
         print(f"  - Cumulative rewards with hard selection")
-    
+
     if args.sampling_method == 'svdd':
         print(f"SVDD enabled:")
         print(f"  - Branches: {args.svdd_branch_k}")
         print(f"  - Beta (softmax temp): {args.svdd_beta}")
         print(f"  - Evaluation stride: {args.svdd_stride}")
         print(f"  - Instantaneous rewards with soft fusion")
-    
+
     print(f"{'='*60}\n")
 
     # Initialize pipeline once per process
     pipe = init_pipeline(args)
-    
+
     # Initialize V-JEPA models for rejection sampling if enabled
     vjepa_models = init_vjepa_models(args)
 
@@ -1404,13 +1405,13 @@ def main():
     # Determine dataset mode and base directory
     dataset_mode = args.dataset_mode if args.dataset_mode != 'auto' else detect_dataset_mode(args.batch_json)
     base_dir = args.base_dir
-    
+
     print(f"Dataset mode: {dataset_mode}")
     if dataset_mode == 'physics_iq':
         print("Using Physics-IQ mode: absolute input paths, relative output paths")
     else:
         print("Using DreamBench mode: relative paths with base_dir")
-    
+
     # Use same chunking mechanism as vanilla/guidance methods for consistent ordering
     chunked_entries = chunk_prompts(entries, args.num_gpus, args.gpu_idx)
 
@@ -1418,7 +1419,7 @@ def main():
         negative_prompt = "overexposed, static, blurred details, worst quality, low quality, JPEG compression residue, deformation, motion artifacts"
     elif "Cosmos" in args.model_id:
         negative_prompt = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
-    
+
     processed_count = 0
     for item in chunked_entries:
 
@@ -1450,7 +1451,7 @@ def main():
         # <output_folder>/<experiment>/ to match project structure.
         args.output_path = None
         args.output_filename = os.path.basename(output_video)
-        
+
         args.init_image = input_image_abs
         args.init_video = input_video_abs
 

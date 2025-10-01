@@ -4,7 +4,7 @@
 #SBATCH --job-name=cogvideox_phy
 #SBATCH --array=0-1                    # 1 nodes (0)
 #SBATCH --nodes=1                      # Each job uses 1 node
-#SBATCH --qos=dream_high
+#SBATCH --qos=h200_dream_high
 #SBATCH --ntasks-per-node=1           # 1 task per node
 #SBATCH --gres=gpu:8                  # 8 GPUs per node
 #SBATCH --cpus-per-task=48            # Adjust based on your cluster
@@ -36,9 +36,9 @@ TRIPLETS=(
 
 GUIDANCE_STEP_PATTERN="0x5,1x45"
 GUIDANCE_LR_PATTERNS=(
-  
+
   "0.003x50"
-  "0.001x50"  
+  "0.001x50"
   "0.005x50"
 )
 GUIDANCE_FREQUENCIES=(
@@ -53,12 +53,12 @@ CFG_SCALES=(
     "6.0"
     "2.0"
     "4.0"
-    
+
 )
 
 # Disable Time Travel for simple algorithm
 GUIDANCE_RANGES=(
-    "0 0"       
+    "0 0"
 )
 
 MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")
@@ -66,7 +66,7 @@ MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")
 # JSON batch describing entries with input image/video, prompt, and output path
 # Add or remove batch JSON files as needed
 BATCH_JSON_LIST=(
-    # Physics-IQ dataset 
+    # Physics-IQ dataset
     "./prompts/physics_iq.json"
     # "/home/yjianhao/project/frame-guidance/prompts/physics_iq_5frame.json"
 )
@@ -77,7 +77,7 @@ OUTPUT_FOLDER="/checkpoint/dream/yjianhao/generated_videos"
 SAMPLE_METHODS=("guidance")
 NUM_SAMPLING_STEPS="50"
 NUM_FRAMES="49"
-REJECTION_SAMPLES="10"  # Number of candidates to generate for rejection sampling 
+REJECTION_SAMPLES="10"  # Number of candidates to generate for rejection sampling
 
 # I2V conditioning comes from JSON (input_video or image); no static INIT_IMAGE here
 
@@ -92,11 +92,11 @@ LOSS_MODES=("max")
 mkdir -p "$OUTPUT_FOLDER"
 
 for BATCH_JSON in "${BATCH_JSON_LIST[@]}"; do
-for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do 
+for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
     for MODEL_NAME in "${MODEL_NAMES[@]}"; do
         # Extract model name for folder organization
         MODEL_BASE_NAME=$(basename "$MODEL_NAME")
-        
+
         for triplet in "${TRIPLETS[@]}"; do
                 # Split triplet into individual variables
                 read -r SLICE_WINDOW_SIZE CONTEXT_LENGTH STRIDE <<< "$triplet"
