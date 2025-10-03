@@ -1,12 +1,7 @@
 
 ### Align Video Diffusion Model to Latent World Model
 
-Minimal tooling to run image-to-video (I2V) generation with three modes:
-- vanilla: baseline generation
-- guidance: V-JEPA surprise guidance during sampling
-- rejection: generate k candidates, score with V-JEPA, keep best
-
-Supports both CogVideoX and Cosmos I2V via customized pipelines in `pipelines/`.
+Minimal tooling to run image/video-to-video (I2V/V2V) generation with CogVideoX, Cosmos, and MAGI1.
 
 ## Usage
 1. pull the repo
