@@ -21,7 +21,7 @@ git clone https://github.com/facebookresearch/vjepa2.git
 1.2 To run MAGI-1
 Script can be copy from the storage (optional)
 ```bash
-cp -r /checkpoint/dream/yjianhao/storage/project/MAGI-1 ./[WORKING_DIR]WORKING_DIR
+cp -r /checkpoint/dream/yjianhao/storage/project/MAGI-1 ./[WORKING_DIR]
 ```
 or directly run script under
 ```bash
@@ -57,13 +57,10 @@ python run_i2v_cosmos.py
 
 4. Send Batch Generation Jobs
 Batch mode - PhysicsIQ generation
-- SLURM multi-node (guidance and vanilla sampling example):
+- SLURM multi-node (for example):
 ```bash
 sbatch generation/generate_i2v_cosmos_multinode.sh
-```
-- SLURM multi-node (rejection, with rejection buffer reuse this will save all rejection samples for later analysis, example):
-```bash
-sbatch generation/generate_i2v_cosmos_rejection_multinode.sh
+sbatch generation/generate_batch_1chunk_abl.sh
 ```
 - Key Hyperparameters inside batch generation:
 ```bash
