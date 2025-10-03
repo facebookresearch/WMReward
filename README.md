@@ -16,20 +16,30 @@ cd ./vejap2
 git clone https://github.com/facebookresearch/vjepa2.git
 ```
 
--- To run Cosmos, need approval from HF: https://huggingface.co/nvidia/Cosmos-Predict2-14B-Video2World
+1.1 To run Cosmos, need approval from HF: https://huggingface.co/nvidia/Cosmos-Predict2-14B-Video2World
 
-1.1 To run MAGI-1, copy from the storage
-
+1.2 To run MAGI-1
+Script can be copy from the storage (optional)
+```bash
 cp -r /checkpoint/dream/yjianhao/storage/project/MAGI-1 ./[WORKING_DIR]WORKING_DIR
-
-or directly run script under:
-
+```
+or directly run script under
+```bash
 /checkpoint/dream/yjianhao/MAGI-1
+```
+
 
 2. (Optional) Activate conda env locally to debug
+For CogVideoX:
 ```bash
 source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
 conda activate vg
+```
+For MAGI-1:
+```bash
+source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
+eval "$(/checkpoint/dream/yjianhao/VideoGuidance/conda/bin/conda shell.bash hook)"
+conda activate /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/magi_share
 ```
 3. (Optional) Debug with a single prompt run
 Quick start (single prompt for debug)
@@ -70,6 +80,7 @@ All videos are stored in structure of
 ```
 
 ### Setup External
+For CogVideoX
 ```bash
 git clone https://github.com/fairinternal/video_guidance.git
 
@@ -78,3 +89,5 @@ pip install torch torchvision
 pip install diffusers transformers
 pip install -r requirements.txt
 ```
+For MAGI-1
+Follow instruction from [MAGI-1](https://github.com/SandAI-org/MAGI-1/tree/main)
