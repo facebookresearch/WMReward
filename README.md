@@ -18,6 +18,14 @@ git clone https://github.com/facebookresearch/vjepa2.git
 
 -- To run Cosmos, need approval from HF: https://huggingface.co/nvidia/Cosmos-Predict2-14B-Video2World
 
+1.1 To run MAGI-1, copy from the storage
+
+cp -r /checkpoint/dream/yjianhao/storage/project/MAGI-1 ./[WORKING_DIR]WORKING_DIR
+
+or directly run script under:
+
+/checkpoint/dream/yjianhao/MAGI-1
+
 2. (Optional) Activate conda env locally to debug
 ```bash
 source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
@@ -49,14 +57,14 @@ sbatch generation/generate_i2v_cosmos_rejection_multinode.sh
 ```
 - Key Hyperparameters inside batch generation:
 ```bash
-- SBATCH --array=0-2 (line5) and NUM_NODES=3 (line21) --> these control how many node to use, the script will distribute the generation as 198 // (NUM_NODE * 8)   
+- SBATCH --array=0-2 (line5) and NUM_NODES=3 (line21) --> these control how many node to use, the script will distribute the generation as 198 // (NUM_NODE * 8)
 - SAMPLE_METHODS=("vanilla") --> control what sampling nethod to use
 ```
 - Place to find generated videos
 ```bash
 /checkpoint/dream/yjianhao/generated_videos/physics_iq
 ```
-All videos are stored in structure of 
+All videos are stored in structure of
 ```bash
 /checkpoint/dream/yjianhao/generated_videos/[DATASET]/[MODEL]/[SAMPLING_CONFIG]
 ```
@@ -70,6 +78,3 @@ pip install torch torchvision
 pip install diffusers transformers
 pip install -r requirements.txt
 ```
-
-
-

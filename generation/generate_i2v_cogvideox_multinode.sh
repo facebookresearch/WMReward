@@ -2,7 +2,7 @@
 
 # SLURM job array configuration for multi-node execution
 #SBATCH --job-name=cogvideox_phy
-#SBATCH --array=0-11                    # 1 nodes (0)
+#SBATCH --array=0-0                    # 1 nodes (0)
 #SBATCH --nodes=1                      # Each job uses 1 node
 #SBATCH --qos=h200_dream_high
 #SBATCH --ntasks-per-node=1           # 1 task per node
@@ -30,7 +30,7 @@ mkdir -p "$TRANSFORMERS_CACHE"
 nvidia-smi
 
 # Multi-node configuration
-NUM_NODES=12                           # Total number of nodes
+NUM_NODES=1                           # Total number of nodes
 NUM_GPUS_PER_NODE=8                   # GPUs per node
 TOTAL_GPUS=$((NUM_NODES * NUM_GPUS_PER_NODE))  # 24 total GPUs
 NODE_ID=${SLURM_ARRAY_TASK_ID}        # Current node ID (0-3)
