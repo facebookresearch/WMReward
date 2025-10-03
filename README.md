@@ -107,6 +107,8 @@ Follow instruction from [MAGI-1](https://github.com/SandAI-org/MAGI-1/tree/main)
 
 The pipeline generally goes as (1) use generation script under /generation to generate videos (2) use evaluation script under /evaluation to evaluate the generated videos (3) use ./scripts/physicsiq_res2tab.py to view results.
 
+For generation it goes as (1) entry point under /generation (2) go to ./inference/generator.py to handle vanilla/rejection/smc (3) go to corresponding pipeline i.e. /inference/pipeline_w_guidance.py to handle the generation pipeline (4) go to corresponding video generation i.e. ./inference/video_generate_longcontext_guidance.py to handle forward process.
+
 important scripts:
 Run PhysicsIQ evaluation
 ```bash
