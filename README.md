@@ -4,7 +4,7 @@
 Minimal tooling to run image/video-to-video (I2V/V2V) generation with CogVideoX, Cosmos, and MAGI1.
 
 ## Usage
-1. pull the repo
+1. pull the repo, which contains CogVideoX and Cosmos pipelines
 ```bash
 git clone https://github.com/fairinternal/video_guidance.git
 cd ./vejap2
