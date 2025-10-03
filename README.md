@@ -83,3 +83,39 @@ pip install -r requirements.txt
 ```
 For MAGI-1
 Follow instruction from [MAGI-1](https://github.com/SandAI-org/MAGI-1/tree/main)
+
+
+### /checkpoint/dream/yjianhao Breakdown
+```bash
+.
+├── evaluation - Store all evaluation scripts
+├── example - Store config files for generation
+├── generated_videos - Store all generated videos files for generation
+├── generation - Store all generation scripts
+├── inference - Store all inference pipelines
+├── interactive_session.sh - Ask for a interactive session
+├── jobs - store slurm job logs
+├── MagiAttention - MAGI-1 attention module
+├── physics-IQ-benchmark
+├── plots - Store all plots
+├── prompts - Store all generation prompts
+├── scripts - Store all small helper scripts
+├── utils.py - Utils for VJEPA score and video processing
+└── visualization - Store all visualization
+└── results - Store all evaluation results
+```
+
+The pipeline generally goes as (1) use generation script under /generation to generate videos (2) use evaluation script under /evaluation to evaluate the generated videos (3) use ./scripts/physicsiq_res2tab.py to view results.
+
+important scripts:
+Run PhysicsIQ evaluation
+```bash
+bash evaluation/eval_physics_iq_parallel.sh
+```
+Specify the generated video path under generated_videos_dirs_list
+
+View PhysicsIQ scores
+```bash
+python3 /home/yjianhao/project/MAGI-1/scripts/physicsiq_res2tab.py
+```
+by default results will be stored to ./results/physics_iq/results, change --model_cat to other subfolders to view specific grouped ablation results
