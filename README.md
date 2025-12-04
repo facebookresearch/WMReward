@@ -4,24 +4,17 @@
 Minimal tooling to run image/video-to-video (I2V/V2V) generation with CogVideoX, Cosmos, and MAGI1.
 
 ## Usage
-1. pull the repo, which contains CogVideoX and Cosmos pipelines
+1. Pull the repo with submodules (vjepa2, MAGI-1)
 ```bash
-git clone https://github.com/fairinternal/video_guidance.git
-cd ./vejap2
-git clone https://github.com/facebookresearch/vjepa2.git
+git clone --recurse-submodules https://github.com/fairinternal/video_guidance.git
+```
+
+If you already cloned without `--recurse-submodules`, initialize submodules with:
+```bash
+git submodule update --init --recursive
 ```
 
 1.1 To run Cosmos, need approval from HF: https://huggingface.co/nvidia/Cosmos-Predict2-14B-Video2World
-
-1.2 To run MAGI-1
-Script can be copy from the storage (optional)
-```bash
-cp -r /checkpoint/dream/yjianhao/storage/project/MAGI-1 ./[WORKING_DIR]
-```
-or directly run script under
-```bash
-/checkpoint/dream/yjianhao/MAGI-1
-```
 
 
 2. (Optional) Activate conda env locally to debug
