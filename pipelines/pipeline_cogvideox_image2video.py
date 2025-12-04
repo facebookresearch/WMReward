@@ -59,7 +59,7 @@ logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 EXAMPLE_DOC_STRING = """"""
 
 
- 
+
 
 # Similar to diffusers.pipelines.hunyuandit.pipeline_hunyuandit.get_resize_crop_region_for_grid
 def get_resize_crop_region_for_grid(src, tgt_width, tgt_height):
@@ -737,7 +737,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
             guidance_lr = [guidance_lr] * num_inference_steps
         else:
             assert len(guidance_lr) == num_inference_steps, "guidance_lr must be a list of length num_inference_steps"
-        
+
         # Resolve requested VJEPA config
         if additional_inputs is not None:
             vjepa_variant: str = additional_inputs.get("vjepa_variant", "vit_giant")
@@ -791,7 +791,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
         self.transformer.enable_gradient_checkpointing()
         self.vae.enable_gradient_checkpointing()
 
-        
+
         if isinstance(callback_on_step_end, (PipelineCallback, MultiPipelineCallbacks)):
             callback_on_step_end_tensor_inputs = callback_on_step_end.tensor_inputs
 
@@ -856,8 +856,8 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
         timesteps, num_inference_steps = self.get_timesteps(num_inference_steps, timesteps, 1.0, device)
 
         latent_noise_timestep = max(num_inference_steps - min(int(num_inference_steps * strength), num_inference_steps), 0)
-        latent_timestep = timesteps[latent_noise_timestep:latent_noise_timestep+1].repeat(batch_size * num_videos_per_prompt)        
-        
+        latent_timestep = timesteps[latent_noise_timestep:latent_noise_timestep+1].repeat(batch_size * num_videos_per_prompt)
+
         self._num_timesteps = len(timesteps)
         shorten_steps = 50 - num_inference_steps
         guidance_lr = guidance_lr[-num_inference_steps:]
@@ -969,7 +969,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         else:
                             # Replicate to match batch size
                             image_latents = image_latents[:1].repeat(current_batch_size, 1, 1, 1, 1)
-                    
+
                     # Also handle prompt_embeds batch size mismatch when CFG is enabled
                     expected_prompt_batch = current_batch_size * (2 if do_classifier_free_guidance else 1)
                     if prompt_embeds.shape[0] != expected_prompt_batch:
@@ -980,7 +980,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         else:
                             # Just take the first batch entries
                             prompt_embeds = prompt_embeds[:current_batch_size]
-                    
+
                     latent_image_input = torch.cat([image_latents] * 2) if do_classifier_free_guidance else image_latents
                     latent_model_input = torch.cat([latent_model_input, latent_image_input], dim=2)
 
@@ -1135,10 +1135,6 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
 
                         total_loss.backward()
                         grad = latents.grad.clone()
-
-                        # print("grad range", grad.min().item(), grad.max().item())   
-
-                        # grad = grad.clip(-0.1, 0.1)
                         latents.grad = None  # Clear the gradients
 
                         # Apply gradient clipping
@@ -1146,7 +1142,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         scaling = scaling * (1 / (a_t ** 0.5))
 
                         scaling = torch.clamp(scaling, max=15000)
-                        
+
 
                         if (i + shorten_steps) >= travel_time[0] and (i + shorten_steps) <= travel_time[1]:
                             with torch.no_grad():
@@ -1158,7 +1154,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                                 latents = x_prev * coef_x_prev + noise * coef_noise
                         else:
                             with torch.no_grad():
-                                
+
                                 latents = latents - guidance_lr[i] * scaling * grad
                                 # noise_pred = noise_pred - guidance_lr[i] * scaling * grad
                         print("timestep", t, "a_t", a_t, "scaling", scaling.item(), "loss", total_loss.item(), "grad", grad.norm(2).item(), "latents", latents.norm(2).item())
@@ -1167,7 +1163,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         # If outside guidance range, skip repeated updates
                         # and proceed directly to the final denoising step
                         pass
-                
+
                 # -----------------------------------------
                 # 2) After all guidance updates, apply a single denoising step
                 #    latents = a_t * latents + b_t * pred_original_sample
@@ -1186,7 +1182,7 @@ class CogVideoXImageToVideoPipeline(DiffusionPipeline, CogVideoXLoraLoaderMixin)
                         variance = std_dev_t * noise
                         # print("Stochastic Add", eta, "std_dev_t", std_dev_t)
                         latents = latents + variance
-                
+
                 latents = latents.to(prompt_embeds.dtype)
 
                 # call the callback, if provided
