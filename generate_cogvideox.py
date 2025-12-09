@@ -49,9 +49,7 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--guidance_scale", type=float, default=6.0)
     ap.add_argument("--guidance_step_pattern", type=str, default="0x3,1x47")
-    # ap.add_argument("--guidance_step_pattern", type=str, default="0x50")
     ap.add_argument("--guidance_lr_pattern", type=str, default="0.003x50")
-    # ap.add_argument("--guidance_lr_pattern", type=str, default="3x50")
     ap.add_argument("--guidance_frequency", type=int, default=1)
     ap.add_argument("--travel_time", type=str, default="0,0")
     # VJEPA slice_pred

@@ -116,24 +116,24 @@ def create_repeated_frame_video(source_video_path, num_frames, output_path):
     """Create a video with the last frame repeated num_frames times."""
     if os.path.exists(output_path):
         return  # Already exists, skip creation
-    
+
     # Load source video and get last frame
     source_video = get_video(source_video_path, max_frames=5)
     last_frame = source_video[-1]  # [H, W, C], RGB format, values 0-255
-    
+
     # Ensure values are in uint8 range [0, 255]
     if last_frame.dtype != np.uint8:
         last_frame = np.clip(last_frame, 0, 255).astype(np.uint8)
-    
+
     # Convert numpy array to PIL Image
     last_frame_pil = Image.fromarray(last_frame)
-    
+
     # Create repeated frames: list of PIL Images
     repeated_frames = [last_frame_pil.copy() for _ in range(num_frames)]
-    
+
     # Create output directory if needed
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    
+
     # Use diffusers export_to_video function
     export_to_video(repeated_frames, output_path, fps=16)
     print(f"✅ Created repeated frame video: {output_path} ({num_frames} frames)")
@@ -214,11 +214,11 @@ def load_vjepa_predictor(model_path, encoder, img_size=256):
 def load_vjepa_models_torchhub(model):
     """
     Load V-JEPA models for loss computation.
-    
+
     Args:
         model_path (str): Path to the V-JEPA model checkpoint
         img_size (int): Image size for processing
-        
+
     Returns:
         tuple: (encoder, target_encoder, predictor) models
     """
@@ -233,20 +233,20 @@ def load_vjepa_models_torchhub(model):
         encoder, predictor = torch.hub.load("facebookresearch/vjepa2", "vjepa2_ac_vit_giant")
     else:
         raise ValueError(f"Unknown model: {model}. Use 'vith' or 'vjepa2'.")
-    
+
     target_encoder = copy.deepcopy(encoder)
-    
+
 
     return encoder, target_encoder, predictor, img_size
 
-def generate_vjepa_masks(masking_mode, batch_size, img_size, frames_per_clip, encoder, 
+def generate_vjepa_masks(masking_mode, batch_size, img_size, frames_per_clip, encoder,
                         context_frames=15, mask_ratio=0.75, device="cuda",
                         spatial_pred_mask_scale=(0.2, 0.8), temporal_pred_mask_scale=(1.0, 1.0),
                         aspect_ratio=(0.3, 3.0), npred=1, max_context_frames_ratio=1.0,
                         seed=42, window_start=0, total_frames=None):
     """
     Generate masks for V-JEPA loss computation using the actual training masking strategy.
-    
+
     Args:
         masking_mode (str): "block" for V-JEPA block masking, "causal" for temporal masking, "expanding_causal" for expanding context window, or "random" for random token masking
         batch_size (int): Batch size
@@ -257,27 +257,27 @@ def generate_vjepa_masks(masking_mode, batch_size, img_size, frames_per_clip, en
         mask_ratio (float): Ratio of tokens to mask (only used for random mode)
         device: Device to create tensors on
         spatial_pred_mask_scale (tuple): (min, max) spatial scale for prediction blocks
-        temporal_pred_mask_scale (tuple): (min, max) temporal scale for prediction blocks  
+        temporal_pred_mask_scale (tuple): (min, max) temporal scale for prediction blocks
         aspect_ratio (tuple): (min, max) aspect ratio range for blocks
         npred (int): Number of prediction blocks to sample
         max_context_frames_ratio (float): Maximum fraction of frames that can be context
         seed (int): Random seed for reproducible masking
         window_start (int): Starting frame position of current window (used for expanding_causal mode)
         total_frames (int): Total number of frames in the full sequence (used for expanding_causal mode)
-        
+
     Returns:
         tuple: (ctxt_positions, tgt_positions) - masks for context and target tokens
     """
     grid_size = img_size // encoder.patch_size  # spatial grid size (H, W in patches)
     grid_depth = frames_per_clip // encoder.tubelet_size  # temporal grid size (T in tubelets)
     total_tokens = int(grid_size**2 * grid_depth)
-    
+
     if masking_mode == "block":
         # V-JEPA block-based masking strategy
         return _generate_block_masks(
             batch_size=batch_size,
             height=grid_size,
-            width=grid_size, 
+            width=grid_size,
             duration=grid_depth,
             spatial_pred_mask_scale=spatial_pred_mask_scale,
             temporal_pred_mask_scale=temporal_pred_mask_scale,
@@ -291,89 +291,89 @@ def generate_vjepa_masks(masking_mode, batch_size, img_size, frames_per_clip, en
         # Causal masking: use first frames as context, predict future frames
         context_depth = context_frames // encoder.tubelet_size
         future_steps = grid_depth - context_depth
-        
+
         # Validate that we have reasonable splits
         if future_steps <= 0:
             raise ValueError(f"Context frames ({context_frames}) too large for frames_per_clip ({frames_per_clip})")
-        
+
         N_context = int(grid_size**2 * context_depth)
         N_pred = int(grid_size**2 * future_steps)
-        
+
         # Create position masks - these are token indices, not frame indices
         ctxt_positions = torch.arange(N_context, device=device).unsqueeze(0).repeat(batch_size, 1)
         tgt_positions = torch.arange(N_pred, device=device).unsqueeze(0).repeat(batch_size, 1)
         tgt_positions += N_context  # Offset by context size
-        
+
     elif masking_mode == "expanding_causal":
         # Expanding causal masking: use all frames from beginning up to current window as context
         if total_frames is None:
             raise ValueError("total_frames must be provided for expanding_causal mode")
-        
+
         # Calculate how many frames from the beginning to use as context
         # This includes all frames from start (0) up to the current window start + some frames within window
         context_frames_total = window_start + context_frames
         context_frames_total = min(context_frames_total, total_frames)  # Don't exceed total frames
-        
+
         # Convert frame counts to token depths
         context_depth_total = context_frames_total // encoder.tubelet_size
         current_window_depth = frames_per_clip // encoder.tubelet_size
-        
+
         # Predict the remaining frames in current window
         prediction_depth = current_window_depth - (context_frames // encoder.tubelet_size)
         prediction_depth = max(1, prediction_depth)  # Ensure we have at least 1 frame to predict
-        
+
         # Calculate token counts
         N_context = int(grid_size**2 * context_depth_total)
         N_pred = int(grid_size**2 * prediction_depth)
-        
+
         # For expanding context, we need to map tokens correctly:
         # Context tokens span from beginning of sequence to current window position
         # Target tokens are the remaining frames in the current window
-        
+
         # Context includes tokens from start to the context portion of current window
         ctxt_positions = torch.arange(N_context, device=device).unsqueeze(0).repeat(batch_size, 1)
-        
+
         # Target tokens are the prediction portion of current window
         # They start after the context portion of the current window
         context_in_window = (context_frames // encoder.tubelet_size) * grid_size**2
         window_start_token = (window_start // encoder.tubelet_size) * grid_size**2
         tgt_start = window_start_token + context_in_window
         tgt_positions = torch.arange(tgt_start, tgt_start + N_pred, device=device).unsqueeze(0).repeat(batch_size, 1)
-        
+
     elif masking_mode == "random":
         # Random masking: randomly select tokens to mask
         num_mask = int(total_tokens * mask_ratio)
         num_keep = total_tokens - num_mask
-        
+
         # Create random permutations for each batch item
         batch_keep_masks = []
         batch_pred_masks = []
-        
+
         for b in range(batch_size):
             # Random permutation of all token indices
             perm = torch.randperm(total_tokens, device=device)
-            
+
             # Split into keep (context) and mask (predict) tokens
             keep_indices = perm[:num_keep].sort()[0]  # Sort to maintain some order
             mask_indices = perm[num_keep:].sort()[0]  # Sort to maintain some order
-            
+
             batch_keep_masks.append(keep_indices.unsqueeze(0))  # [1, num_keep]
             batch_pred_masks.append(mask_indices.unsqueeze(0))  # [1, num_mask]
-        
+
         # Stack all batch items
         ctxt_positions = torch.cat(batch_keep_masks, dim=0)  # [B, num_keep]
         tgt_positions = torch.cat(batch_pred_masks, dim=0)   # [B, num_mask]
-        
+
     else:
         raise ValueError(f"Unknown masking_mode: {masking_mode}. Use 'block', 'causal', 'expanding_causal', or 'random'.")
-    
+
     return ctxt_positions, tgt_positions
 
 
 def _sample_block_size(generator, duration, height, width, temporal_scale, spatial_scale, aspect_ratio_scale):
     """
     Sample block size for V-JEPA masking following the training implementation.
-    
+
     Args:
         generator: PyTorch random generator
         duration (int): Number of temporal patches
@@ -382,12 +382,12 @@ def _sample_block_size(generator, duration, height, width, temporal_scale, spati
         temporal_scale (tuple): (min, max) temporal scale
         spatial_scale (tuple): (min, max) spatial scale
         aspect_ratio_scale (tuple): (min, max) aspect ratio
-        
+
     Returns:
         tuple: (t, h, w) block dimensions
     """
     import math
-    
+
     # Sample temporal block mask scale
     _rand = torch.rand(1, generator=generator).item()
     min_t, max_t = temporal_scale
@@ -417,14 +417,14 @@ def _sample_block_size(generator, duration, height, width, temporal_scale, spati
 def _sample_block_mask(b_size, duration, height, width, max_context_duration):
     """
     Sample a block mask for V-JEPA masking following the training implementation.
-    
+
     Args:
         b_size (tuple): (t, h, w) block dimensions
         duration (int): Total temporal patches
         height (int): Total spatial patches (height)
         width (int): Total spatial patches (width)
         max_context_duration (int): Maximum context duration
-        
+
     Returns:
         torch.Tensor: 3D mask of shape (duration, height, width)
     """
@@ -448,15 +448,15 @@ def _generate_block_masks(batch_size, height, width, duration, spatial_pred_mask
                          device, seed):
     """
     Generate V-JEPA block masks following the actual training implementation.
-    
+
     This replicates the behavior of _MaskGenerator.__call__() from multiseq_multiblock3d.py
     """
     max_context_duration = max(1, int(duration * max_context_frames_ratio))
-    
+
     # Set up generator with seed for reproducible block sizes
     g = torch.Generator()
     # g.manual_seed(seed)
-    
+
     # Sample prediction block size using seed (same for all batch items)
     p_size = _sample_block_size(
         generator=g,
@@ -470,17 +470,17 @@ def _generate_block_masks(batch_size, height, width, duration, spatial_pred_mask
 
     collated_masks_pred, collated_masks_enc = [], []
     min_keep_enc = min_keep_pred = duration * height * width
-    
+
     for _ in range(batch_size):
         empty_context = True
         while empty_context:
             # Start with all tokens available
             mask_e = torch.ones((duration, height, width), dtype=torch.int32)
-            
+
             # Apply npred prediction blocks
             for _ in range(npred):
                 mask_e *= _sample_block_mask(p_size, duration, height, width, max_context_duration)
-            
+
             # Flatten to get token indices
             mask_e = mask_e.flatten()
 
@@ -506,55 +506,55 @@ def _generate_block_masks(batch_size, height, width, duration, spatial_pred_mask
 
     return collated_masks_enc, collated_masks_pred
 
-def compute_vjepa_loss(video_path, encoder, target_encoder, predictor, 
+def compute_vjepa_loss(video_path, encoder, target_encoder, predictor,
                       img_size=256, context_frames=15, frames_per_clip=33, loss_exp=2):
     """
     Compute V-JEPA training-matched loss for a video.
-    
+
     Args:
         video_path (str): Path to the input MP4 video
         encoder: Pre-loaded V-JEPA encoder model
-        target_encoder: Pre-loaded V-JEPA target encoder model  
+        target_encoder: Pre-loaded V-JEPA target encoder model
         predictor: Pre-loaded V-JEPA predictor model
         img_size (int): Image size for processing
         context_frames (int): Number of initial frames to use as context
         frames_per_clip (int): Total frames in clip
         loss_exp (int): Exponent for loss calculation (default: 2 for L2 loss)
-        
+
     Returns:
         float: V-JEPA training loss
     """
     set_deterministic()
-    
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
     # Process video
     video = get_video(video_path, max_frames=frames_per_clip)
     video_tensor = torch.from_numpy(video).permute(0, 3, 1, 2).to(device)
     transform = build_pt_video_transform(img_size)
     x = transform(video_tensor).to(device).unsqueeze(0)  # [1, 3, 33, 256, 256]
-    
+
     # Create clips and masks for training-matched pattern
     clips = x  # Single video tensor
-    
+
     # Calculate mask positions
     grid_size = img_size // encoder.patch_size
     grid_depth = frames_per_clip // encoder.tubelet_size
     context_depth = context_frames // encoder.tubelet_size
     future_steps = grid_depth - context_depth
-    
+
     N_context = int(grid_size**2 * context_depth)
     N_pred = int(grid_size**2 * future_steps)
-    
+
     # Create position masks
     ctxt_positions = torch.arange(N_context, device=device).unsqueeze(0).repeat(1, 1)
     tgt_positions = torch.arange(N_pred, device=device).unsqueeze(0).repeat(1, 1)
     tgt_positions += N_context  # Offset by context size
-    
+
     # Create masks exactly like training code
     masks_enc = ctxt_positions  # [B, N_context]
     masks_pred = tgt_positions  # [B, N_pred]
-    
+
     # Training-matched forward functions
     def forward_target(c):
         h = target_encoder(c)
@@ -568,7 +568,7 @@ def compute_vjepa_loss(video_path, encoder, target_encoder, predictor,
 
     def loss_fn(z, h):
         h = apply_masks(h, masks_pred, concat=False)
-        
+
         loss, n = 0, 0
         for zi, hi in zip(z, h):
             for zij, hij in zip(zi, hi):
@@ -576,16 +576,16 @@ def compute_vjepa_loss(video_path, encoder, target_encoder, predictor,
                 n += 1
         loss /= n
         return loss
-    
+
     # Compute loss
-    h = forward_target(clips)  # target features 
+    h = forward_target(clips)  # target features
     z = forward_context(clips)  # predictions
     loss = loss_fn(z, h)  # training-matched loss
-    
+
     return loss
 
 @torch.enable_grad()
-def compute_vjepa_loss_from_tensor_unified(video_tensor, encoder, target_encoder, predictor, 
+def compute_vjepa_loss_from_tensor_unified(video_tensor, encoder, target_encoder, predictor,
                                           img_size=256, frames_per_clip=33, loss_exp=2,
                                           masking_mode="block", context_frames=15, mask_ratio=0.75,
                                           spatial_pred_mask_scale=(0.7, 0.7), temporal_pred_mask_scale=(1.0, 1.0),
@@ -593,11 +593,11 @@ def compute_vjepa_loss_from_tensor_unified(video_tensor, encoder, target_encoder
                                           is_vae_output=True, seed=42):
     """
     Compute V-JEPA training-matched loss from a video tensor with configurable masking.
-    
+
     Args:
         video_tensor (torch.Tensor): Video tensor of shape [B, C, T, H, W] or [C, T, H, W]
         encoder: Pre-loaded V-JEPA encoder model
-        target_encoder: Pre-loaded V-JEPA target encoder model  
+        target_encoder: Pre-loaded V-JEPA target encoder model
         predictor: Pre-loaded V-JEPA predictor model
         img_size (int): Image size for processing
         frames_per_clip (int): Total frames in clip
@@ -612,17 +612,17 @@ def compute_vjepa_loss_from_tensor_unified(video_tensor, encoder, target_encoder
         max_context_frames_ratio (float): Maximum fraction of frames that can be context (block mode only)
         is_vae_output (bool): If True, assumes input is VAE output in [-1, 1] range
         seed (int): Random seed for reproducible masking
-        
+
     Returns:
         torch.Tensor: V-JEPA training loss
     """
     # set_deterministic()
-    
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model_dtype = next(encoder.parameters()).dtype
     video_tensor = video_tensor.to(device=device, dtype=model_dtype)
     transform = build_pt_video_transform(img_size)
-    
+
     # Handle VAE output conversion with proper batch support
     if is_vae_output:
         # Handle both single video and batch inputs
@@ -644,10 +644,10 @@ def compute_vjepa_loss_from_tensor_unified(video_tensor, encoder, target_encoder
     else:
         # Input is already in correct format (e.g., from dataset after transforms)
         x = video_tensor.to(device)
-    
+
     # Create clips and masks for training-matched pattern
     clips = x  # [B, C, T, H, W]
-    
+
     # Generate masks using the abstracted function
     ctxt_positions, tgt_positions = generate_vjepa_masks(
         masking_mode=masking_mode,
@@ -665,14 +665,14 @@ def compute_vjepa_loss_from_tensor_unified(video_tensor, encoder, target_encoder
         max_context_frames_ratio=max_context_frames_ratio,
         seed=seed
     )
-    
+
     # Create masks exactly like training code
     masks_enc = ctxt_positions  # [B, num_keep]
     masks_pred = tgt_positions  # [B, num_mask]
 
     # Training-matched forward functions
     def forward_target(c):
-        
+
         h = target_encoder(c)
         h = torch.stack([F.layer_norm(hi, (hi.size(-1),)) for hi in h])
         return h
@@ -696,33 +696,23 @@ def compute_vjepa_loss_from_tensor_unified(video_tensor, encoder, target_encoder
 
     def loss_fn_v2(z, h):
         h = apply_masks(h, masks_pred, concat=False)
-        print(f"h: {h[0].shape}")
-        print(f"z: {z.shape}")
         loss = F.mse_loss(z, h[0], reduction="mean")
         return loss
-    
-    h = forward_target(clips)  # target features 
-    
+
+    h = forward_target(clips)  # target features
+
     z = forward_context(clips)
 
-    
+
     z = z.to(h.device)
 
-    print(f"video_tensor shape: {video_tensor.shape}")
-    print(f"video_feature shape: {z.shape}")
-    print(f"target_feature shape: {h.shape}")
-    print(f"video_feature: {z.min().item()}, {z.max().item()}")
-    print(f"target_feature: {h.min().item()}, {h.max().item()}")
-    print(f"video_feature norm: {z.norm(2).item()}")
-    print(f"target_feature norm: {h.norm(2).item()}")
 
+    loss = loss_fn(z, h)
 
-    loss = loss_fn(z, h)  
-    
     return loss
 
 # @torch.enable_grad()
-def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, predictor, 
+def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, predictor,
                                           img_size=256, window_size=16, loss_exp=2,
                                           masking_mode="causal", context_frames=8, mask_ratio=None,
                                           spatial_pred_mask_scale=None, temporal_pred_mask_scale=None,
@@ -731,11 +721,11 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
     """
     Compute V-JEPA training-matched loss from a video tensor using sliding windows.
     Breaks 49-frame video into sub-chunks of 16 frames with sliding window approach.
-    
+
     Args:
         video_tensor (torch.Tensor): Video tensor of shape [B, C, T, H, W] or [C, T, H, W]
         encoder: Pre-loaded V-JEPA encoder model
-        target_encoder: Pre-loaded V-JEPA target encoder model  
+        target_encoder: Pre-loaded V-JEPA target encoder model
         predictor: Pre-loaded V-JEPA predictor model
         img_size (int): Image size for processing
         window_size (int): Frames per sliding window chunk (default: 16)
@@ -752,17 +742,17 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
         seed (int): Random seed for reproducible masking
         stride (int): Stride for sliding window (default: 2)
         mode (str): How to aggregate losses from chunks - 'mean', 'max' (default: 'mean')
-        
+
     Returns:
         torch.Tensor: V-JEPA training loss
     """
     # set_deterministic()
-    
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model_dtype = next(encoder.parameters()).dtype
     video_tensor = video_tensor.to(device=device, dtype=model_dtype)
     transform = build_pt_video_transform(img_size)
-    
+
     # Handle VAE output conversion with proper batch support
     if is_vae_output:
         # Handle both single video and batch inputs
@@ -793,23 +783,23 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
             video_normalized = transform(video_tcthw)
             batch_processed.append(video_normalized)
         x = torch.stack(batch_processed, dim=0).to(model_dtype)
-        
+
     # Create sliding window chunks
     clips = x  # [B, C, T, H, W]
-    
+
     # Create sliding windows exactly as in calculate_torch_vjepa_loss
     pieces = clips.unfold(2, window_size, stride).permute(0, 2, -1, 1, 3, 4).contiguous()
     pieces = pieces.flatten(0, 1)
     pieces = rearrange(pieces, "b t c h w -> b c t h w")
     # print(f"pieces: {pieces.shape}")
-    
+
     # Process chunks one by one for memory efficiency
     CHUNK_SIZE = 1
     chunk_losses = []
-    
+
     for chunk_id in range(int(np.ceil(pieces.shape[0]/CHUNK_SIZE))):
         chunk = pieces[CHUNK_SIZE*chunk_id:CHUNK_SIZE*(chunk_id+1)]
-        
+
         # Generate masks for this chunk
         ctxt_positions, tgt_positions = generate_vjepa_masks(
             masking_mode=masking_mode,
@@ -827,14 +817,14 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
             max_context_frames_ratio=max_context_frames_ratio,
             seed=seed + chunk_id  # Vary seed per chunk for diversity
         )
-        
+
         # Create masks for this chunk
         masks_enc = ctxt_positions  # [chunk_size, num_keep]
         masks_pred = tgt_positions  # [chunk_size, num_mask]
 
         # print(f"masks_enc shape: {masks_enc.shape}")
         # print(f"masks_pred shape: {masks_pred.shape}")
-        
+
         # Training-matched forward functions for this chunk
         def forward_target(c):
             h = target_encoder(c)
@@ -848,29 +838,19 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
                 z = F.layer_norm(z, (z.size(-1),))
                 return z
 
-        # def loss_fn(z, h):
-        #     h = apply_masks(h, masks_pred, concat=False)
-        #     loss, n = 0, 0
-        #     for zi, hi in zip(z, h):
-        #         for zij, hij in zip(zi, hi):
-        #             loss += torch.mean(torch.abs(zij - hij) ** loss_exp) / loss_exp
-        #             n += 1
-        #     loss /= n
-        #     return loss
-
-        def loss_fn_v2(z, h):
+        def loss_fn(z, h):
             h = apply_masks(h, masks_pred, concat=False)
             loss = 1 - F.cosine_similarity(z, h[0], dim=1).mean()
             return loss
-        
+
         # Compute features and loss for this chunk
-        h_chunk = forward_target(chunk)  # target features 
+        h_chunk = forward_target(chunk)  # target features
         z_chunk = forward_context(chunk)
         z_chunk = z_chunk.to(h_chunk.device)
-        
-        chunk_loss = loss_fn_v2(z_chunk, h_chunk)
+
+        chunk_loss = loss_fn(z_chunk, h_chunk)
         chunk_losses.append(chunk_loss)
-    
+
     # Aggregate losses from all chunks
     if mode == 'mean':
         loss = torch.mean(torch.stack(chunk_losses))
@@ -878,10 +858,9 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
         loss = torch.max(torch.stack(chunk_losses))
     else:
         raise ValueError(f"Unknown mode: {mode}. Use 'mean' or 'max'")
-    
+
     print(f"video_tensor shape: {video_tensor.shape}")
     print(f"number of chunks: {len(chunk_losses)}")
     print(f"aggregated loss ({mode}): {loss.item()} similarity: {1 - loss.item():.6f}")
-    
-    return loss
 
+    return loss
