@@ -106,7 +106,7 @@ def main():
             "slice_stride": args.slice_stride,
             "vae_decode_scale": args.vae_decode_scale,
             "loss_mode": args.loss_mode,
-            "save_intermediate_keyframes": True,
+            "save_intermediate_keyframes": False,
             "intermediate_fps": args.fps,
             "intermediate_save_dir": os.path.join(args.out_dir, f"{run_name}_intermediate"),
         },

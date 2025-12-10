@@ -58,9 +58,6 @@ logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
 EXAMPLE_DOC_STRING = """"""
 
-
-
-
 # Similar to diffusers.pipelines.hunyuandit.pipeline_hunyuandit.get_resize_crop_region_for_grid
 def get_resize_crop_region_for_grid(src, tgt_width, tgt_height):
     tw = tgt_width
