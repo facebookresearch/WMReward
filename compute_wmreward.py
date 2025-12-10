@@ -25,8 +25,6 @@ def load_vjepa_models(model_name="vitg"):
         encoder, predictor = torch.hub.load("facebookresearch/vjepa2", "vjepa2_vit_giant")
     elif model_name == "vitg384":
         encoder, predictor = torch.hub.load("facebookresearch/vjepa2", "vjepa2_vit_giant_384")
-    elif model_name == "vitgac":
-        encoder, predictor = torch.hub.load("facebookresearch/vjepa2", "vjepa2_ac_vit_giant")
     else:
         raise ValueError(f"Unknown model: {model_name}")
 
