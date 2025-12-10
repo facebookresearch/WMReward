@@ -10,22 +10,11 @@
 #SBATCH --cpus-per-task=48            # Adjust based on your cluster
 #SBATCH --mem=512G                    # Adjust based on your cluster
 #SBATCH --time=24:00:00               # Adjust based on expected runtime
-#SBATCH --output=jobs/cg_%A_%a.out
-#SBATCH --error=jobs/cg_%A_%a.err
+#SBATCH --output=jobs/job_%A_%a.out
+#SBATCH --error=jobs/job_%A_%a.err
 
 source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
 conda activate vg
-
-# Set cache directories to use checkpoint storage
-export HUGGINGFACE_HUB_CACHE="/checkpoint/dream/yjianhao/cache/huggingface"
-export HF_HOME="/checkpoint/dream/yjianhao/cache/huggingface"
-export TORCH_HOME="/checkpoint/dream/yjianhao/cache/torch"
-export TRANSFORMERS_CACHE="/checkpoint/dream/yjianhao/cache/huggingface/transformers"
-
-# Create cache directories if they don't exist
-mkdir -p "$HUGGINGFACE_HUB_CACHE"
-mkdir -p "$TORCH_HOME"
-mkdir -p "$TRANSFORMERS_CACHE"
 
 nvidia-smi
 
@@ -44,29 +33,17 @@ TRIPLETS=(
     "16 8 8"   # window=16, context_frames=8, stride=8
 )
 
-SEED_LIST=(42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57)
+SEED_LIST=(42)
 
 GUIDANCE_STEP_PATTERN="0x5,1x45"
-GUIDANCE_LR_PATTERNS=(
-
-  "0.001x50"
-#   "0.003x50"
-#   "0.005x50"
-)
+GUIDANCE_LR_PATTERNS=("0.001x50")
 GUIDANCE_FREQUENCY=1
 
 # CFG scale values for classifier-free guidance ablation
-CFG_SCALES=(
-    # "1.0"
-    # "2.0"
-    # "4.0"
-    "6.0"
-)
+CFG_SCALES=("6.0")
 
 # Disable Time Travel for simple algorithm
-GUIDANCE_RANGES=(
-    "0 0"
-)
+GUIDANCE_RANGES=("0 0")
 
 MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")
 
@@ -75,10 +52,9 @@ MODEL_NAMES=("THUDM/CogVideoX-5b-I2V")
 BATCH_JSON_LIST=(
     # Physics-IQ dataset
     "./prompts/physics_iq.json"
-    # "/home/yjianhao/project/frame-guidance/prompts/physics_iq_5frame.json"
 )
-BASEDIR="/checkpoint/dream/yjianhao/PhysicsIQ/code"
-OUTPUT_FOLDER="/checkpoint/dream/yjianhao/generated_videos"
+BASEDIR="./physicsiq_benchmark/code"
+OUTPUT_FOLDER="./generated_videos"
 
 # SAMPLE_METHODS=("guidance" "vanilla")
 SAMPLE_METHODS=("guidance")
