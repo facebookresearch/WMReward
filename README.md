@@ -67,6 +67,11 @@ Options:
 ## Generate PhysicsIQ
 Please follow the instructions from [PhysicsIQ](https://github.com/google-deepmind/physics-IQ-benchmark) to prepare the condition image and prompts. The prompt lists are provided in the `prompt` folder.
 
+Then run,
+```bash
+python generation/generate_i2v_cogvideox_multinode.sh
+```
+
 
 ## Acknowledgements
 
