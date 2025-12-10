@@ -1,4 +1,4 @@
-### Inference-time Physics Alignment of Video Generative Models with Latent World Models
+# Inference-time Physics Alignment of Video Generative Models with Latent World Models
 
 ## Installation
 
