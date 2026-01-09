@@ -1,255 +1,183 @@
 """
-Simple Sora API client for text-to-video generation.
-Configured for Azure OpenAI endpoints.
+Sora API Client for Azure OpenAI.
+
+Usage:
+    export SORA_HOST="your-host.azure-api.net"
+    export SORA_API_KEY="your-api-key"
+    
+    from pipelines.sora_client import SoraClient
+    
+    client = SoraClient()
+    client.generate_and_download("A cat playing", "output.mp4")
+    client.generate_and_download("Scene comes alive", "output.mp4", input_reference="image.jpg")
 """
 
 import os
+import io
 import time
 import requests
-from requests.exceptions import RequestException, Timeout
+from dataclasses import dataclass
+from typing import Optional, Union
+from PIL import Image
 
 
-# Default Azure configuration
-DEFAULT_HOST = "azure-services-fair-openai2-eastus2n6.azure-api.net"
-DEFAULT_API_KEY = "a60a6c3d975747ef9866d1827c266976"
+TIMEOUT = 60
+POLL_INTERVAL = 10
+MAX_WAIT = 600
 
-# Request timeout in seconds
-REQUEST_TIMEOUT = 60
+
+@dataclass
+class VideoResult:
+    video_id: str
+    status: str
+    progress: int = 0
+    error: Optional[str] = None
 
 
 class SoraClient:
-    """Simple client for Sora API via Azure OpenAI."""
+    """Sora video generation client. Reads SORA_HOST and SORA_API_KEY from environment."""
     
-    def __init__(
-        self,
-        host: str = None,
-        api_key: str = None,
-    ):
-        """
-        Initialize the Sora client.
+    def __init__(self, host: str = None, api_key: str = None):
+        self.host = host or os.environ.get("SORA_HOST")
+        self.api_key = api_key or os.environ.get("SORA_API_KEY")
         
-        Args:
-            host: Azure API host. Defaults to configured endpoint.
-            api_key: API key. Defaults to configured key or SORA_API_KEY env var.
-        """
-        self.host = host or os.environ.get("SORA_HOST", DEFAULT_HOST)
-        self.api_key = api_key or os.environ.get("SORA_API_KEY", DEFAULT_API_KEY)
-        self.base_url = f"https://{self.host}"
+        if not self.host or not self.api_key:
+            raise ValueError("Set SORA_HOST and SORA_API_KEY environment variables")
         
-        self.headers = {
-            "api-key": self.api_key,
-            "Content-Type": "application/json",
-        }
+        self.base_url = f"https://{self.host}/openai/v1"
     
-    def generate_video(
+    def _prepare_image(self, image: Union[str, Image.Image], size: str) -> tuple:
+        """Load and resize image to match video dimensions."""
+        if isinstance(image, str):
+            img = Image.open(image)
+        else:
+            img = image
+        
+        img = img.convert("RGB")
+        w, h = map(int, size.split("x"))
+        img = img.resize((w, h), Image.LANCZOS)
+        
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=95)
+        return ("image.jpg", buf.getvalue(), "image/jpeg")
+    
+    def generate(
         self,
         prompt: str,
-        model: str = "sora-2",
+        input_reference: Union[str, Image.Image] = None,
         seconds: int = 4,
         size: str = "1280x720",
-    ) -> dict:
+        wait: bool = True,
+    ) -> VideoResult:
         """
-        Generate a video from a text prompt.
+        Generate a video.
         
         Args:
-            prompt: Text description of the video to generate.
-            model: Model to use (default: "sora-2").
-            seconds: Video duration in seconds (4, 8, or 12).
-            size: Video size as "WxH" (e.g., "1280x720", "1920x1080").
-            
-        Returns:
-            Response dict containing video ID and status.
+            prompt: Text description.
+            input_reference: Image path or PIL Image for I2V (optional).
+            seconds: Duration (4, 8, or 12).
+            size: Video size.
+            wait: Wait for completion.
         """
-        url = f"{self.base_url}/openai/v1/videos"
+        url = f"{self.base_url}/videos"
+        data = {"model": "sora-2", "prompt": prompt, "seconds": str(seconds), "size": size}
         
-        payload = {
-            "model": model,
-            "prompt": prompt,
-            "seconds": str(seconds),  # API expects string
-            "size": size,
-        }
+        if input_reference:
+            # I2V: multipart form
+            files = {"input_reference": self._prepare_image(input_reference, size)}
+            resp = self._post_with_retry(url, files=files, data=data)
+        else:
+            # T2V: JSON
+            resp = self._post_with_retry(url, json=data)
         
-        # Retry on rate limits
-        max_retries = 5
-        for attempt in range(max_retries):
-            response = requests.post(url, json=payload, headers=self.headers, timeout=REQUEST_TIMEOUT)
+        result = VideoResult(video_id=resp["id"], status=resp.get("status", "unknown"))
+        
+        if wait and result.status in ["queued", "in_progress"]:
+            return self._poll(result.video_id)
+        return result
+    
+    def _post_with_retry(self, url: str, **kwargs) -> dict:
+        """POST with retry on rate limit."""
+        headers = {"api-key": self.api_key}
+        if "json" in kwargs:
+            headers["Content-Type"] = "application/json"
+        
+        for attempt in range(4):
+            resp = requests.post(url, headers=headers, timeout=TIMEOUT, **kwargs)
             
-            if response.status_code == 429:
-                wait_time = 30 * (attempt + 1)  # 30, 60, 90, 120, 150 seconds
-                print(f"Rate limited (429), waiting {wait_time}s before retry...")
-                time.sleep(wait_time)
+            if resp.status_code == 429:
+                wait = 30 * (attempt + 1)
+                print(f"  Rate limited, waiting {wait}s...")
+                time.sleep(wait)
                 continue
             
-            if not response.ok:
-                print(f"Error {response.status_code}: {response.text}")
-            response.raise_for_status()
-            return response.json()
+            if not resp.ok:
+                try:
+                    msg = resp.json().get("error", {}).get("message", resp.text)
+                except:
+                    msg = resp.text
+                raise RuntimeError(f"API error {resp.status_code}: {msg}")
+            
+            return resp.json()
         
-        raise RuntimeError("Max retries exceeded due to rate limiting")
+        raise RuntimeError("Rate limited after retries")
     
-    def get_video_status(self, video_id: str, retries: int = 3) -> dict:
-        """
-        Check the status of a video generation job with retry logic.
+    def _poll(self, video_id: str) -> VideoResult:
+        """Poll until complete."""
+        start = time.time()
         
-        Args:
-            video_id: The video ID from generate_video().
-            retries: Number of retries on timeout/connection errors.
+        while time.time() - start < MAX_WAIT:
+            resp = requests.get(
+                f"{self.base_url}/videos/{video_id}",
+                headers={"api-key": self.api_key},
+                timeout=TIMEOUT,
+            )
+            resp.raise_for_status()
+            data = resp.json()
             
-        Returns:
-            Response dict with status and progress.
-        """
-        url = f"{self.base_url}/openai/v1/videos/{video_id}"
-        
-        last_error = None
-        for attempt in range(retries):
-            try:
-                response = requests.get(url, headers=self.headers, timeout=REQUEST_TIMEOUT)
-                response.raise_for_status()
-                return response.json()
-            except (Timeout, RequestException) as e:
-                last_error = e
-                if attempt < retries - 1:
-                    wait_time = 2 ** attempt  # Exponential backoff: 1, 2, 4 seconds
-                    print(f"Request failed, retrying in {wait_time}s... ({e})")
-                    time.sleep(wait_time)
-        
-        raise last_error
-    
-    def wait_for_video(
-        self,
-        response: dict,
-        poll_interval: float = 5.0,
-        timeout: float = 600.0,
-        verbose: bool = True,
-    ) -> str:
-        """
-        Poll until video generation is complete and return video ID.
-        
-        Args:
-            response: Response dict from generate_video().
-            poll_interval: Seconds between status checks.
-            timeout: Maximum seconds to wait.
-            verbose: Print status updates.
-            
-        Returns:
-            Video ID (use download_video to get the content).
-        """
-        start_time = time.time()
-        video_id = response.get("id")
-        
-        if not video_id:
-            raise ValueError("No video ID in response")
-        
-        while True:
-            elapsed = time.time() - start_time
-            if elapsed > timeout:
-                raise TimeoutError(f"Video generation timed out after {timeout}s")
-            
-            try:
-                status_response = self.get_video_status(video_id)
-            except RequestException as e:
-                if verbose:
-                    print(f"Status check failed: {e}, will retry...")
-                time.sleep(poll_interval)
-                continue
-            
-            status = status_response.get("status", "unknown")
-            progress = status_response.get("progress", 0)
-            
-            if verbose:
-                print(f"Status: {status}, Progress: {progress}% ({elapsed:.1f}s elapsed)")
+            status = data.get("status", "unknown")
+            progress = data.get("progress", 0)
+            print(f"  Status: {status}, Progress: {progress}%")
             
             if status == "completed":
-                if verbose:
-                    print(f"Video generation complete! ({elapsed:.1f}s)")
-                return video_id
+                return VideoResult(video_id, status, progress)
+            if status in ["failed", "cancelled"]:
+                err = data.get("error", {}).get("message", "Failed")
+                return VideoResult(video_id, status, progress, err)
             
-            elif status == "failed":
-                error = status_response.get("error", "Unknown error")
-                raise RuntimeError(f"Video generation failed: {error}")
-            
-            time.sleep(poll_interval)
+            time.sleep(POLL_INTERVAL)
+        
+        return VideoResult(video_id, "timeout", 0, f"Timed out after {MAX_WAIT}s")
     
-    def download_video(self, video_id: str, output_path: str, retries: int = 3) -> str:
-        """
-        Download a video by ID to local file.
+    def download(self, video_id: str, output_path: str) -> bool:
+        """Download completed video."""
+        resp = requests.get(
+            f"{self.base_url}/videos/{video_id}/content",
+            headers={"api-key": self.api_key},
+            timeout=120,
+        )
+        resp.raise_for_status()
         
-        Args:
-            video_id: Video ID from generate_video/wait_for_video.
-            output_path: Local path to save the video.
-            retries: Number of retries on timeout/connection errors.
-            
-        Returns:
-            Path to the saved video.
-        """
-        os.makedirs(os.path.dirname(output_path) or '.', exist_ok=True)
-        
-        url = f"{self.base_url}/openai/v1/videos/{video_id}/content"
-        
-        last_error = None
-        for attempt in range(retries):
-            try:
-                response = requests.get(url, headers=self.headers, stream=True, timeout=300)
-                response.raise_for_status()
-                
-                with open(output_path, 'wb') as f:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        f.write(chunk)
-                
-                return output_path
-            except (Timeout, RequestException) as e:
-                last_error = e
-                if attempt < retries - 1:
-                    wait_time = 2 ** attempt
-                    print(f"Download failed, retrying in {wait_time}s... ({e})")
-                    time.sleep(wait_time)
-        
-        raise last_error
+        with open(output_path, "wb") as f:
+            f.write(resp.content)
+        return True
     
     def generate_and_download(
         self,
         prompt: str,
         output_path: str,
-        model: str = "sora-2",
+        input_reference: Union[str, Image.Image] = None,
         seconds: int = 4,
         size: str = "1280x720",
-        verbose: bool = True,
-    ) -> str:
-        """
-        Generate a video and download it in one call.
+    ) -> bool:
+        """Generate and save video to file."""
+        print(f"  Generating...")
+        result = self.generate(prompt, input_reference, seconds, size, wait=True)
         
-        Args:
-            prompt: Text description of the video.
-            output_path: Local path to save the video.
-            model: Model to use.
-            seconds: Video duration in seconds (4, 8, or 12).
-            size: Video size as "WxH".
-            verbose: Print status updates.
-            
-        Returns:
-            Path to the saved video.
-        """
-        if verbose:
-            print(f"Generating video: {prompt[:50]}...")
+        if result.status != "completed":
+            raise RuntimeError(f"Failed: {result.status} - {result.error}")
         
-        response = self.generate_video(
-            prompt=prompt,
-            model=model,
-            seconds=seconds,
-            size=size,
-        )
-        
-        if verbose:
-            print(f"Video queued: {response.get('id')}")
-        
-        video_id = self.wait_for_video(response, verbose=verbose)
-        
-        if verbose:
-            print(f"Downloading to {output_path}...")
-        
-        self.download_video(video_id, output_path)
-        
-        if verbose:
-            print(f"Saved: {output_path}")
-        
-        return output_path
+        print(f"  Downloading...")
+        self.download(result.video_id, output_path)
+        print(f"  Saved: {output_path}")
+        return True

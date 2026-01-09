@@ -1,100 +1,95 @@
 #!/bin/bash
 #
-# Sora2 Physics-IQ T2V Generation
+# Physics-IQ Video Generation with Sora2
 #
-# This script generates videos for the Physics-IQ benchmark using Sora2 API.
-# 198 prompts × 10 samples = 1,980 videos
+# Usage:
+#   ./run.sh                    # Default: I2V mode, 4 workers
+#   ./run.sh --mode t2v         # Text-to-Video mode
+#   ./run.sh --workers 8        # Use 8 parallel workers
 #
 
-SCRIPT_DIR="/home/reyhaneaskari/WMReward"
-cd "$SCRIPT_DIR"
+set -e
+cd "$(dirname "$0")"
 
-# =============================================================================
+# ============================================================================
+# CREDENTIALS - Set these before running
+# ============================================================================
+export SORA_HOST="azure-services-fair-openai2-eastus2n6.azure-api.net"
+export SORA_API_KEY="a60a6c3d975747ef9866d1827c266976"
+
+# ============================================================================
 # Configuration
-# =============================================================================
-NUM_WORKERS=4                    # Parallel API workers
-NUM_SAMPLES=10                   # Samples per prompt (for BoN)
-SECONDS_DUR=8                    # Video duration (4, 8, or 12)
-SIZE="1280x720"                  # Video size
+# ============================================================================
+MODE="i2v"          # i2v (image-to-video) or t2v (text-to-video)
+WORKERS=4           # Parallel API workers
+SAMPLES=10          # Samples per prompt for Best-of-N
+SECONDS=8           # Duration: 4, 8, or 12
+SIZE="1280x720"     # Video resolution
 
-BATCH_JSON="${SCRIPT_DIR}/prompts/physics_iq.json"
-OUTPUT_FOLDER="${SCRIPT_DIR}/generated_videos/physics_iq/sora"
-LOG_DIR="${SCRIPT_DIR}/logs"
+# ============================================================================
+# Parse arguments
+# ============================================================================
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --mode)     MODE="$2"; shift 2;;
+        --workers)  WORKERS="$2"; shift 2;;
+        --samples)  SAMPLES="$2"; shift 2;;
+        --seconds)  SECONDS="$2"; shift 2;;
+        --size)     SIZE="$2"; shift 2;;
+        *)          echo "Unknown: $1"; exit 1;;
+    esac
+done
 
-# =============================================================================
+# ============================================================================
 # Setup
-# =============================================================================
-mkdir -p "$LOG_DIR"
-mkdir -p "${OUTPUT_FOLDER}"
+# ============================================================================
+mkdir -p logs
 
-TOTAL_ENTRIES=$(python3 -c "import json; print(len(json.load(open('${BATCH_JSON}'))))")
-TOTAL_VIDEOS=$((TOTAL_ENTRIES * NUM_SAMPLES))
-
-echo "============================================================"
-echo "SORA2 PHYSICS-IQ T2V GENERATION"
-echo "============================================================"
-echo "Prompts:            ${TOTAL_ENTRIES}"
-echo "Samples per prompt: ${NUM_SAMPLES}"
-echo "Total videos:       ${TOTAL_VIDEOS}"
-echo "Duration:           ${SECONDS_DUR}s"
-echo "Size:               ${SIZE}"
-echo "Workers:            ${NUM_WORKERS}"
-echo "Output:             ${OUTPUT_FOLDER}"
-echo "============================================================"
+TOTAL=$(python3 -c "import json; print(len(json.load(open('prompts/physics_iq.json'))))")
+echo ""
+echo "=========================================="
+echo "SORA2 PHYSICS-IQ ${MODE^^}"
+echo "=========================================="
+echo "Entries:  $TOTAL"
+echo "Samples:  $SAMPLES per entry"
+echo "Workers:  $WORKERS"
+echo "Duration: ${SECONDS}s @ $SIZE"
+echo "=========================================="
 echo ""
 
-# =============================================================================
-# Launch parallel workers
-# =============================================================================
-echo "Launching ${NUM_WORKERS} workers..."
-echo ""
-
+# ============================================================================
+# Launch workers
+# ============================================================================
 PIDS=""
-for w in $(seq 0 $((NUM_WORKERS - 1))); do
-    echo "[Worker ${w}] Starting..."
+for w in $(seq 0 $((WORKERS - 1))); do
+    echo "Starting worker $w..."
     
     nohup python3 -u generator_sora_physicsiq.py \
-        --batch_json "${BATCH_JSON}" \
-        --output_folder "${OUTPUT_FOLDER}" \
-        --num_samples ${NUM_SAMPLES} \
-        --seconds ${SECONDS_DUR} \
-        --size "${SIZE}" \
-        --num_workers ${NUM_WORKERS} \
-        --worker_idx ${w} \
-        >> "${LOG_DIR}/sora_worker_${w}.log" 2>&1 &
+        --mode "$MODE" \
+        --num_samples "$SAMPLES" \
+        --seconds "$SECONDS" \
+        --size "$SIZE" \
+        --num_workers "$WORKERS" \
+        --worker_idx "$w" \
+        >> "logs/sora_${MODE}_w${w}.log" 2>&1 &
     
     PIDS="$PIDS $!"
-    sleep 1
+    sleep 0.5
 done
 
 echo ""
-echo "All workers started."
-echo "PIDs:${PIDS}"
+echo "Workers started: $PIDS"
+echo "Logs: logs/sora_${MODE}_w*.log"
 echo ""
-echo "Logs: ${LOG_DIR}/sora_worker_*.log"
-echo ""
-echo "Monitor progress:"
-echo "  tail -f ${LOG_DIR}/sora_worker_0.log"
-echo ""
-echo "Waiting for all workers to complete..."
+echo "Monitor: tail -f logs/sora_${MODE}_w0.log"
 echo ""
 
-# =============================================================================
-# Wait for completion
-# =============================================================================
+# Wait for all
 for pid in $PIDS; do
-    wait $pid || echo "Worker $pid exited with error"
+    wait $pid || echo "Worker $pid failed"
 done
 
-# =============================================================================
-# Summary
-# =============================================================================
-GENERATED=$(find "${OUTPUT_FOLDER}" -name "*.mp4" 2>/dev/null | wc -l)
-
 echo ""
-echo "============================================================"
-echo "GENERATION COMPLETE"
-echo "============================================================"
-echo "Generated videos: ${GENERATED} / ${TOTAL_VIDEOS}"
-echo "Output:           ${OUTPUT_FOLDER}"
-echo "============================================================"
+echo "=========================================="
+echo "DONE"
+echo "=========================================="
