@@ -1,0 +1,6 @@
+[submodule "vjepa2"]
+	path = vjepa2
+	url = https://github.com/facebookresearch/vjepa2.git
+[submodule "MAGI-1"]
+	path = MAGI-1
+	url = https://github.com/YuanJianhao508/MAGI-1.git

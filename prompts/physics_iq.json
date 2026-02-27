@@ -1,0 +1,998 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+
+# This source code is licensed under the license found in the
+# LICENSE file in the root directory of this source tree.s
+
+[
+  {
+    "prompt": "Two pillows on a table and two grabber tools hanging above them from which a brown tennis ball and an orange block are suspended. The grabber tools let go of the ball and block. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0001_switch-frames_anyFPS_perspective-left_trimmed-ball-and-block-fall.jpg",
+    "output_video": "0001_trimmed-ball-and-block-fall.mp4"
+  },
+  {
+    "prompt": "Two pillows on a table and two grabber tools hanging above them from which a brown tennis ball and an orange block are suspended. The grabber tools let go of the ball and block. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0002_switch-frames_anyFPS_perspective-center_trimmed-ball-and-block-fall.jpg",
+    "output_video": "0002_trimmed-ball-and-block-fall.mp4"
+  },
+  {
+    "prompt": "Two pillows on a table and two grabber tools hanging above them from which a brown tennis ball and an orange block are suspended. The grabber tools let go of the ball and block. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0003_switch-frames_anyFPS_perspective-right_trimmed-ball-and-block-fall.jpg",
+    "output_video": "0003_trimmed-ball-and-block-fall.mp4"
+  },
+  {
+    "prompt": "A grabber arm is holding a tennis ball above a piece of cardstock propped up on a rotating platform sitting on a table that rotates clockwise. The grabber lowers the ball and places is on the table as the cardstock rotates. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0004_switch-frames_anyFPS_perspective-left_trimmed-ball-behind-rotating-paper.jpg",
+    "output_video": "0004_trimmed-ball-behind-rotating-paper.mp4"
+  },
+  {
+    "prompt": "A grabber arm is holding a tennis ball above a piece of cardstock propped up on a rotating platform sitting on a table that rotates clockwise. The grabber lowers the ball and places is on the table as the cardstock rotates. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0005_switch-frames_anyFPS_perspective-center_trimmed-ball-behind-rotating-paper.jpg",
+    "output_video": "0005_trimmed-ball-behind-rotating-paper.mp4"
+  },
+  {
+    "prompt": "A grabber arm is holding a tennis ball above a piece of cardstock propped up on a rotating platform sitting on a table that rotates clockwise. The grabber lowers the ball and places is on the table as the cardstock rotates. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0006_switch-frames_anyFPS_perspective-right_trimmed-ball-behind-rotating-paper.jpg",
+    "output_video": "0006_trimmed-ball-behind-rotating-paper.mp4"
+  },
+  {
+    "prompt": "A light beige coffee table with a small yellow rubber ducky on it. A mustard yellow couch is in the background. There is a black pipe on one end of the table and a brown tennis ball rolls out of it towards the rubber ducky. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0007_switch-frames_anyFPS_perspective-left_trimmed-ball-hits-duck.jpg",
+    "output_video": "0007_trimmed-ball-hits-duck.mp4"
+  },
+  {
+    "prompt": "A light beige coffee table with a small yellow rubber ducky on it. A mustard yellow couch is in the background. There is a black pipe on one end of the table and a brown tennis ball rolls out of it towards the rubber ducky. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0008_switch-frames_anyFPS_perspective-center_trimmed-ball-hits-duck.jpg",
+    "output_video": "0008_trimmed-ball-hits-duck.mp4"
+  },
+  {
+    "prompt": "A light beige coffee table with a small yellow rubber ducky on it. A mustard yellow couch is in the background. There is a black pipe on one end of the table and a brown tennis ball rolls out of it towards the rubber ducky. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0009_switch-frames_anyFPS_perspective-right_trimmed-ball-hits-duck.jpg",
+    "output_video": "0009_trimmed-ball-hits-duck.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden coffee table with a few small objects on it including a tennis ball and a smaller red ball. An orange ball rolls out of a black pipe that is sitting on the table towards the right side. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0010_switch-frames_anyFPS_perspective-left_trimmed-ball-hits-nothing.jpg",
+    "output_video": "0010_trimmed-ball-hits-nothing.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden coffee table with a few small objects on it including a tennis ball and a smaller red ball. An orange ball rolls out of a black pipe that is sitting on the table towards the right side. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0011_switch-frames_anyFPS_perspective-center_trimmed-ball-hits-nothing.jpg",
+    "output_video": "0011_trimmed-ball-hits-nothing.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden coffee table with a few small objects on it including a tennis ball and a smaller red ball. An orange ball rolls out of a black pipe that is sitting on the table towards the right side. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0012_switch-frames_anyFPS_perspective-right_trimmed-ball-hits-nothing.jpg",
+    "output_video": "0012_trimmed-ball-hits-nothing.mp4"
+  },
+  {
+    "prompt": "An orange inflatable basketball is suspended above a black plastic crate placed on a wooden table. The ball is then released. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0013_switch-frames_anyFPS_perspective-left_trimmed-ball-in-basket.jpg",
+    "output_video": "0013_trimmed-ball-in-basket.mp4"
+  },
+  {
+    "prompt": "An orange inflatable basketball is suspended above a black plastic crate placed on a wooden table. The ball is then released. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0014_switch-frames_anyFPS_perspective-center_trimmed-ball-in-basket.jpg",
+    "output_video": "0014_trimmed-ball-in-basket.mp4"
+  },
+  {
+    "prompt": "An orange inflatable basketball is suspended above a black plastic crate placed on a wooden table. The ball is then released. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0015_switch-frames_anyFPS_perspective-right_trimmed-ball-in-basket.jpg",
+    "output_video": "0015_trimmed-ball-in-basket.mp4"
+  },
+  {
+    "prompt": "A blue grabber tool holds a tennis ball above a pile of green kinetic sand on a wooden table. The grabber then releases the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0016_switch-frames_anyFPS_perspective-left_trimmed-ball-in-sand.jpg",
+    "output_video": "0016_trimmed-ball-in-sand.mp4"
+  },
+  {
+    "prompt": "A blue grabber tool holds a tennis ball above a pile of green kinetic sand on a wooden table. The grabber then releases the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0017_switch-frames_anyFPS_perspective-center_trimmed-ball-in-sand.jpg",
+    "output_video": "0017_trimmed-ball-in-sand.mp4"
+  },
+  {
+    "prompt": "A blue grabber tool holds a tennis ball above a pile of green kinetic sand on a wooden table. The grabber then releases the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0018_switch-frames_anyFPS_perspective-right_trimmed-ball-in-sand.jpg",
+    "output_video": "0018_trimmed-ball-in-sand.mp4"
+  },
+  {
+    "prompt": "A simple ramp made of cardboard propped up by a blue block on a light-colored wooden table. There's a black pipe to the left of the frame and a yellow tennis ball rolls out of the pipe towards the ramp. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0019_switch-frames_anyFPS_perspective-left_trimmed-ball-ramp.jpg",
+    "output_video": "0019_trimmed-ball-ramp.mp4"
+  },
+  {
+    "prompt": "A simple ramp made of cardboard propped up by a blue block on a light-colored wooden table. There's a black pipe to the left of the frame and a yellow tennis ball rolls out of the pipe towards the ramp. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0020_switch-frames_anyFPS_perspective-center_trimmed-ball-ramp.jpg",
+    "output_video": "0020_trimmed-ball-ramp.mp4"
+  },
+  {
+    "prompt": "A simple ramp made of cardboard propped up by a blue block on a light-colored wooden table. There's a black pipe to the left of the frame and a yellow tennis ball rolls out of the pipe towards the ramp. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0021_switch-frames_anyFPS_perspective-right_trimmed-ball-ramp.jpg",
+    "output_video": "0021_trimmed-ball-ramp.mp4"
+  },
+  {
+    "prompt": "A light wood coffee table in the foreground with a black pipe on the end of the table. A grey tennis ball rolls out of the pipe towards the right and onto the table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0022_switch-frames_anyFPS_perspective-left_trimmed-ball-rolls-off.jpg",
+    "output_video": "0022_trimmed-ball-rolls-off.mp4"
+  },
+  {
+    "prompt": "A light wood coffee table in the foreground with a black pipe on the end of the table. A grey tennis ball rolls out of the pipe towards the right and onto the table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0023_switch-frames_anyFPS_perspective-center_trimmed-ball-rolls-off.jpg",
+    "output_video": "0023_trimmed-ball-rolls-off.mp4"
+  },
+  {
+    "prompt": "A light wood coffee table in the foreground with a black pipe on the end of the table. A grey tennis ball rolls out of the pipe towards the right and onto the table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0024_switch-frames_anyFPS_perspective-right_trimmed-ball-rolls-off.jpg",
+    "output_video": "0024_trimmed-ball-rolls-off.mp4"
+  },
+  {
+    "prompt": "A piece of clear glass resting on the edge of a light-colored wooden table against a plain white wall. A blue tennis ball rolls on the wooden table and towards the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0025_switch-frames_anyFPS_perspective-left_trimmed-ball-rolls-on-glass.jpg",
+    "output_video": "0025_trimmed-ball-rolls-on-glass.mp4"
+  },
+  {
+    "prompt": "A piece of clear glass resting on the edge of a light-colored wooden table against a plain white wall. A blue tennis ball rolls on the wooden table and towards the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0026_switch-frames_anyFPS_perspective-center_trimmed-ball-rolls-on-glass.jpg",
+    "output_video": "0026_trimmed-ball-rolls-on-glass.mp4"
+  },
+  {
+    "prompt": "A piece of clear glass resting on the edge of a light-colored wooden table against a plain white wall. A blue tennis ball rolls on the wooden table and towards the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0027_switch-frames_anyFPS_perspective-right_trimmed-ball-rolls-on-glass.jpg",
+    "output_video": "0027_trimmed-ball-rolls-on-glass.mp4"
+  },
+  {
+    "prompt": "A light-colored coffee table with two tennis balls, one orange and one brown, placed near the center back to back. A grey tennis ball rolls out of a black pipe sitting on the table and towards the other two balls. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0028_switch-frames_anyFPS_perspective-left_trimmed-ball-train.jpg",
+    "output_video": "0028_trimmed-ball-train.mp4"
+  },
+  {
+    "prompt": "A light-colored coffee table with two tennis balls, one orange and one brown, placed near the center back to back. A grey tennis ball rolls out of a black pipe sitting on the table and towards the other two balls. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0029_switch-frames_anyFPS_perspective-center_trimmed-ball-train.jpg",
+    "output_video": "0029_trimmed-ball-train.mp4"
+  },
+  {
+    "prompt": "A light-colored coffee table with two tennis balls, one orange and one brown, placed near the center back to back. A grey tennis ball rolls out of a black pipe sitting on the table and towards the other two balls. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0030_switch-frames_anyFPS_perspective-right_trimmed-ball-train.jpg",
+    "output_video": "0030_trimmed-ball-train.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden tabletop with two pipes at the edges. A blue and yellow tennis ball roll out of the pipes and towards each other. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0031_switch-frames_anyFPS_perspective-left_trimmed-balls-collide.jpg",
+    "output_video": "0031_trimmed-balls-collide.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden tabletop with two pipes at the edges. A blue and yellow tennis ball roll out of the pipes and towards each other. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0032_switch-frames_anyFPS_perspective-center_trimmed-balls-collide.jpg",
+    "output_video": "0032_trimmed-balls-collide.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden tabletop with two pipes at the edges. A blue and yellow tennis ball roll out of the pipes and towards each other. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0033_switch-frames_anyFPS_perspective-right_trimmed-balls-collide.jpg",
+    "output_video": "0033_trimmed-balls-collide.mp4"
+  },
+  {
+    "prompt": "A row of colorful wooden blocks lined up on a wooden table with a wooden stick attached to a black rotating platform. The platform rotates clockwise and the wooden stick hits the first block as it rotates. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0034_switch-frames_anyFPS_perspective-left_trimmed-block-domino.jpg",
+    "output_video": "0034_trimmed-block-domino.mp4"
+  },
+  {
+    "prompt": "A row of colorful wooden blocks lined up on a wooden table with a wooden stick attached to a black rotating platform. The platform rotates clockwise and the wooden stick hits the first block as it rotates. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0035_switch-frames_anyFPS_perspective-center_trimmed-block-domino.jpg",
+    "output_video": "0035_trimmed-block-domino.mp4"
+  },
+  {
+    "prompt": "A row of colorful wooden blocks lined up on a wooden table with a wooden stick attached to a black rotating platform. The platform rotates clockwise and the wooden stick hits the first block as it rotates. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0036_switch-frames_anyFPS_perspective-right_trimmed-block-domino.jpg",
+    "output_video": "0036_trimmed-block-domino.mp4"
+  },
+  {
+    "prompt": "A black balloon is attached to a fixed electric air pump hose on a table with a plain wall in the background. Air is being pumped in the balloon. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0037_switch-frames_anyFPS_perspective-left_trimmed-blow-balloon.jpg",
+    "output_video": "0037_trimmed-blow-balloon.mp4"
+  },
+  {
+    "prompt": "A black balloon is attached to a fixed electric air pump hose on a table with a plain wall in the background. Air is being pumped in the balloon. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0038_switch-frames_anyFPS_perspective-center_trimmed-blow-balloon.jpg",
+    "output_video": "0038_trimmed-blow-balloon.mp4"
+  },
+  {
+    "prompt": "A black balloon is attached to a fixed electric air pump hose on a table with a plain wall in the background. Air is being pumped in the balloon. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0039_switch-frames_anyFPS_perspective-right_trimmed-blow-balloon.jpg",
+    "output_video": "0039_trimmed-blow-balloon.mp4"
+  },
+  {
+    "prompt": "A tangerine that has been cut in half is placed on a glass cutting board. A knife is slicing through the tangerine. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0040_switch-frames_anyFPS_perspective-left_trimmed-cut-orange.jpg",
+    "output_video": "0040_trimmed-cut-orange.mp4"
+  },
+  {
+    "prompt": "A tangerine that has been cut in half is placed on a glass cutting board. A knife is slicing through the tangerine. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0041_switch-frames_anyFPS_perspective-center_trimmed-cut-orange.jpg",
+    "output_video": "0041_trimmed-cut-orange.mp4"
+  },
+  {
+    "prompt": "A tangerine that has been cut in half is placed on a glass cutting board. A knife is slicing through the tangerine. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0042_switch-frames_anyFPS_perspective-right_trimmed-cut-orange.jpg",
+    "output_video": "0042_trimmed-cut-orange.mp4"
+  },
+  {
+    "prompt": "Two black and blue gripping tools are pulling a piece of green paper from its two corners, causing it to tear. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0043_switch-frames_anyFPS_perspective-left_trimmed-cut-paper.jpg",
+    "output_video": "0043_trimmed-cut-paper.mp4"
+  },
+  {
+    "prompt": "Two black and blue gripping tools are pulling a piece of green paper from its two corners, causing it to tear. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0044_switch-frames_anyFPS_perspective-center_trimmed-cut-paper.jpg",
+    "output_video": "0044_trimmed-cut-paper.mp4"
+  },
+  {
+    "prompt": "Two black and blue gripping tools are pulling a piece of green paper from its two corners, causing it to tear. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0045_switch-frames_anyFPS_perspective-right_trimmed-cut-paper.jpg",
+    "output_video": "0045_trimmed-cut-paper.mp4"
+  },
+  {
+    "prompt": "A grabber tool holding a white domino drops the domino into a dark-colored liquid in a blue mug that is on a wooden surface. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0046_switch-frames_anyFPS_perspective-left_trimmed-domino-in-juice.jpg",
+    "output_video": "0046_trimmed-domino-in-juice.mp4"
+  },
+  {
+    "prompt": "A grabber tool holding a white domino drops the domino into a dark-colored liquid in a blue mug that is on a wooden surface. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0047_switch-frames_anyFPS_perspective-center_trimmed-domino-in-juice.jpg",
+    "output_video": "0047_trimmed-domino-in-juice.mp4"
+  },
+  {
+    "prompt": "A grabber tool holding a white domino drops the domino into a dark-colored liquid in a blue mug that is on a wooden surface. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0048_switch-frames_anyFPS_perspective-right_trimmed-domino-in-juice.jpg",
+    "output_video": "0048_trimmed-domino-in-juice.mp4"
+  },
+  {
+    "prompt": "Two rows of alternating black and white dominoes are set up on a wooden table with a gap between the two rows. A wooden stick attached to a rotating platform rotates clockwise and knocks the first domino in the first row. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0049_switch-frames_anyFPS_perspective-left_trimmed-dominos-with-space.jpg",
+    "output_video": "0049_trimmed-dominos-with-space.mp4"
+  },
+  {
+    "prompt": "Two rows of alternating black and white dominoes are set up on a wooden table with a gap between the two rows. A wooden stick attached to a rotating platform rotates clockwise and knocks the first domino in the first row. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0050_switch-frames_anyFPS_perspective-center_trimmed-dominos-with-space.jpg",
+    "output_video": "0050_trimmed-dominos-with-space.mp4"
+  },
+  {
+    "prompt": "Two rows of alternating black and white dominoes are set up on a wooden table with a gap between the two rows. A wooden stick attached to a rotating platform rotates clockwise and knocks the first domino in the first row. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0051_switch-frames_anyFPS_perspective-right_trimmed-dominos-with-space.jpg",
+    "output_video": "0051_trimmed-dominos-with-space.mp4"
+  },
+  {
+    "prompt": "A Newton's cradle device on the table and two of the metal balls are held up by a blue handled grabber tool. The claw releases the two balls. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0052_switch-frames_anyFPS_perspective-left_trimmed-double-cradle.jpg",
+    "output_video": "0052_trimmed-double-cradle.mp4"
+  },
+  {
+    "prompt": "A Newton's cradle device on the table and two of the metal balls are held up by a blue handled grabber tool. The claw releases the two balls. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0053_switch-frames_anyFPS_perspective-center_trimmed-double-cradle.jpg",
+    "output_video": "0053_trimmed-double-cradle.mp4"
+  },
+  {
+    "prompt": "A Newton's cradle device on the table and two of the metal balls are held up by a blue handled grabber tool. The claw releases the two balls. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0054_switch-frames_anyFPS_perspective-right_trimmed-double-cradle.jpg",
+    "output_video": "0054_trimmed-double-cradle.mp4"
+  },
+  {
+    "prompt": "A yellow rubber duck is positioned in the middle of a line of black and white dominoes on a wooden table. A stick attached to a black rotating platform rotates clockwise and knocks the first domino block. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0055_switch-frames_anyFPS_perspective-left_trimmed-duck-and-dominos.jpg",
+    "output_video": "0055_trimmed-duck-and-dominos.mp4"
+  },
+  {
+    "prompt": "A yellow rubber duck is positioned in the middle of a line of black and white dominoes on a wooden table. A stick attached to a black rotating platform rotates clockwise and knocks the first domino block. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0056_switch-frames_anyFPS_perspective-center_trimmed-duck-and-dominos.jpg",
+    "output_video": "0056_trimmed-duck-and-dominos.mp4"
+  },
+  {
+    "prompt": "A yellow rubber duck is positioned in the middle of a line of black and white dominoes on a wooden table. A stick attached to a black rotating platform rotates clockwise and knocks the first domino block. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0057_switch-frames_anyFPS_perspective-right_trimmed-duck-and-dominos.jpg",
+    "output_video": "0057_trimmed-duck-and-dominos.mp4"
+  },
+  {
+    "prompt": "A yellow rubber ducky is suspended above an open dark green fabric box on a wooden table. The duck is then released. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0058_switch-frames_anyFPS_perspective-left_trimmed-duck-falls-in-box.jpg",
+    "output_video": "0058_trimmed-duck-falls-in-box.mp4"
+  },
+  {
+    "prompt": "A yellow rubber ducky is suspended above an open dark green fabric box on a wooden table. The duck is then released. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0059_switch-frames_anyFPS_perspective-center_trimmed-duck-falls-in-box.jpg",
+    "output_video": "0059_trimmed-duck-falls-in-box.mp4"
+  },
+  {
+    "prompt": "A yellow rubber ducky is suspended above an open dark green fabric box on a wooden table. The duck is then released. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0060_switch-frames_anyFPS_perspective-right_trimmed-duck-falls-in-box.jpg",
+    "output_video": "0060_trimmed-duck-falls-in-box.mp4"
+  },
+  {
+    "prompt": "A stationary yellow rubber duck on a light brown wooden table against a plain white background. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0061_switch-frames_anyFPS_perspective-left_trimmed-duck-static.jpg",
+    "output_video": "0061_trimmed-duck-static.mp4"
+  },
+  {
+    "prompt": "A stationary yellow rubber duck on a light brown wooden table against a plain white background. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0062_switch-frames_anyFPS_perspective-center_trimmed-duck-static.jpg",
+    "output_video": "0062_trimmed-duck-static.mp4"
+  },
+  {
+    "prompt": "A stationary yellow rubber duck on a light brown wooden table against a plain white background. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0063_switch-frames_anyFPS_perspective-right_trimmed-duck-static.jpg",
+    "output_video": "0063_trimmed-duck-static.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser filled with a bright red liquid is set up on a woven basket and is pouring the liquid into a clear glass on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0064_switch-frames_anyFPS_perspective-left_trimmed-fill-glass-red-drink.jpg",
+    "output_video": "0064_trimmed-fill-glass-red-drink.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser filled with a bright red liquid is set up on a woven basket and is pouring the liquid into a clear glass on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0065_switch-frames_anyFPS_perspective-center_trimmed-fill-glass-red-drink.jpg",
+    "output_video": "0065_trimmed-fill-glass-red-drink.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser filled with a bright red liquid is set up on a woven basket and is pouring the liquid into a clear glass on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0066_switch-frames_anyFPS_perspective-right_trimmed-fill-glass-red-drink.jpg",
+    "output_video": "0066_trimmed-fill-glass-red-drink.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser filled with a bright red liquid is set on a wicker base. Under the dispenser there is a glass half filled with red liquid. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0067_switch-frames_anyFPS_perspective-left_trimmed-glass-stays-same.jpg",
+    "output_video": "0067_trimmed-glass-stays-same.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser filled with a bright red liquid is set on a wicker base. Under the dispenser there is a glass half filled with red liquid. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0068_switch-frames_anyFPS_perspective-center_trimmed-glass-stays-same.jpg",
+    "output_video": "0068_trimmed-glass-stays-same.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser filled with a bright red liquid is set on a wicker base. Under the dispenser there is a glass half filled with red liquid. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0069_switch-frames_anyFPS_perspective-right_trimmed-glass-stays-same.jpg",
+    "output_video": "0069_trimmed-glass-stays-same.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser pouring grapefruit juice into a glass that has some water inside. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0070_switch-frames_anyFPS_perspective-left_trimmed-juice-in-water.jpg",
+    "output_video": "0070_trimmed-juice-in-water.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser pouring grapefruit juice into a glass that has some water inside. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0071_switch-frames_anyFPS_perspective-center_trimmed-juice-in-water.jpg",
+    "output_video": "0071_trimmed-juice-in-water.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser pouring grapefruit juice into a glass that has some water inside. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0072_switch-frames_anyFPS_perspective-right_trimmed-juice-in-water.jpg",
+    "output_video": "0072_trimmed-juice-in-water.mp4"
+  },
+  {
+    "prompt": "A blue rectangular wooden block is placed on a black rotating turntable that rotates clockwise illuminated by a spotlight casting a long shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0073_switch-frames_anyFPS_perspective-left_trimmed-light-on-block.jpg",
+    "output_video": "0073_trimmed-light-on-block.mp4"
+  },
+  {
+    "prompt": "A blue rectangular wooden block is placed on a black rotating turntable that rotates clockwise illuminated by a spotlight casting a long shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0074_switch-frames_anyFPS_perspective-center_trimmed-light-on-block.jpg",
+    "output_video": "0074_trimmed-light-on-block.mp4"
+  },
+  {
+    "prompt": "A blue rectangular wooden block is placed on a black rotating turntable that rotates clockwise illuminated by a spotlight casting a long shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0075_switch-frames_anyFPS_perspective-right_trimmed-light-on-block.jpg",
+    "output_video": "0075_trimmed-light-on-block.mp4"
+  },
+  {
+    "prompt": "A yellow mug is placed on a rotating turntable that rotates clockwise illuminated by a spotlight casting a shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0076_switch-frames_anyFPS_perspective-left_trimmed-light-on-mug.jpg",
+    "output_video": "0076_trimmed-light-on-mug.mp4"
+  },
+  {
+    "prompt": "A yellow mug is placed on a rotating turntable that rotates clockwise illuminated by a spotlight casting a shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0077_switch-frames_anyFPS_perspective-center_trimmed-light-on-mug.jpg",
+    "output_video": "0077_trimmed-light-on-mug.mp4"
+  },
+  {
+    "prompt": "A yellow mug is placed on a rotating turntable that rotates clockwise illuminated by a spotlight casting a shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0078_switch-frames_anyFPS_perspective-right_trimmed-light-on-mug.jpg",
+    "output_video": "0078_trimmed-light-on-mug.mp4"
+  },
+  {
+    "prompt": "A yellow mug and a blue wooden block are placed on a rotating turntable that rotates clockwise illuminated by a spotlight casting their shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0079_switch-frames_anyFPS_perspective-left_trimmed-light-on-mug-block.jpg",
+    "output_video": "0079_trimmed-light-on-mug-block.mp4"
+  },
+  {
+    "prompt": "A yellow mug and a blue wooden block are placed on a rotating turntable that rotates clockwise illuminated by a spotlight casting their shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0080_switch-frames_anyFPS_perspective-center_trimmed-light-on-mug-block.jpg",
+    "output_video": "0080_trimmed-light-on-mug-block.mp4"
+  },
+  {
+    "prompt": "A yellow mug and a blue wooden block are placed on a rotating turntable that rotates clockwise illuminated by a spotlight casting their shadow on the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0081_switch-frames_anyFPS_perspective-right_trimmed-light-on-mug-block.jpg",
+    "output_video": "0081_trimmed-light-on-mug-block.mp4"
+  },
+  {
+    "prompt": "A small statue made of porcelain illuminated by a spotlight on a rotating base that rotates clockwise. The spotlight casts a large shadow of the statue onto the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0082_switch-frames_anyFPS_perspective-left_trimmed-light-on-statue.jpg",
+    "output_video": "0082_trimmed-light-on-statue.mp4"
+  },
+  {
+    "prompt": "A small statue made of porcelain illuminated by a spotlight on a rotating base that rotates clockwise. The spotlight casts a large shadow of the statue onto the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0083_switch-frames_anyFPS_perspective-center_trimmed-light-on-statue.jpg",
+    "output_video": "0083_trimmed-light-on-statue.mp4"
+  },
+  {
+    "prompt": "A small statue made of porcelain illuminated by a spotlight on a rotating base that rotates clockwise. The spotlight casts a large shadow of the statue onto the wall behind it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0084_switch-frames_anyFPS_perspective-right_trimmed-light-on-statue.jpg",
+    "output_video": "0084_trimmed-light-on-statue.mp4"
+  },
+  {
+    "prompt": "A yellow rubber ducky is placed in an empty black baking pan on a wooden table.  A beverage dispenser with red liquid inside sits on a woven basket behind it. The liquid pours on the duck from the dispenser. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0085_switch-frames_anyFPS_perspective-left_trimmed-liquid-on-duck.jpg",
+    "output_video": "0085_trimmed-liquid-on-duck.mp4"
+  },
+  {
+    "prompt": "A yellow rubber ducky is placed in an empty black baking pan on a wooden table.  A beverage dispenser with red liquid inside sits on a woven basket behind it. The liquid pours on the duck from the dispenser. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0086_switch-frames_anyFPS_perspective-center_trimmed-liquid-on-duck.jpg",
+    "output_video": "0086_trimmed-liquid-on-duck.mp4"
+  },
+  {
+    "prompt": "A yellow rubber ducky is placed in an empty black baking pan on a wooden table.  A beverage dispenser with red liquid inside sits on a woven basket behind it. The liquid pours on the duck from the dispenser. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0087_switch-frames_anyFPS_perspective-right_trimmed-liquid-on-duck.jpg",
+    "output_video": "0087_trimmed-liquid-on-duck.mp4"
+  },
+  {
+    "prompt": "A bright red liquid being poured from a dispenser into a glass which is placed on a dark baking tray on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0088_switch-frames_anyFPS_perspective-left_trimmed-liquid-overfill.jpg",
+    "output_video": "0088_trimmed-liquid-overfill.mp4"
+  },
+  {
+    "prompt": "A bright red liquid being poured from a dispenser into a glass which is placed on a dark baking tray on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0089_switch-frames_anyFPS_perspective-center_trimmed-liquid-overfill.jpg",
+    "output_video": "0089_trimmed-liquid-overfill.mp4"
+  },
+  {
+    "prompt": "A bright red liquid being poured from a dispenser into a glass which is placed on a dark baking tray on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0090_switch-frames_anyFPS_perspective-right_trimmed-liquid-overfill.jpg",
+    "output_video": "0090_trimmed-liquid-overfill.mp4"
+  },
+  {
+    "prompt": "Two candle holders that have tall red candles in them are placed on a wooden table. One of the candles is burning. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0091_switch-frames_anyFPS_perspective-left_trimmed-lit-candle.jpg",
+    "output_video": "0091_trimmed-lit-candle.mp4"
+  },
+  {
+    "prompt": "Two candle holders that have tall red candles in them are placed on a wooden table. One of the candles is burning. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0092_switch-frames_anyFPS_perspective-center_trimmed-lit-candle.jpg",
+    "output_video": "0092_trimmed-lit-candle.mp4"
+  },
+  {
+    "prompt": "Two candle holders that have tall red candles in them are placed on a wooden table. One of the candles is burning. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0093_switch-frames_anyFPS_perspective-right_trimmed-lit-candle.jpg",
+    "output_video": "0093_trimmed-lit-candle.mp4"
+  },
+  {
+    "prompt": "A powerful magnet is placed on the table facing a black rotating platform that rotates clockwise. A small white plastic domino block is placed on the platform and is rotating towards the magnet. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0094_switch-frames_anyFPS_perspective-left_trimmed-magnet-domino.jpg",
+    "output_video": "0094_trimmed-magnet-domino.mp4"
+  },
+  {
+    "prompt": "A powerful magnet is placed on the table facing a black rotating platform that rotates clockwise. A small white plastic domino block is placed on the platform and is rotating towards the magnet. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0095_switch-frames_anyFPS_perspective-center_trimmed-magnet-domino.jpg",
+    "output_video": "0095_trimmed-magnet-domino.mp4"
+  },
+  {
+    "prompt": "A powerful magnet is placed on the table facing a black rotating platform that rotates clockwise. A small white plastic domino block is placed on the platform and is rotating towards the magnet. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0096_switch-frames_anyFPS_perspective-right_trimmed-magnet-domino.jpg",
+    "output_video": "0096_trimmed-magnet-domino.mp4"
+  },
+  {
+    "prompt": "A clear acrylic box suspended from a cord hangs above a tennis ball with a smiley face drawn on it positioned on a wooden table. The box is lowered to cover the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0097_switch-frames_anyFPS_perspective-left_trimmed-magnet-transparent-peakaboo.jpg",
+    "output_video": "0097_trimmed-magnet-transparent-peakaboo.mp4"
+  },
+  {
+    "prompt": "A clear acrylic box suspended from a cord hangs above a tennis ball with a smiley face drawn on it positioned on a wooden table. The box is lowered to cover the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0098_switch-frames_anyFPS_perspective-center_trimmed-magnet-transparent-peakaboo.jpg",
+    "output_video": "0098_trimmed-magnet-transparent-peakaboo.mp4"
+  },
+  {
+    "prompt": "A clear acrylic box suspended from a cord hangs above a tennis ball with a smiley face drawn on it positioned on a wooden table. The box is lowered to cover the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0099_switch-frames_anyFPS_perspective-right_trimmed-magnet-transparent-peakaboo.jpg",
+    "output_video": "0099_trimmed-magnet-transparent-peakaboo.mp4"
+  },
+  {
+    "prompt": "A powerful magnet is placed on the table facing a black rotating platform that rotates clockwise. A small metal wrench is placed on the platform and is rotating towards the magnet. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0100_switch-frames_anyFPS_perspective-left_trimmed-magnet-wrench.jpg",
+    "output_video": "0100_trimmed-magnet-wrench.mp4"
+  },
+  {
+    "prompt": "A powerful magnet is placed on the table facing a black rotating platform that rotates clockwise. A small metal wrench is placed on the platform and is rotating towards the magnet. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0101_switch-frames_anyFPS_perspective-center_trimmed-magnet-wrench.jpg",
+    "output_video": "0101_trimmed-magnet-wrench.mp4"
+  },
+  {
+    "prompt": "A powerful magnet is placed on the table facing a black rotating platform that rotates clockwise. A small metal wrench is placed on the platform and is rotating towards the magnet. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0102_switch-frames_anyFPS_perspective-right_trimmed-magnet-wrench.jpg",
+    "output_video": "0102_trimmed-magnet-wrench.mp4"
+  },
+  {
+    "prompt": "A few magnetic ramps are attached to a whiteboard for a game of marble run. A yellow marble is released at the top of the ramps and slides down the ramps. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0103_switch-frames_anyFPS_perspective-left_trimmed-marble-run-x.jpg",
+    "output_video": "0103_trimmed-marble-run-x.mp4"
+  },
+  {
+    "prompt": "A few magnetic ramps are attached to a whiteboard for a game of marble run. A yellow marble is released at the top of the ramps and slides down the ramps. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0104_switch-frames_anyFPS_perspective-center_trimmed-marble-run-x.jpg",
+    "output_video": "0104_trimmed-marble-run-x.mp4"
+  },
+  {
+    "prompt": "A few magnetic ramps are attached to a whiteboard for a game of marble run. A yellow marble is released at the top of the ramps and slides down the ramps. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0105_switch-frames_anyFPS_perspective-right_trimmed-marble-run-x.jpg",
+    "output_video": "0105_trimmed-marble-run-x.mp4"
+  },
+  {
+    "prompt": "A few magnetic ramps are attached to a whiteboard for a game of marble run. A yellow marble is released at the top of the ramps and slides down the ramps. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0106_switch-frames_anyFPS_perspective-left_trimmed-marble-run-y.jpg",
+    "output_video": "0106_trimmed-marble-run-y.mp4"
+  },
+  {
+    "prompt": "A few magnetic ramps are attached to a whiteboard for a game of marble run. A yellow marble is released at the top of the ramps and slides down the ramps. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0107_switch-frames_anyFPS_perspective-center_trimmed-marble-run-y.jpg",
+    "output_video": "0107_trimmed-marble-run-y.mp4"
+  },
+  {
+    "prompt": "A few magnetic ramps are attached to a whiteboard for a game of marble run. A yellow marble is released at the top of the ramps and slides down the ramps. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0108_switch-frames_anyFPS_perspective-right_trimmed-marble-run-y.jpg",
+    "output_video": "0108_trimmed-marble-run-y.mp4"
+  },
+  {
+    "prompt": "A lit match is being lowered into a glass of water. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0109_switch-frames_anyFPS_perspective-left_trimmed-match.jpg",
+    "output_video": "0109_trimmed-match.mp4"
+  },
+  {
+    "prompt": "A lit match is being lowered into a glass of water. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0110_switch-frames_anyFPS_perspective-center_trimmed-match.jpg",
+    "output_video": "0110_trimmed-match.mp4"
+  },
+  {
+    "prompt": "A lit match is being lowered into a glass of water. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0111_switch-frames_anyFPS_perspective-right_trimmed-match.jpg",
+    "output_video": "0111_trimmed-match.mp4"
+  },
+  {
+    "prompt": "A black balloon is sitting on a wooden table next to a small rotating platform with a lit matchstick taped to it. The match rotates clockwise and touches the balloon. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0112_switch-frames_anyFPS_perspective-left_trimmed-match-blows-balloon.jpg",
+    "output_video": "0112_trimmed-match-blows-balloon.mp4"
+  },
+  {
+    "prompt": "A black balloon is sitting on a wooden table next to a small rotating platform with a lit matchstick taped to it. The match rotates clockwise and touches the balloon. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0113_switch-frames_anyFPS_perspective-center_trimmed-match-blows-balloon.jpg",
+    "output_video": "0113_trimmed-match-blows-balloon.mp4"
+  },
+  {
+    "prompt": "A black balloon is sitting on a wooden table next to a small rotating platform with a lit matchstick taped to it. The match rotates clockwise and touches the balloon. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0114_switch-frames_anyFPS_perspective-right_trimmed-match-blows-balloon.jpg",
+    "output_video": "0114_trimmed-match-blows-balloon.mp4"
+  },
+  {
+    "prompt": "A tennis ball attached to a magnet and string is hanging in front of a mirror and creating an illusion of two tennis balls. The string lowers the ball slowly. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0115_switch-frames_anyFPS_perspective-left_trimmed-mirror-ball-fall.jpg",
+    "output_video": "0115_trimmed-mirror-ball-fall.mp4"
+  },
+  {
+    "prompt": "A tennis ball attached to a magnet and string is hanging in front of a mirror and creating an illusion of two tennis balls. The string lowers the ball slowly. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0116_switch-frames_anyFPS_perspective-center_trimmed-mirror-ball-fall.jpg",
+    "output_video": "0116_trimmed-mirror-ball-fall.mp4"
+  },
+  {
+    "prompt": "A tennis ball attached to a magnet and string is hanging in front of a mirror and creating an illusion of two tennis balls. The string lowers the ball slowly. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0117_switch-frames_anyFPS_perspective-right_trimmed-mirror-ball-fall.jpg",
+    "output_video": "0117_trimmed-mirror-ball-fall.mp4"
+  },
+  {
+    "prompt": "A tennis ball with a smiley face drawn on it is slowly rotating on a black rotating platform that rotates clockwise in front of a mirror and reflecting the side of the ball that has no smiley face. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0118_switch-frames_anyFPS_perspective-left_trimmed-mirror-ball-rotate.jpg",
+    "output_video": "0118_trimmed-mirror-ball-rotate.mp4"
+  },
+  {
+    "prompt": "A tennis ball with a smiley face drawn on it is slowly rotating on a black rotating platform that rotates clockwise in front of a mirror and reflecting the side of the ball that has no smiley face. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0119_switch-frames_anyFPS_perspective-center_trimmed-mirror-ball-rotate.jpg",
+    "output_video": "0119_trimmed-mirror-ball-rotate.mp4"
+  },
+  {
+    "prompt": "A tennis ball with a smiley face drawn on it is slowly rotating on a black rotating platform that rotates clockwise in front of a mirror and reflecting the side of the ball that has no smiley face. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0120_switch-frames_anyFPS_perspective-right_trimmed-mirror-ball-rotate.jpg",
+    "output_video": "0120_trimmed-mirror-ball-rotate.mp4"
+  },
+  {
+    "prompt": "A teapot on a rotating display base that rotates clockwise in front of a mirror reflecting the teapot's image. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0121_switch-frames_anyFPS_perspective-left_trimmed-mirror-teapot-rotate.jpg",
+    "output_video": "0121_trimmed-mirror-teapot-rotate.mp4"
+  },
+  {
+    "prompt": "A teapot on a rotating display base that rotates clockwise in front of a mirror reflecting the teapot's image. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0122_switch-frames_anyFPS_perspective-center_trimmed-mirror-teapot-rotate.jpg",
+    "output_video": "0122_trimmed-mirror-teapot-rotate.mp4"
+  },
+  {
+    "prompt": "A teapot on a rotating display base that rotates clockwise in front of a mirror reflecting the teapot's image. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0123_switch-frames_anyFPS_perspective-right_trimmed-mirror-teapot-rotate.jpg",
+    "output_video": "0123_trimmed-mirror-teapot-rotate.mp4"
+  },
+  {
+    "prompt": "A yellow mug is held by a grabber tool in front of a white projection screen with a concrete brick positioned beneath it. The grabber releases the mug. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0124_switch-frames_anyFPS_perspective-left_trimmed-mug-breaks.jpg",
+    "output_video": "0124_trimmed-mug-breaks.mp4"
+  },
+  {
+    "prompt": "A yellow mug is held by a grabber tool in front of a white projection screen with a concrete brick positioned beneath it. The grabber releases the mug. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0125_switch-frames_anyFPS_perspective-center_trimmed-mug-breaks.jpg",
+    "output_video": "0125_trimmed-mug-breaks.mp4"
+  },
+  {
+    "prompt": "A yellow mug is held by a grabber tool in front of a white projection screen with a concrete brick positioned beneath it. The grabber releases the mug. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0126_switch-frames_anyFPS_perspective-right_trimmed-mug-breaks.jpg",
+    "output_video": "0126_trimmed-mug-breaks.mp4"
+  },
+  {
+    "prompt": "A grabber tool holds a piece of paper towel over a shallow dish of light blue liquid on a wooden table. The grabber releases the paper towel on the dish. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0127_switch-frames_anyFPS_perspective-left_trimmed-napkin-soak.jpg",
+    "output_video": "0127_trimmed-napkin-soak.mp4"
+  },
+  {
+    "prompt": "A grabber tool holds a piece of paper towel over a shallow dish of light blue liquid on a wooden table. The grabber releases the paper towel on the dish. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0128_switch-frames_anyFPS_perspective-center_trimmed-napkin-soak.jpg",
+    "output_video": "0128_trimmed-napkin-soak.mp4"
+  },
+  {
+    "prompt": "A grabber tool holds a piece of paper towel over a shallow dish of light blue liquid on a wooden table. The grabber releases the paper towel on the dish. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0129_switch-frames_anyFPS_perspective-right_trimmed-napkin-soak.jpg",
+    "output_video": "0129_trimmed-napkin-soak.mp4"
+  },
+  {
+    "prompt": "A clear acrylic sheet placed on a wooden table with a small dollop of red paint. A rotating paintbrush attached to a rotating platform rotates clockwise and goes through the paint. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0130_switch-frames_anyFPS_perspective-left_trimmed-paint-on-glass.jpg",
+    "output_video": "0130_trimmed-paint-on-glass.mp4"
+  },
+  {
+    "prompt": "A clear acrylic sheet placed on a wooden table with a small dollop of red paint. A rotating paintbrush attached to a rotating platform rotates clockwise and goes through the paint. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0131_switch-frames_anyFPS_perspective-center_trimmed-paint-on-glass.jpg",
+    "output_video": "0131_trimmed-paint-on-glass.mp4"
+  },
+  {
+    "prompt": "A clear acrylic sheet placed on a wooden table with a small dollop of red paint. A rotating paintbrush attached to a rotating platform rotates clockwise and goes through the paint. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0132_switch-frames_anyFPS_perspective-right_trimmed-paint-on-glass.jpg",
+    "output_video": "0132_trimmed-paint-on-glass.mp4"
+  },
+  {
+    "prompt": "A grabber tool is holding a crumpled piece of paper over a bowl of water on a wooden table. The grabber then releases the crumpled paper onto the bowl. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0133_switch-frames_anyFPS_perspective-left_trimmed-paper-fall-water.jpg",
+    "output_video": "0133_trimmed-paper-fall-water.mp4"
+  },
+  {
+    "prompt": "A grabber tool is holding a crumpled piece of paper over a bowl of water on a wooden table. The grabber then releases the crumpled paper onto the bowl. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0134_switch-frames_anyFPS_perspective-center_trimmed-paper-fall-water.jpg",
+    "output_video": "0134_trimmed-paper-fall-water.mp4"
+  },
+  {
+    "prompt": "A grabber tool is holding a crumpled piece of paper over a bowl of water on a wooden table. The grabber then releases the crumpled paper onto the bowl. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0135_switch-frames_anyFPS_perspective-right_trimmed-paper-fall-water.jpg",
+    "output_video": "0135_trimmed-paper-fall-water.mp4"
+  },
+  {
+    "prompt": "A small piece of crumpled white paper is being lowered into a tall glass containing blue liquid with a green band showing the water level. The crumpled paper is released into the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0136_switch-frames_anyFPS_perspective-left_trimmed-paper-in-water.jpg",
+    "output_video": "0136_trimmed-paper-in-water.mp4"
+  },
+  {
+    "prompt": "A small piece of crumpled white paper is being lowered into a tall glass containing blue liquid with a green band showing the water level. The crumpled paper is released into the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0137_switch-frames_anyFPS_perspective-center_trimmed-paper-in-water.jpg",
+    "output_video": "0137_trimmed-paper-in-water.mp4"
+  },
+  {
+    "prompt": "A small piece of crumpled white paper is being lowered into a tall glass containing blue liquid with a green band showing the water level. The crumpled paper is released into the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0138_switch-frames_anyFPS_perspective-right_trimmed-paper-in-water.jpg",
+    "output_video": "0138_trimmed-paper-in-water.mp4"
+  },
+  {
+    "prompt": "A piece of folded paper is placed on a glass cutting board. The paper is being burnt and white smoke is emitting from it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0139_switch-frames_anyFPS_perspective-left_trimmed-paper-smoke.jpg",
+    "output_video": "0139_trimmed-paper-smoke.mp4"
+  },
+  {
+    "prompt": "A piece of folded paper is placed on a glass cutting board. The paper is being burnt and white smoke is emitting from it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0140_switch-frames_anyFPS_perspective-center_trimmed-paper-smoke.jpg",
+    "output_video": "0140_trimmed-paper-smoke.mp4"
+  },
+  {
+    "prompt": "A piece of folded paper is placed on a glass cutting board. The paper is being burnt and white smoke is emitting from it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0141_switch-frames_anyFPS_perspective-right_trimmed-paper-smoke.jpg",
+    "output_video": "0141_trimmed-paper-smoke.mp4"
+  },
+  {
+    "prompt": "A potato is held by a grabber tool and dropped into a tall glass containing blue liquid with a band of green tape marking a level on the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0142_switch-frames_anyFPS_perspective-left_trimmed-potato-in-water.jpg",
+    "output_video": "0142_trimmed-potato-in-water.mp4"
+  },
+  {
+    "prompt": "A potato is held by a grabber tool and dropped into a tall glass containing blue liquid with a band of green tape marking a level on the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0143_switch-frames_anyFPS_perspective-center_trimmed-potato-in-water.jpg",
+    "output_video": "0143_trimmed-potato-in-water.mp4"
+  },
+  {
+    "prompt": "A potato is held by a grabber tool and dropped into a tall glass containing blue liquid with a band of green tape marking a level on the glass. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0144_switch-frames_anyFPS_perspective-right_trimmed-potato-in-water.jpg",
+    "output_video": "0144_trimmed-potato-in-water.mp4"
+  },
+  {
+    "prompt": "A small white lampshade is on a light wood surface. A grey tennis ball rolls out of the black tube sitting on the table and rolls on the table towards the right. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0145_switch-frames_anyFPS_perspective-left_trimmed-roll-behind-box.jpg",
+    "output_video": "0145_trimmed-roll-behind-box.mp4"
+  },
+  {
+    "prompt": "A small white lampshade is on a light wood surface. A grey tennis ball rolls out of the black tube sitting on the table and rolls on the table towards the right. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0146_switch-frames_anyFPS_perspective-center_trimmed-roll-behind-box.jpg",
+    "output_video": "0146_trimmed-roll-behind-box.mp4"
+  },
+  {
+    "prompt": "A small white lampshade is on a light wood surface. A grey tennis ball rolls out of the black tube sitting on the table and rolls on the table towards the right. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0147_switch-frames_anyFPS_perspective-right_trimmed-roll-behind-box.jpg",
+    "output_video": "0147_trimmed-roll-behind-box.mp4"
+  },
+  {
+    "prompt": "A small white lampshade is on a light wood surface. A grey tennis ball rolls out of the black tube sitting on the table and rolls on the table towards the right. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0148_switch-frames_anyFPS_perspective-left_trimmed-roll-front-box.jpg",
+    "output_video": "0148_trimmed-roll-front-box.mp4"
+  },
+  {
+    "prompt": "A small white lampshade is on a light wood surface. A grey tennis ball rolls out of the black tube sitting on the table and rolls on the table towards the right. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0149_switch-frames_anyFPS_perspective-center_trimmed-roll-front-box.jpg",
+    "output_video": "0149_trimmed-roll-front-box.mp4"
+  },
+  {
+    "prompt": "A small white lampshade is on a light wood surface. A grey tennis ball rolls out of the black tube sitting on the table and rolls on the table towards the right. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0150_switch-frames_anyFPS_perspective-right_trimmed-roll-front-box.jpg",
+    "output_video": "0150_trimmed-roll-front-box.mp4"
+  },
+  {
+    "prompt": "An olive green fabric box is on a light wood surface. A brown tennis ball rolls out of the black tube sitting on the table and rolls towards the box. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0151_switch-frames_anyFPS_perspective-left_trimmed-roll-in-box.jpg",
+    "output_video": "0151_trimmed-roll-in-box.mp4"
+  },
+  {
+    "prompt": "An olive green fabric box is on a light wood surface. A brown tennis ball rolls out of the black tube sitting on the table and rolls towards the box. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0152_switch-frames_anyFPS_perspective-center_trimmed-roll-in-box.jpg",
+    "output_video": "0152_trimmed-roll-in-box.mp4"
+  },
+  {
+    "prompt": "An olive green fabric box is on a light wood surface. A brown tennis ball rolls out of the black tube sitting on the table and rolls towards the box. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0153_switch-frames_anyFPS_perspective-right_trimmed-roll-in-box.jpg",
+    "output_video": "0153_trimmed-roll-in-box.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell resting on a wooden table next to a mirror. A tennis ball rolls towards the kettlebell. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0154_switch-frames_anyFPS_perspective-left_trimmed-rolling-reflection.jpg",
+    "output_video": "0154_trimmed-rolling-reflection.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell resting on a wooden table next to a mirror. A tennis ball rolls towards the kettlebell. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0155_switch-frames_anyFPS_perspective-center_trimmed-rolling-reflection.jpg",
+    "output_video": "0155_trimmed-rolling-reflection.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell resting on a wooden table next to a mirror. A tennis ball rolls towards the kettlebell. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0156_switch-frames_anyFPS_perspective-right_trimmed-rolling-reflection.jpg",
+    "output_video": "0156_trimmed-rolling-reflection.mp4"
+  },
+  {
+    "prompt": "A teapot is placed on a wooden table. a piece of silk fabric is lowered on the teapot to cover it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0157_switch-frames_anyFPS_perspective-left_trimmed-silk-cover.jpg",
+    "output_video": "0157_trimmed-silk-cover.mp4"
+  },
+  {
+    "prompt": "A teapot is placed on a wooden table. a piece of silk fabric is lowered on the teapot to cover it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0158_switch-frames_anyFPS_perspective-center_trimmed-silk-cover.jpg",
+    "output_video": "0158_trimmed-silk-cover.mp4"
+  },
+  {
+    "prompt": "A teapot is placed on a wooden table. a piece of silk fabric is lowered on the teapot to cover it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0159_switch-frames_anyFPS_perspective-right_trimmed-silk-cover.jpg",
+    "output_video": "0159_trimmed-silk-cover.mp4"
+  },
+  {
+    "prompt": "A Newton's cradle device on the table and one of the metal balls is held up by a blue handled grabber tool. The claw releases the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0160_switch-frames_anyFPS_perspective-left_trimmed-single-cradle.jpg",
+    "output_video": "0160_trimmed-single-cradle.mp4"
+  },
+  {
+    "prompt": "A Newton's cradle device on the table and one of the metal balls is held up by a blue handled grabber tool. The claw releases the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0161_switch-frames_anyFPS_perspective-center_trimmed-single-cradle.jpg",
+    "output_video": "0161_trimmed-single-cradle.mp4"
+  },
+  {
+    "prompt": "A Newton's cradle device on the table and one of the metal balls is held up by a blue handled grabber tool. The claw releases the ball. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0162_switch-frames_anyFPS_perspective-right_trimmed-single-cradle.jpg",
+    "output_video": "0162_trimmed-single-cradle.mp4"
+  },
+  {
+    "prompt": "A bundle of lit matchsticks is placed in a bowl of red liquid. A glass jar gets lowered and covers the matchsticks. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0163_switch-frames_anyFPS_perspective-left_trimmed-siphon.jpg",
+    "output_video": "0163_trimmed-siphon.mp4"
+  },
+  {
+    "prompt": "A bundle of lit matchsticks is placed in a bowl of red liquid. A glass jar gets lowered and covers the matchsticks. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0164_switch-frames_anyFPS_perspective-center_trimmed-siphon.jpg",
+    "output_video": "0164_trimmed-siphon.mp4"
+  },
+  {
+    "prompt": "A bundle of lit matchsticks is placed in a bowl of red liquid. A glass jar gets lowered and covers the matchsticks. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0165_switch-frames_anyFPS_perspective-right_trimmed-siphon.jpg",
+    "output_video": "0165_trimmed-siphon.mp4"
+  },
+  {
+    "prompt": "A tennis ball with a smiley face drawn on it is placed on a rotating black platform that rotates clockwise. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0166_switch-frames_anyFPS_perspective-left_trimmed-smiley-ball-rotates.jpg",
+    "output_video": "0166_trimmed-smiley-ball-rotates.mp4"
+  },
+  {
+    "prompt": "A tennis ball with a smiley face drawn on it is placed on a rotating black platform that rotates clockwise. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0167_switch-frames_anyFPS_perspective-center_trimmed-smiley-ball-rotates.jpg",
+    "output_video": "0167_trimmed-smiley-ball-rotates.mp4"
+  },
+  {
+    "prompt": "A tennis ball with a smiley face drawn on it is placed on a rotating black platform that rotates clockwise. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0168_switch-frames_anyFPS_perspective-right_trimmed-smiley-ball-rotates.jpg",
+    "output_video": "0168_trimmed-smiley-ball-rotates.mp4"
+  },
+  {
+    "prompt": "A woven basket is hanging from a rope with a strong magnet attached to the bottom. An orange tennis ball is placed on a table beneath it. The basket is lowered and covers the ball and then the basket starts to lift again. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0169_switch-frames_anyFPS_perspective-left_trimmed-solid-ball-peakaboo.jpg",
+    "output_video": "0169_trimmed-solid-ball-peakaboo.mp4"
+  },
+  {
+    "prompt": "A woven basket is hanging from a rope with a strong magnet attached to the bottom. An orange tennis ball is placed on a table beneath it. The basket is lowered and covers the ball and then the basket starts to lift again. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0170_switch-frames_anyFPS_perspective-center_trimmed-solid-ball-peakaboo.jpg",
+    "output_video": "0170_trimmed-solid-ball-peakaboo.mp4"
+  },
+  {
+    "prompt": "A woven basket is hanging from a rope with a strong magnet attached to the bottom. An orange tennis ball is placed on a table beneath it. The basket is lowered and covers the ball and then the basket starts to lift again. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0171_switch-frames_anyFPS_perspective-right_trimmed-solid-ball-peakaboo.jpg",
+    "output_video": "0171_trimmed-solid-ball-peakaboo.mp4"
+  },
+  {
+    "prompt": "A pink block is being lowered towards a simple structure made of colorful blocks resembling a gate. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0172_switch-frames_anyFPS_perspective-left_trimmed-stable-blocks.jpg",
+    "output_video": "0172_trimmed-stable-blocks.mp4"
+  },
+  {
+    "prompt": "A pink block is being lowered towards a simple structure made of colorful blocks resembling a gate. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0173_switch-frames_anyFPS_perspective-center_trimmed-stable-blocks.jpg",
+    "output_video": "0173_trimmed-stable-blocks.mp4"
+  },
+  {
+    "prompt": "A pink block is being lowered towards a simple structure made of colorful blocks resembling a gate. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0174_switch-frames_anyFPS_perspective-right_trimmed-stable-blocks.jpg",
+    "output_video": "0174_trimmed-stable-blocks.mp4"
+  },
+  {
+    "prompt": "A teapot is placed on a rotating display that rotates clockwise. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0175_switch-frames_anyFPS_perspective-left_trimmed-teapot-rotates.jpg",
+    "output_video": "0175_trimmed-teapot-rotates.mp4"
+  },
+  {
+    "prompt": "A teapot is placed on a rotating display that rotates clockwise. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0176_switch-frames_anyFPS_perspective-center_trimmed-teapot-rotates.jpg",
+    "output_video": "0176_trimmed-teapot-rotates.mp4"
+  },
+  {
+    "prompt": "A teapot is placed on a rotating display that rotates clockwise. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0177_switch-frames_anyFPS_perspective-right_trimmed-teapot-rotates.jpg",
+    "output_video": "0177_trimmed-teapot-rotates.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden tabletop with two pipes at the edges. A blue and yellow tennis ball roll out of the pipes and towards eachother. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0178_switch-frames_anyFPS_perspective-left_trimmed-two-balls-pass.jpg",
+    "output_video": "0178_trimmed-two-balls-pass.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden tabletop with two pipes at the edges. A blue and yellow tennis ball roll out of the pipes and towards eachother. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0179_switch-frames_anyFPS_perspective-center_trimmed-two-balls-pass.jpg",
+    "output_video": "0179_trimmed-two-balls-pass.mp4"
+  },
+  {
+    "prompt": "A light-colored wooden tabletop with two pipes at the edges. A blue and yellow tennis ball roll out of the pipes and towards eachother. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0180_switch-frames_anyFPS_perspective-right_trimmed-two-balls-pass.jpg",
+    "output_video": "0180_trimmed-two-balls-pass.mp4"
+  },
+  {
+    "prompt": "A grabber tool carefully placing a blue wooden block on top of a yellow block which is balanced on a red block forming an L shape. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0181_switch-frames_anyFPS_perspective-left_trimmed-unstable-block-stack.jpg",
+    "output_video": "0181_trimmed-unstable-block-stack.mp4"
+  },
+  {
+    "prompt": "A grabber tool carefully placing a blue wooden block on top of a yellow block which is balanced on a red block forming an L shape. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0182_switch-frames_anyFPS_perspective-center_trimmed-unstable-block-stack.jpg",
+    "output_video": "0182_trimmed-unstable-block-stack.mp4"
+  },
+  {
+    "prompt": "A grabber tool carefully placing a blue wooden block on top of a yellow block which is balanced on a red block forming an L shape. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0183_switch-frames_anyFPS_perspective-right_trimmed-unstable-block-stack.jpg",
+    "output_video": "0183_trimmed-unstable-block-stack.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser is dispensing water into a glass which has some grapefruit juice in it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0184_switch-frames_anyFPS_perspective-left_trimmed-water-in-juice.jpg",
+    "output_video": "0184_trimmed-water-in-juice.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser is dispensing water into a glass which has some grapefruit juice in it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0185_switch-frames_anyFPS_perspective-center_trimmed-water-in-juice.jpg",
+    "output_video": "0185_trimmed-water-in-juice.mp4"
+  },
+  {
+    "prompt": "A glass beverage dispenser is dispensing water into a glass which has some grapefruit juice in it. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0186_switch-frames_anyFPS_perspective-right_trimmed-water-in-juice.jpg",
+    "output_video": "0186_trimmed-water-in-juice.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell is slowly lowered on top of a yellow ceramic coffee mug placed on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0187_switch-frames_anyFPS_perspective-left_trimmed-weight-on-ceramic.jpg",
+    "output_video": "0187_trimmed-weight-on-ceramic.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell is slowly lowered on top of a yellow ceramic coffee mug placed on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0188_switch-frames_anyFPS_perspective-center_trimmed-weight-on-ceramic.jpg",
+    "output_video": "0188_trimmed-weight-on-ceramic.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell is slowly lowered on top of a yellow ceramic coffee mug placed on a wooden table. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0189_switch-frames_anyFPS_perspective-right_trimmed-weight-on-ceramic.jpg",
+    "output_video": "0189_trimmed-weight-on-ceramic.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell is slowly lowered onto a white styrofoam cup placed on a wooden table on its side. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0190_switch-frames_anyFPS_perspective-left_trimmed-weight-on-paper.jpg",
+    "output_video": "0190_trimmed-weight-on-paper.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell is slowly lowered onto a white styrofoam cup placed on a wooden table on its side. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0191_switch-frames_anyFPS_perspective-center_trimmed-weight-on-paper.jpg",
+    "output_video": "0191_trimmed-weight-on-paper.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell is slowly lowered onto a white styrofoam cup placed on a wooden table on its side. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0192_switch-frames_anyFPS_perspective-right_trimmed-weight-on-paper.jpg",
+    "output_video": "0192_trimmed-weight-on-paper.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell and a green piece of paper are lowered onto two pillows. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0193_switch-frames_anyFPS_perspective-left_trimmed-weight-on-pillow.jpg",
+    "output_video": "0193_trimmed-weight-on-pillow.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell and a green piece of paper are lowered onto two pillows. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0194_switch-frames_anyFPS_perspective-center_trimmed-weight-on-pillow.jpg",
+    "output_video": "0194_trimmed-weight-on-pillow.mp4"
+  },
+  {
+    "prompt": "A 30lb kettlebell and a green piece of paper are lowered onto two pillows. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0195_switch-frames_anyFPS_perspective-right_trimmed-weight-on-pillow.jpg",
+    "output_video": "0195_trimmed-weight-on-pillow.mp4"
+  },
+  {
+    "prompt": "A light beige coffee table with a black kettlebell and a yellow rubber duck on it. A grey tennis ball rolls out of the black tube sitting on the table and towards the duck and kettlebell. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0196_switch-frames_anyFPS_perspective-left_trimmed-weight-protects-duck.jpg",
+    "output_video": "0196_trimmed-weight-protects-duck.mp4"
+  },
+  {
+    "prompt": "A light beige coffee table with a black kettlebell and a yellow rubber duck on it. A grey tennis ball rolls out of the black tube sitting on the table and towards the duck and kettlebell. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0197_switch-frames_anyFPS_perspective-center_trimmed-weight-protects-duck.jpg",
+    "output_video": "0197_trimmed-weight-protects-duck.mp4"
+  },
+  {
+    "prompt": "A light beige coffee table with a black kettlebell and a yellow rubber duck on it. A grey tennis ball rolls out of the black tube sitting on the table and towards the duck and kettlebell. Static shot with no camera movement.",
+    "input_image": "physics-IQ-benchmark/switch-frames/0198_switch-frames_anyFPS_perspective-right_trimmed-weight-protects-duck.jpg",
+    "output_video": "0198_trimmed-weight-protects-duck.mp4"
+  }
+]
