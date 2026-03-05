@@ -11,6 +11,7 @@ cd WMReward
 If you already cloned without `--recurse-submodules`, initialize submodules with:
 ```bash
 git submodule update --init --recursive
+git submodule sync --recursive
 ```
 
 2. Create conda environment
