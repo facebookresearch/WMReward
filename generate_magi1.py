@@ -38,6 +38,9 @@ def main():
     parser.add_argument("--prompt", type=str, required=True, help="Text prompt describing the video")
     parser.add_argument("--config_file", type=str, required=True, help="Path to MAGI-1 configuration JSON file")
     parser.add_argument("--output_path", type=str, required=True, help="Path to save the output video")
+    parser.add_argument("--guidance_scale", type=float, default=0.001, help="VJEPA guidance scale.")
+    parser.add_argument("--guidance_frequency", type=int, default=5, help="VJEPA guidance frequency.")
+    parser.add_argument("--vjepa_type", type=str, default="vitg", help="VJEPA model variant.")
     parser.add_argument(
         "--mode",
         type=str,
@@ -54,6 +57,9 @@ def main():
 
     # Initialize MAGI-1 pipeline with guidance support
     pipeline = MagiPipeline(args.config_file)
+    pipeline.guidance_scale = args.guidance_scale
+    pipeline.guidance_frequency = args.guidance_frequency
+    pipeline.vjepa_type = args.vjepa_type
 
     # Run the appropriate mode
     if args.mode == "t2v":
