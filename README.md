@@ -46,7 +46,7 @@ Other models can be pretty easily integrated. Just compute a reward score with t
 ### Quick Start (Single Prompt I2V)
 ```bash
 python generate_magi1.py \
-    --config_file ./MAGI-1/configs/inference_config.json \
+    --config_file ./MAGI-1/example/24B/24B_base_config.json \
     --prompt "A ball falls from the table onto the floor" \
     --init_image ./example/0001_switch-frames_anyFPS_perspective-left_trimmed-ball-and-block-fall.jpg \
     --output_path ./results/output.mp4 \

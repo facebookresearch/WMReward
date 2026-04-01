@@ -44,6 +44,7 @@ SEED_LIST=(42)
 
 GUIDANCE_STEP_PATTERN="0x5,1x45"
 GUIDANCE_LR_PATTERNS=("0.001x50")
+GUIDANCE_SCALE=0.001
 GUIDANCE_FREQUENCY=1
 
 # CFG scale values for classifier-free guidance ablation
@@ -53,7 +54,7 @@ CFG_SCALES=("6.0")
 GUIDANCE_RANGES=("0 0")
 
 # Path to MAGI-1 config file
-MAGI1_CONFIG_FILE="./MAGI-1/configs/inference_config.json"
+MAGI1_CONFIG_FILE="./MAGI-1/example/24B/24B_base_config.json"
 
 # JSON batch describing entries with input image/video, prompt, and output path
 # Add or remove batch JSON files as needed
@@ -135,6 +136,7 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                                 --height 480 \
                                 --width 720 \
                                 --cfg_scale $CFG_SCALE \
+                                --guidance_scale $GUIDANCE_SCALE \
                                 --vjepa_variant $VJEPA_VARIANT \
                                 --vjepa_img_size $VJEPA_IMG_SIZE \
                                 --vjepa_masking_mode $VJEPA_MASKING_MODE \

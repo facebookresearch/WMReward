@@ -46,6 +46,25 @@ def parse_float_range_pair(text: str):
     a, b = (text.split(",", 1) if "," in text else text.split("-", 1))
     return float(a.strip()), float(b.strip())
 
+
+def normalize_vjepa_variant(model_name: str) -> str:
+    alias_map = {
+        "vith": "vith",
+        "vit_huge": "vith",
+        "vitg": "vitg",
+        "vit_giant": "vitg",
+        "vitg384": "vitg384",
+        "vit_giant_384": "vitg384",
+        "vitgac": "vitgac",
+        "vit_giant_ac": "vitgac",
+    }
+    if model_name not in alias_map:
+        raise ValueError(
+            f"Unsupported V-JEPA variant '{model_name}'. "
+            "Use one of: vith, vit_huge, vitg, vit_giant, vitg384, vit_giant_384, vitgac, vit_giant_ac."
+        )
+    return alias_map[model_name]
+
 def save_experiment_metadata(args, experiment_name, experiment_folder):
     """Save experiment metadata as JSON file in the experiment folder."""
 
@@ -74,10 +93,12 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
             "vjepa_context_frames": context_frames,
             "slice_stride": stride,
             "slice_window_size": window_size,
+            "guidance_scale": getattr(args, 'guidance_scale', None),
             "travel_time": getattr(args, 'travel_time', None),
             "guidance_step_pattern": getattr(args, 'guidance_step_pattern', None),
             "guidance_lr_pattern": getattr(args, 'guidance_lr_pattern', None),
             "guidance_frequency": getattr(args, 'guidance_frequency', None),
+            "vjepa_type": getattr(args, 'vjepa_type', None),
             "vjepa_variant": getattr(args, 'vjepa_variant', None),
             "vjepa_img_size": getattr(args, 'vjepa_img_size', None),
             "vjepa_masking_mode": getattr(args, 'vjepa_masking_mode', None),
@@ -213,6 +234,9 @@ def init_pipeline(args):
     from inference.pipeline.pipeline_w_guidance import MagiPipeline
 
     pipeline = MagiPipeline(args.config_file)
+    pipeline.guidance_scale = getattr(args, "guidance_scale", pipeline.guidance_scale)
+    pipeline.guidance_frequency = getattr(args, "guidance_frequency", pipeline.guidance_frequency)
+    pipeline.vjepa_type = normalize_vjepa_variant(getattr(args, "vjepa_type", args.vjepa_variant))
     return pipeline
 
 def init_vjepa_models(args):
@@ -220,8 +244,9 @@ def init_vjepa_models(args):
     if args.sampling_method != 'rejection':
         return None, None, None
 
-    print(f"Loading V-JEPA models for rejection sampling ({args.vjepa_variant})...")
-    encoder, target_encoder, predictor, img_size = load_vjepa_models_torchhub(args.vjepa_variant)
+    normalized_variant = normalize_vjepa_variant(args.vjepa_variant)
+    print(f"Loading V-JEPA models for rejection sampling ({normalized_variant})...")
+    encoder, target_encoder, predictor, img_size = load_vjepa_models_torchhub(normalized_variant)
     encoder.eval().cuda()
     target_encoder.eval().cuda()
     predictor.eval().cuda()
@@ -549,6 +574,7 @@ def main():
     parser.add_argument('--cfg_scale', type=float, default=6.0, help='Classifier-free guidance scale.')
 
     # Guidance sampling parameters
+    parser.add_argument('--guidance_scale', type=float, default=0.001, help='VJEPA guidance scale.')
     parser.add_argument('--guidance_start', type=int, default=0, help='Timestep to start applying guidance (0..1001).')
     parser.add_argument('--guidance_end', type=int, default=1001, help='Timestep to end applying guidance (0..1001).')
     parser.add_argument('--guidance_rho_scale', type=float, default=6.0, help='[Deprecated] Overall LR scale (use guidance_lr_pattern instead).')
@@ -558,7 +584,8 @@ def main():
     # VJEPA guidance parameters
     parser.add_argument('--guidance_step_pattern', type=str, default='0x3,3x12,2x12,1x23', help='Repeat counts per step bucket.')
     parser.add_argument('--guidance_lr_pattern', type=str, default='3.0x15,2.0x15,1.0x20', help='LR per step bucket.')
-    parser.add_argument('--vjepa_variant', type=str, default='vit_giant', choices=['vit_large','vit_huge','vit_giant','vit_giant_384'])
+    parser.add_argument('--vjepa_variant', type=str, default='vit_giant', choices=['vith', 'vit_huge', 'vitg', 'vit_giant', 'vitg384', 'vit_giant_384', 'vitgac', 'vit_giant_ac'])
+    parser.add_argument('--vjepa_type', type=str, default=None, choices=['vith', 'vit_huge', 'vitg', 'vit_giant', 'vitg384', 'vit_giant_384', 'vitgac', 'vit_giant_ac'], help='Optional override for the MAGI guidance JEPA backbone.')
     parser.add_argument('--vjepa_img_size', type=int, default=256)
     parser.add_argument('--style_weight', type=float, default=1.0)
     parser.add_argument('--vjepa_masking_mode', type=str, default='causal', choices=['causal', 'random'])
@@ -601,6 +628,7 @@ def main():
 
     if args.sampling_method == 'guidance':
         print(f"Guidance parameters:")
+        print(f"  - Scale: {args.guidance_scale}")
         print(f"  - Step pattern: {args.guidance_step_pattern}")
         print(f"  - LR pattern: {args.guidance_lr_pattern}")
         print(f"  - Frequency: {args.guidance_frequency}")
