@@ -34,8 +34,8 @@ NODE_ID=${SLURM_ARRAY_TASK_ID}        # Current node ID (0-3)
 
 echo "Starting node ${NODE_ID} of ${NUM_NODES} (GPUs per node: ${NUM_GPUS_PER_NODE}, Total GPUs: ${TOTAL_GPUS})"
 
-# Define hyperparameter triplets (slice_window_size, vjepa_context_frames, slice_stride)
-# For vanilla: these are harmless; for guidance: they control the sliding window
+# Legacy/rejection-sampling hyperparameter triplets
+# The current MAGI guidance path ignores these and only consumes guidance_scale/frequency/backbone.
 TRIPLETS=(
     "16 8 8"   # window=16, context_frames=8, stride=8
 )
@@ -44,6 +44,7 @@ SEED_LIST=(42)
 
 GUIDANCE_STEP_PATTERN="0x5,1x45"
 GUIDANCE_LR_PATTERNS=("0.001x50")
+GUIDANCE_SCALE=0.001
 GUIDANCE_FREQUENCY=1
 
 # CFG scale values for classifier-free guidance ablation
@@ -53,7 +54,7 @@ CFG_SCALES=("6.0")
 GUIDANCE_RANGES=("0 0")
 
 # Path to MAGI-1 config file
-MAGI1_CONFIG_FILE="./MAGI-1/configs/inference_config.json"
+MAGI1_CONFIG_FILE="./MAGI-1/example/24B/24B_base_config.json"
 
 # JSON batch describing entries with input image/video, prompt, and output path
 # Add or remove batch JSON files as needed
@@ -85,17 +86,29 @@ mkdir -p "$OUTPUT_FOLDER"
 for BATCH_JSON in "${BATCH_JSON_LIST[@]}"; do
 for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
 
-    for triplet in "${TRIPLETS[@]}"; do
+    if [[ "$SAMPLE_METHOD" == "guidance" ]]; then
+        ACTIVE_TRIPLETS=("${TRIPLETS[0]}")
+        ACTIVE_GUIDANCE_RANGES=("0 0")
+        ACTIVE_LOSS_MODES=("${LOSS_MODES[0]}")
+        ACTIVE_GUIDANCE_LR_PATTERNS=("${GUIDANCE_LR_PATTERNS[0]}")
+    else
+        ACTIVE_TRIPLETS=("${TRIPLETS[@]}")
+        ACTIVE_GUIDANCE_RANGES=("${GUIDANCE_RANGES[@]}")
+        ACTIVE_LOSS_MODES=("${LOSS_MODES[@]}")
+        ACTIVE_GUIDANCE_LR_PATTERNS=("${GUIDANCE_LR_PATTERNS[@]}")
+    fi
+
+    for triplet in "${ACTIVE_TRIPLETS[@]}"; do
             # Split triplet into individual variables
             read -r SLICE_WINDOW_SIZE CONTEXT_LENGTH STRIDE <<< "$triplet"
-            for guidance_range in "${GUIDANCE_RANGES[@]}"; do
+            for guidance_range in "${ACTIVE_GUIDANCE_RANGES[@]}"; do
                 # Split guidance range into start and end values (GLOBAL 0..49)
                 read -r GUIDANCE_START GUIDANCE_END <<< "$guidance_range"
                 TRAVEL_TIME="${GUIDANCE_START},${GUIDANCE_END}"
                 for CFG_SCALE in "${CFG_SCALES[@]}"; do
-                    for LOSS_MODE in "${LOSS_MODES[@]}"; do
+                    for LOSS_MODE in "${ACTIVE_LOSS_MODES[@]}"; do
                     for VJEPA_VARIANT in "${VJEPA_VARIANTS[@]}"; do
-                    echo "Config: Method=$SAMPLE_METHOD, Context=$CONTEXT_LENGTH, Stride=$STRIDE, Range=$TRAVEL_TIME, CFG=$CFG_SCALE, LossMode=$LOSS_MODE, VJEPA=$VJEPA_VARIANT"
+                    echo "Config: Method=$SAMPLE_METHOD, GuidanceScale=$GUIDANCE_SCALE, GuidanceFreq=$GUIDANCE_FREQUENCY, CFG=$CFG_SCALE, VJEPA=$VJEPA_VARIANT"
 
                     # Match structure: <OUTPUT_FOLDER>/<group>/<experiment>/<name>.mp4
                     if [[ "$(basename "$BATCH_JSON")" == "physics_iq.json" ]]; then
@@ -109,7 +122,7 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                     mkdir -p "$MODEL_OUTPUT_FOLDER"
 
                     # Loop over LR patterns; pass base output folder and let Python name runs
-                    for GUIDANCE_LR_PATTERN in "${GUIDANCE_LR_PATTERNS[@]}"; do
+                    for GUIDANCE_LR_PATTERN in "${ACTIVE_GUIDANCE_LR_PATTERNS[@]}"; do
                         RUN_OUTPUT_FOLDER="$MODEL_OUTPUT_FOLDER"
                         mkdir -p "$RUN_OUTPUT_FOLDER"
 
@@ -135,6 +148,7 @@ for SAMPLE_METHOD in "${SAMPLE_METHODS[@]}"; do
                                 --height 480 \
                                 --width 720 \
                                 --cfg_scale $CFG_SCALE \
+                                --guidance_scale $GUIDANCE_SCALE \
                                 --vjepa_variant $VJEPA_VARIANT \
                                 --vjepa_img_size $VJEPA_IMG_SIZE \
                                 --vjepa_masking_mode $VJEPA_MASKING_MODE \

@@ -46,6 +46,41 @@ def parse_float_range_pair(text: str):
     a, b = (text.split(",", 1) if "," in text else text.split("-", 1))
     return float(a.strip()), float(b.strip())
 
+
+def normalize_vjepa_variant(model_name: str) -> str:
+    alias_map = {
+        "vith": "vith",
+        "vit_huge": "vith",
+        "vitg": "vitg",
+        "vit_giant": "vitg",
+        "vitg384": "vitg384",
+        "vit_giant_384": "vitg384",
+        "vitgac": "vitgac",
+        "vit_giant_ac": "vitgac",
+    }
+    if model_name not in alias_map:
+        raise ValueError(
+            f"Unsupported V-JEPA variant '{model_name}'. "
+            "Use one of: vith, vit_huge, vitg, vit_giant, vitg384, vit_giant_384, vitgac, vit_giant_ac."
+        )
+    return alias_map[model_name]
+
+
+def guidance_metadata_only_args(args) -> dict:
+    context_frames, stride, window_size = _resolve_sliding_window_params(args)
+    return {
+        "guidance_start": getattr(args, "guidance_start", None),
+        "guidance_end": getattr(args, "guidance_end", None),
+        "guidance_rho_scale": getattr(args, "guidance_rho_scale", None),
+        "travel_time": getattr(args, "travel_time", None),
+        "guidance_step_pattern": getattr(args, "guidance_step_pattern", None),
+        "guidance_lr_pattern": getattr(args, "guidance_lr_pattern", None),
+        "vjepa_context_frames": context_frames,
+        "slice_stride": stride,
+        "slice_window_size": window_size,
+        "loss_mode": getattr(args, "loss_mode", None),
+    }
+
 def save_experiment_metadata(args, experiment_name, experiment_folder):
     """Save experiment metadata as JSON file in the experiment folder."""
 
@@ -69,21 +104,12 @@ def save_experiment_metadata(args, experiment_name, experiment_folder):
 
     # Add guidance-specific parameters
     if args.sampling_method == 'guidance':
-        context_frames, stride, window_size = _resolve_sliding_window_params(args)
         metadata["parameters"].update({
-            "vjepa_context_frames": context_frames,
-            "slice_stride": stride,
-            "slice_window_size": window_size,
-            "travel_time": getattr(args, 'travel_time', None),
-            "guidance_step_pattern": getattr(args, 'guidance_step_pattern', None),
-            "guidance_lr_pattern": getattr(args, 'guidance_lr_pattern', None),
+            "guidance_scale": getattr(args, 'guidance_scale', None),
             "guidance_frequency": getattr(args, 'guidance_frequency', None),
+            "vjepa_type": getattr(args, 'vjepa_type', None),
             "vjepa_variant": getattr(args, 'vjepa_variant', None),
-            "vjepa_img_size": getattr(args, 'vjepa_img_size', None),
-            "vjepa_masking_mode": getattr(args, 'vjepa_masking_mode', None),
-            "vjepa_mask_ratio": getattr(args, 'vjepa_mask_ratio', None),
-            "style_weight": getattr(args, 'style_weight', None),
-            "loss_mode": getattr(args, 'loss_mode', None),
+            "legacy_metadata_only_args": guidance_metadata_only_args(args),
         })
 
     # Add rejection sampling parameters
@@ -109,15 +135,14 @@ def get_simple_experiment_name(args):
     if args.sampling_method == 'vanilla':
         name = f"vanilla_{version}_f{args.num_frames}_s{args.num_inference_steps}_cfg{args.cfg_scale}_seed{args.seed}"
     elif args.sampling_method == 'guidance':
-        loss_mode = getattr(args, 'loss_mode', 'mean')
         vjepa_variant = getattr(args, 'vjepa_variant', 'vit_giant')
         # Simplify vjepa variant name for brevity
         vjepa_short = vjepa_variant.replace('vit_', '') if vjepa_variant != 'vit_giant' else ''
 
         name = (
             f"guidance_{version}_f{args.num_frames}_s{args.num_inference_steps}"
-            f"_c{getattr(args, 'vjepa_context_frames', 8)}"
-            f"_cfg{args.cfg_scale}_gsp{getattr(args, 'guidance_step_pattern', '')}_glp{getattr(args, 'guidance_lr_pattern', '')}_gf{getattr(args, 'guidance_frequency', '')}_{loss_mode}_seed{args.seed}"
+            f"_gs{getattr(args, 'guidance_scale', '')}_gf{getattr(args, 'guidance_frequency', '')}"
+            f"_cfg{args.cfg_scale}_seed{args.seed}"
         )
 
         # Add vjepa variant if not default
@@ -213,6 +238,9 @@ def init_pipeline(args):
     from inference.pipeline.pipeline_w_guidance import MagiPipeline
 
     pipeline = MagiPipeline(args.config_file)
+    pipeline.guidance_scale = getattr(args, "guidance_scale", pipeline.guidance_scale)
+    pipeline.guidance_frequency = getattr(args, "guidance_frequency", pipeline.guidance_frequency)
+    pipeline.vjepa_type = normalize_vjepa_variant(getattr(args, "vjepa_type", args.vjepa_variant))
     return pipeline
 
 def init_vjepa_models(args):
@@ -220,8 +248,9 @@ def init_vjepa_models(args):
     if args.sampling_method != 'rejection':
         return None, None, None
 
-    print(f"Loading V-JEPA models for rejection sampling ({args.vjepa_variant})...")
-    encoder, target_encoder, predictor, img_size = load_vjepa_models_torchhub(args.vjepa_variant)
+    normalized_variant = normalize_vjepa_variant(args.vjepa_variant)
+    print(f"Loading V-JEPA models for rejection sampling ({normalized_variant})...")
+    encoder, target_encoder, predictor, img_size = load_vjepa_models_torchhub(normalized_variant)
     encoder.eval().cuda()
     target_encoder.eval().cuda()
     predictor.eval().cuda()
@@ -549,25 +578,27 @@ def main():
     parser.add_argument('--cfg_scale', type=float, default=6.0, help='Classifier-free guidance scale.')
 
     # Guidance sampling parameters
-    parser.add_argument('--guidance_start', type=int, default=0, help='Timestep to start applying guidance (0..1001).')
-    parser.add_argument('--guidance_end', type=int, default=1001, help='Timestep to end applying guidance (0..1001).')
-    parser.add_argument('--guidance_rho_scale', type=float, default=6.0, help='[Deprecated] Overall LR scale (use guidance_lr_pattern instead).')
+    parser.add_argument('--guidance_scale', type=float, default=0.001, help='VJEPA guidance scale.')
+    parser.add_argument('--guidance_start', type=int, default=0, help='Legacy option kept for compatibility; not consumed by the current MAGI guidance path.')
+    parser.add_argument('--guidance_end', type=int, default=1001, help='Legacy option kept for compatibility; not consumed by the current MAGI guidance path.')
+    parser.add_argument('--guidance_rho_scale', type=float, default=6.0, help='Legacy option kept for compatibility; not consumed by the current MAGI guidance path.')
     parser.add_argument('--guidance_frequency', type=int, default=5, help='Frequency of guidance updates.')
-    parser.add_argument('--travel_time', type=str, default='3,12', help='Direct guidance range in global steps "start,end" (0..49). Overrides guidance_start/end if provided.')
+    parser.add_argument('--travel_time', type=str, default='3,12', help='Legacy option kept for compatibility; not consumed by the current MAGI guidance path.')
 
     # VJEPA guidance parameters
-    parser.add_argument('--guidance_step_pattern', type=str, default='0x3,3x12,2x12,1x23', help='Repeat counts per step bucket.')
-    parser.add_argument('--guidance_lr_pattern', type=str, default='3.0x15,2.0x15,1.0x20', help='LR per step bucket.')
-    parser.add_argument('--vjepa_variant', type=str, default='vit_giant', choices=['vit_large','vit_huge','vit_giant','vit_giant_384'])
+    parser.add_argument('--guidance_step_pattern', type=str, default='0x3,3x12,2x12,1x23', help='Legacy option kept for compatibility; not consumed by the current MAGI guidance path.')
+    parser.add_argument('--guidance_lr_pattern', type=str, default='3.0x15,2.0x15,1.0x20', help='Legacy option kept for compatibility; not consumed by the current MAGI guidance path.')
+    parser.add_argument('--vjepa_variant', type=str, default='vit_giant', choices=['vith', 'vit_huge', 'vitg', 'vit_giant', 'vitg384', 'vit_giant_384', 'vitgac', 'vit_giant_ac'])
+    parser.add_argument('--vjepa_type', type=str, default=None, choices=['vith', 'vit_huge', 'vitg', 'vit_giant', 'vitg384', 'vit_giant_384', 'vitgac', 'vit_giant_ac'], help='Optional override for the MAGI guidance JEPA backbone.')
     parser.add_argument('--vjepa_img_size', type=int, default=256)
     parser.add_argument('--style_weight', type=float, default=1.0)
     parser.add_argument('--vjepa_masking_mode', type=str, default='causal', choices=['causal', 'random'])
-    parser.add_argument('--vjepa_context_frames', type=int, default=8)
+    parser.add_argument('--vjepa_context_frames', type=int, default=8, help='Used by rejection sampling and metadata only; not consumed by the current MAGI guidance path.')
     parser.add_argument('--vjepa_mask_ratio', type=float, default=0.5)
-    parser.add_argument('--slice_window_size', type=int, default=16)
-    parser.add_argument('--slice_stride', type=int, default=4)
+    parser.add_argument('--slice_window_size', type=int, default=16, help='Used by rejection sampling and metadata only; not consumed by the current MAGI guidance path.')
+    parser.add_argument('--slice_stride', type=int, default=4, help='Used by rejection sampling and metadata only; not consumed by the current MAGI guidance path.')
     parser.add_argument('--vae_decode_scale', type=float, default=0.7, help='VAE decode scale factor.')
-    parser.add_argument('--loss_mode', type=str, default='max', choices=['mean', 'max'], help='V-JEPA loss aggregation mode.')
+    parser.add_argument('--loss_mode', type=str, default='max', choices=['mean', 'max'], help='Used by rejection sampling and metadata only; not consumed by the current MAGI guidance path.')
 
     # Rejection sampling parameters (only used when sampling_method='rejection')
     parser.add_argument('--rejection_samples', type=int, default=3,
@@ -601,10 +632,10 @@ def main():
 
     if args.sampling_method == 'guidance':
         print(f"Guidance parameters:")
-        print(f"  - Step pattern: {args.guidance_step_pattern}")
-        print(f"  - LR pattern: {args.guidance_lr_pattern}")
+        print(f"  - Scale: {args.guidance_scale}")
         print(f"  - Frequency: {args.guidance_frequency}")
-        print(f"  - Travel time: {args.travel_time}")
+        print(f"  - V-JEPA backbone: {normalize_vjepa_variant(getattr(args, 'vjepa_type', args.vjepa_variant))}")
+        print("  - Note: legacy guidance tuning flags are metadata-only today and are not consumed by the current MAGI guidance path.")
 
     if args.sampling_method == 'rejection':
         print(f"Rejection sampling enabled:")
