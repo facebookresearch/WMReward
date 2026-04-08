@@ -19,7 +19,7 @@ from PIL import Image
 from einops import rearrange
 
 import sys
-sys.path.append("./vjepa2")
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "vjepa2"))
 import src.datasets.utils.video.transforms as video_transforms
 import src.datasets.utils.video.volume_transforms as volume_transforms
 from src.models.vision_transformer import vit_giant_xformers_rope, vit_huge_rope
@@ -162,20 +162,21 @@ def load_dinov2_model():
 
 def load_vjepa_model_source(model, num_frames=64):
     """Load V-JEPA model with weights."""
+    CHECKPOINT_DIR = os.environ.get("VJEPA_CHECKPOINT_DIR", "./checkpoints")
     img_size = 384 if "384" in model else 256
     if model == "vith" or model == "vit_huge":
         encoder = vit_huge_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "./checkpoints/vith.pt"
+        model_path = os.path.join(CHECKPOINT_DIR, "vith.pt")
 
     elif model == "vitg" or model == "vit_giant":
         encoder = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "./checkpoints/vitg.pt"
+        model_path = os.path.join(CHECKPOINT_DIR, "vitg.pt")
     elif model == "vitg384" or model == "vit_giant_384":
         encoder = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "./checkpoints/vitg-384.pt"
+        model_path = os.path.join(CHECKPOINT_DIR, "vitg-384.pt")
     elif model == "vitgac" or model == "vit_giant_ac":
         encoder = vit_giant_xformers_rope(img_size=(img_size, img_size), num_frames=num_frames)
-        model_path = "./checkpoints/vjepa2-ac-vitg.pt"
+        model_path = os.path.join(CHECKPOINT_DIR, "vjepa2-ac-vitg.pt")
     else:
         raise ValueError(f"Unknown model: {model}. Use 'vith', 'vitg' or 'vitg384'.")
 

@@ -1,0 +1,37 @@
+name: wmreward
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+    # Core dependencies (WMReward)
+    - torch
+    - torchvision
+    - decord
+    - numpy
+    - einops
+    - diffusers
+    - transformers
+    - Pillow
+    - opencv-python-headless
+    # MAGI-1 dependencies
+    - accelerate==0.32.1
+    - beautifulsoup4
+    - diffusers==0.29.2
+    - ffmpeg-python
+    - flash-attn==2.4.2
+    - ftfy
+    - imageio
+    - imageio[ffmpeg]
+    - matplotlib
+    - numpy==1.26.4
+    - protobuf
+    - rich
+    - sentencepiece
+    - timm
+    - torchdiffeq
+    - transformers==4.42.3

@@ -14,20 +14,17 @@ import os
 import sys
 import argparse
 
-# Add MAGI-1 to path - try submodule first, then fallback to checkpoint location
-MAGI1_SUBMODULE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MAGI-1")
-MAGI1_CHECKPOINT_PATH = "/checkpoint/dream/yjianhao/project/MAGI-1"
+# Add MAGI-1 submodule to path
+MAGI1_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MAGI-1")
 
-# Check if submodule is populated (has files beyond . and ..)
-if os.path.exists(MAGI1_SUBMODULE_PATH) and len(os.listdir(MAGI1_SUBMODULE_PATH)) > 0:
-    MAGI1_PATH = MAGI1_SUBMODULE_PATH
-elif os.path.exists(MAGI1_CHECKPOINT_PATH):
-    MAGI1_PATH = MAGI1_CHECKPOINT_PATH
-else:
+if not os.path.exists(MAGI1_PATH) or len(os.listdir(MAGI1_PATH)) == 0:
     raise RuntimeError(
-        f"MAGI-1 not found. Either initialize the submodule with "
-        f"'git submodule update --init --recursive' or ensure MAGI-1 exists at {MAGI1_CHECKPOINT_PATH}"
+        "MAGI-1 submodule not found. Please initialize it with:\n"
+        "  git submodule update --init --recursive"
     )
+
+# Set SPECIAL_TOKEN_PATH for MAGI-1 if not already set
+os.environ.setdefault("SPECIAL_TOKEN_PATH", os.path.join(MAGI1_PATH, "example/assets/special_tokens.npz"))
 
 if MAGI1_PATH not in sys.path:
     sys.path.insert(0, MAGI1_PATH)

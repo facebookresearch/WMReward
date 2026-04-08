@@ -20,8 +20,8 @@
 #SBATCH --output=jobs/job_%A_%a.out
 #SBATCH --error=jobs/job_%A_%a.err
 
-source /checkpoint/dream/yjianhao/VideoGuidance/conda/envs/vg/bin/activate
-conda activate vg
+# Activate your conda environment before running this script, e.g.:
+#   conda activate wmreward
 
 nvidia-smi
 

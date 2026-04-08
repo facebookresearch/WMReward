@@ -4,7 +4,7 @@
 
 1. Clone the repo with submodules (vjepa2, MAGI-1)
 ```bash
-git clone --recurse-submodules https://github.com/your-org/WMReward.git
+git clone --recurse-submodules https://github.com/YuanJianhao508/WMReward.git
 cd WMReward
 ```
 
@@ -14,23 +14,35 @@ git submodule update --init --recursive
 git submodule sync --recursive
 ```
 
-2. Create conda environment
+2. Create conda environment (includes both WMReward and MAGI-1 dependencies)
 ```bash
-conda create -n vg python=3.12
-conda activate vg
-pip install torch torchvision
-pip install diffusers transformers
-pip install -r requirements.txt
+conda env create -f environment.yml
+conda activate wmreward
 ```
 
-For MAGI-1, follow instructions from [MAGI-1](https://github.com/SandAI-org/MAGI-1/tree/main) to install required dependency.
+Alternatively, install manually:
+```bash
+conda create -n wmreward python=3.10
+conda activate wmreward
+pip install -r requirements.txt
+pip install -r MAGI-1/requirements.txt
+```
+
+3. Download MAGI-1 model weights
+
+Follow the instructions in the [MAGI-1 README](https://github.com/SandAI-org/MAGI-1#download) to download model weights. Place them so the directory structure looks like:
+```
+WMReward/
+└── downloads/
+    └── <MAGI-1 weight files>
+```
+
+> **Note:** VJEPA checkpoints are **optional** for computing WMReward. The `compute_wmreward.py` script automatically downloads them via `torch.hub`. If you want to use local checkpoints (via `load_vjepa_model_source`), place them in `./checkpoints/` or set `VJEPA_CHECKPOINT_DIR` to your checkpoint directory.
 
 ## Usage
 
-
-
 ### Compute VJEPA Surprise Reward
-Our WMReward is computed with the central function compute_vjepa_surprise() currently implemented for VJEPA models. 
+Our WMReward is computed with the central function compute_vjepa_surprise() currently implemented for VJEPA models.
 ```bash
 python compute_wmreward.py --video_path /path/to/video.mp4
 ```
@@ -84,7 +96,7 @@ If you find this work useful in your research, please consider citing:
 
 ```bibtex
 @inproceedings{yuan2026inferencetimephysicsalignmentvideo,
-      title={Inference-time Physics Alignment of Video Generative Models with Latent World Models}, 
+      title={Inference-time Physics Alignment of Video Generative Models with Latent World Models},
       author={Jianhao Yuan and Xiaofeng Zhang and Felix Friedrich and Nicolas Beltran-Velez and Melissa Hall and Reyhane Askari-Hemmat and Xiaochuang Han and Nicolas Ballas and Michal Drozdzal and Adriana Romero-Soriano},
       year={2026},
       booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},

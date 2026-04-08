@@ -12,7 +12,15 @@ with support for multi-GPU sharding and VJEPA-based rejection sampling.
 
 import argparse
 import json
-from diffusers.utils import export_to_video, load_video
+from diffusers.utils import export_to_video
+try:
+    from diffusers.utils import load_video
+except ImportError:
+    def load_video(path):
+        from decord import VideoReader
+        from PIL import Image as _Image
+        vr = VideoReader(str(path))
+        return [_Image.fromarray(frame.asnumpy()) for frame in vr]
 from datetime import datetime
 import torch
 import cv2
@@ -28,6 +36,9 @@ from utils import compute_vjepa_loss_sliding_window, load_vjepa_models_torchhub
 MAGI1_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MAGI-1")
 if MAGI1_PATH not in sys.path:
     sys.path.insert(0, MAGI1_PATH)
+
+# Set SPECIAL_TOKEN_PATH for MAGI-1 if not already set
+os.environ.setdefault("SPECIAL_TOKEN_PATH", os.path.join(MAGI1_PATH, "example/assets/special_tokens.npz"))
 
 def set_deterministic(seed=42):
     """Set deterministic behavior for reproducible results."""
@@ -240,7 +251,7 @@ def init_pipeline(args):
     pipeline = MagiPipeline(args.config_file)
     pipeline.guidance_scale = getattr(args, "guidance_scale", pipeline.guidance_scale)
     pipeline.guidance_frequency = getattr(args, "guidance_frequency", pipeline.guidance_frequency)
-    pipeline.vjepa_type = normalize_vjepa_variant(getattr(args, "vjepa_type", args.vjepa_variant))
+    pipeline.vjepa_type = normalize_vjepa_variant(args.vjepa_type or args.vjepa_variant)
     return pipeline
 
 def init_vjepa_models(args):
@@ -634,7 +645,7 @@ def main():
         print(f"Guidance parameters:")
         print(f"  - Scale: {args.guidance_scale}")
         print(f"  - Frequency: {args.guidance_frequency}")
-        print(f"  - V-JEPA backbone: {normalize_vjepa_variant(getattr(args, 'vjepa_type', args.vjepa_variant))}")
+        print(f"  - V-JEPA backbone: {normalize_vjepa_variant(args.vjepa_type or args.vjepa_variant)}")
         print("  - Note: legacy guidance tuning flags are metadata-only today and are not consumed by the current MAGI guidance path.")
 
     if args.sampling_method == 'rejection':

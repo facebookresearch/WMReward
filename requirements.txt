@@ -1,0 +1,9 @@
+torch
+torchvision
+decord
+numpy
+einops
+diffusers
+transformers
+Pillow
+opencv-python-headless
