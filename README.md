@@ -4,7 +4,7 @@
 
 1. Clone the repo with submodules (vjepa2, MAGI-1)
 ```bash
-git clone --recurse-submodules https://github.com/YuanJianhao508/WMReward.git
+git clone --recurse-submodules https://github.com/facebookresearch/WMReward.git
 cd WMReward
 ```
 
