@@ -14,27 +14,41 @@ git submodule update --init --recursive
 git submodule sync --recursive
 ```
 
-2. Create conda environment (includes both WMReward and MAGI-1 dependencies)
-```bash
-conda env create -f environment.yml
-conda activate wmreward
-```
-
-Alternatively, install manually:
+2. Create conda environment and install dependencies (Python 3.10 + PyTorch 2.4 with CUDA 12.4)
 ```bash
 conda create -n wmreward python=3.10
 conda activate wmreward
+pip install torch==2.4.0 torchvision==0.19.0 --index-url https://download.pytorch.org/whl/cu124
 pip install -r requirements.txt
+pip install flash-attn==2.4.2 --no-build-isolation
 pip install -r MAGI-1/requirements.txt
 ```
 
-3. Download MAGI-1 model weights
+3. Download MAGI-1 model weights (only needed for video generation, not for `compute_wmreward.py`)
 
-Follow the instructions in the [MAGI-1 README](https://github.com/SandAI-org/MAGI-1#download) to download model weights. Place them so the directory structure looks like:
+Download from the [MAGI-1 Hugging Face repo](https://huggingface.co/sand-ai/MAGI-1):
+```bash
+pip install "huggingface_hub[cli]"
+
+# Download the 24B base model, VAE, and T5 text encoder
+huggingface-cli download sand-ai/MAGI-1 --include "ckpt/magi/24B_base/*" --local-dir downloads
+huggingface-cli download sand-ai/MAGI-1 --include "ckpt/vae/*" --local-dir downloads
+huggingface-cli download sand-ai/MAGI-1 --include "ckpt/t5/*" --local-dir downloads
+
+# Move into the expected layout
+mv downloads/ckpt/magi/24B_base downloads/24B_base
+mv downloads/ckpt/vae downloads/vae
+mv downloads/ckpt/t5 downloads/t5_pretrained
+rm -rf downloads/ckpt
+```
+
+The expected directory structure:
 ```
 WMReward/
 └── downloads/
-    └── <MAGI-1 weight files>
+    ├── 24B_base/       # MAGI-1 DiT model weights
+    ├── vae/            # MAGI-1 VAE encoder/decoder
+    └── t5_pretrained/  # T5-XXL text encoder
 ```
 
 > **Note:** VJEPA checkpoints are **optional** for computing WMReward. The `compute_wmreward.py` script automatically downloads them via `torch.hub`. If you want to use local checkpoints (via `load_vjepa_model_source`), place them in `./checkpoints/` or set `VJEPA_CHECKPOINT_DIR` to your checkpoint directory.
