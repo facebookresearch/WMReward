@@ -16,13 +16,11 @@ git submodule sync --recursive
 
 2. Create conda environment and install dependencies (Python 3.10 + PyTorch 2.4 with CUDA 12.4)
 ```bash
-conda create -n wmreward python=3.10
+conda env create -f environment.yml
 conda activate wmreward
 pip install torch==2.4.0 torchvision==0.19.0 --index-url https://download.pytorch.org/whl/cu124
-pip install -r requirements.txt
 pip install flash-attn==2.4.2 --no-build-isolation
 pip install flashinfer-python==0.2.0.post2 --extra-index-url https://flashinfer.ai/whl/cu124/torch2.4/
-pip install -r MAGI-1/requirements.txt
 ```
 
 3. Download MAGI-1 model weights (only needed for video generation, not for `compute_wmreward.py`)

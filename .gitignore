@@ -83,3 +83,5 @@ checkpoints/
 # Jobs
 jobs/
 results/
+slurm-*.out
+slurm-*.err
