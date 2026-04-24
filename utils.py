@@ -847,7 +847,7 @@ def compute_vjepa_loss_sliding_window(video_tensor, encoder, target_encoder, pre
 
         def loss_fn(z, h):
             h = apply_masks(h, masks_pred, concat=False)
-            loss = 1 - F.cosine_similarity(z, h[0], dim=1).mean()
+            loss = 1 - F.cosine_similarity(z, h[0], dim=-1).mean()
             return loss
 
         # Compute features and loss for this chunk
