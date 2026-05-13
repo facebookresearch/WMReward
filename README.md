@@ -1,5 +1,19 @@
 # Inference-time Physics Alignment of Video Generative Models with Latent World Models
 
+[![CVPR 2026 Highlight](https://img.shields.io/badge/CVPR%202026-Highlight-blue)](https://cvpr.thecvf.com/)
+[![arXiv](https://img.shields.io/badge/arXiv-2601.10553-b31b1b.svg)](https://arxiv.org/abs/2601.10553)
+[![Project Page](https://img.shields.io/badge/Project-Page-2ea44f)](https://facebookresearch.github.io/WMReward/)
+[![Video](https://img.shields.io/badge/Video-YouTube-red)](https://www.youtube.com/watch?v=NQzKR3xqU10)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](./LICENSE)
+
+**[Paper](https://arxiv.org/pdf/2601.10553)** · **[arXiv](https://arxiv.org/abs/2601.10553)** · **[Project Page](https://facebookresearch.github.io/WMReward/)** · **[5-min Video](https://www.youtube.com/watch?v=NQzKR3xqU10)**
+
+> **TL;DR.** A pretrained latent world model (VJEPA-2) is a strong physics-plausibility reward. We use it at inference time — no fine-tuning of the generator — to steer video diffusion toward physically plausible samples, achieving state-of-the-art on the PhysicsIQ benchmark across MAGI-1, Sora 2, and a video latent diffusion model.
+
+**Headline results on the PhysicsIQ benchmark:** +5.68 on vLDM · +4.13 on Sora 2 · +6.78 on MAGI-1 · **62.64%** final score — new state of the art, +7.42 over Sora 2. First place in the ICCV 2025 Perception Test PhysicsIQ Challenge.
+
+---
+
 ## Installation
 
 1. Clone the repo with submodules (vjepa2, MAGI-1)
