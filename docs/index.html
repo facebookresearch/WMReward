@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>WMReward — Inference-time Physics Alignment of Video Generative Models with Latent World Models</title>
+  <meta name="description"
+        content="CVPR 2026 — WMReward: inference-time physics alignment of video generative models with a pretrained latent world model (VJEPA-2) as a physics-plausibility reward.">
+  <meta name="keywords" content="Video Generation, World Models, Physics, VJEPA-2, CVPR 2026">
+
+  <meta property="og:title" content="WMReward — Inference-time Physics Alignment of Video Generative Models with Latent World Models">
+  <meta property="og:description" content="CVPR 2026 Highlight. State-of-the-art on the PhysicsIQ benchmark with no fine-tuning.">
+  <meta property="og:image" content="static/images/og.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.24/dist/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+
+  <!-- ============================================== HERO ============================================== -->
+  <section class="hero is-light">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+
+            <h1 class="title is-1 publication-title">
+              Inference-time Physics Alignment of<br>
+              Video Generative Models with Latent World Models
+            </h1>
+
+            <!-- AUTHORS -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://yuanjianhao.com" target="_blank" rel="noopener">Jianhao Yuan</a><sup>1,2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Xiaofeng Zhang</a><sup>1,3,4,‡</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Felix Friedrich</a><sup>1,‡</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Nicolas Beltran-Velez</a><sup>1,5,‡</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Melissa Hall</a><sup>1</sup>,
+              </span>
+              <br>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Reyhane Askari-Hemmat</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Xiaochuang Han</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Nicolas Ballas</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Michal Drozdzal</a><sup>1,†</sup>,
+              </span>
+              <span class="author-block">
+                <a href="#" target="_blank" rel="noopener">Adriana Romero-Soriano</a><sup>1,3,6,7,†</sup>
+              </span>
+            </div>
+
+            <!-- AFFILIATIONS -->
+            <div class="is-size-6 publication-affiliations">
+              <span class="aff"><sup>1</sup> FAIR, Meta Superintelligence Labs</span>
+              <span class="aff"><sup>2</sup> University of Oxford</span>
+              <span class="aff"><sup>3</sup> Mila — Québec AI Institute</span>
+              <span class="aff"><sup>4</sup> Université de Montréal</span>
+              <br>
+              <span class="aff"><sup>5</sup> Columbia University</span>
+              <span class="aff"><sup>6</sup> McGill University</span>
+              <span class="aff"><sup>7</sup> Canada CIFAR AI Chair</span>
+            </div>
+
+            <!-- CONTRIBUTION NOTES -->
+            <div class="is-size-7 publication-notes">
+              <span><sup>‡</sup> Equal contribution</span>
+              <span style="margin-left:1rem;"><sup>†</sup> Joint last author</span>
+            </div>
+
+            <!-- VENUE -->
+            <div class="venue-row">
+              <span class="tag is-info is-light is-medium"><strong>CVPR 2026 · Highlight</strong></span>
+            </div>
+
+            <!-- LINK BUTTONS -->
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2601.10553" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2601.10553" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-lines"></i></span>
+                  <span>Supplementary</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/facebookresearch/WMReward" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=NQzKR3xqU10" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-youtube"></i></span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="static/figures/poster_full.png" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-image"></i></span>
+                  <span>Poster</span>
+                </a>
+              </span>
+            </div>
+
+            <div class="tldr">
+              <strong>TL;DR.</strong> A pretrained latent world model (VJEPA-2) is a strong physics-plausibility
+              reward. We use it at inference time — no fine-tuning of the generator — to steer video diffusion
+              toward physically plausible samples, achieving state-of-the-art on the PhysicsIQ benchmark across
+              MAGI-1, Sora&nbsp;2, and a video latent diffusion model.
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== TEASER ============================================== -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <img src="static/figures/teaser.png" alt="Figure 1 — qualitative samples across four physics domains" class="teaser-img">
+        <h2 class="subtitle has-text-centered teaser-caption">
+          <strong>Figure 1. Left:</strong> WMReward achieves new state-of-the-art on the PhysicsIQ
+          benchmark, improving physics plausibility on top of strong open-source (vLDM, +5.68) and
+          frontier (Sora&nbsp;2, +4.13; MAGI-1, +6.78) backbones — a final score of 62.64%, +7.42 over
+          Sora&nbsp;2. <strong>Right:</strong> Performance scales gracefully with the number of
+          particles used in our reward-guided sampling, while pixel-reconstruction (VideoMAE) and
+          VLM-logit (Qwen3-VL) reward signals plateau or degrade.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== ABSTRACT ============================================== -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              State-of-the-art video generative models produce promising visual content yet often violate
+              basic physics principles, limiting their utility. While some attribute this deficiency to
+              insufficient physics understanding from pre-training, we find that the shortfall in physics
+              plausibility also stems from suboptimal inference strategies. We therefore introduce
+              <strong>WMReward</strong> and treat improving physics plausibility of video generation as an
+              inference-time alignment problem. In particular, we leverage the strong physics prior of a
+              latent world model (here, VJEPA-2) as a reward to search and steer multiple candidate
+              denoising trajectories, enabling scaling test-time compute for better generation performance.
+            </p>
+            <p>
+              Empirically, our approach substantially improves physics plausibility across image-conditioned,
+              multiframe-conditioned, and text-conditioned generation settings, with validation from human
+              preference study. Notably, in the ICCV 2025 Perception Test PhysicsIQ Challenge, we achieve a
+              final score of 62.64%, winning first place and outperforming the previous state of the art by
+              7.42%. Our work demonstrates the viability of using latent world models to improve physics
+              plausibility of video generation, beyond this specific instantiation or parameterization.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== QUALITATIVE / SAMPLES ============================================== -->
+  <section class="section samples">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Qualitative Samples</h2>
+      <p class="has-text-centered subtitle is-6">
+        In each panel, rows are <strong>top:</strong> ground truth · <strong>middle:</strong> baseline ·
+        <strong>bottom:</strong> WMReward. Examples cover rigid-body dynamics, fluid mechanics, object
+        permanence, and buoyancy.
+      </p>
+
+      <div class="columns is-centered" style="margin-top: 1.5rem;">
+        <div class="column is-half">
+          <figure class="image sample-figure">
+            <img src="static/figures/qualitative_1.gif" alt="Qualitative comparison — set 1">
+            <figcaption>Set 1 — rigid body & object interaction.</figcaption>
+          </figure>
+        </div>
+        <div class="column is-half">
+          <figure class="image sample-figure">
+            <img src="static/figures/qualitative_2.gif" alt="Qualitative comparison — set 2">
+            <figcaption>Set 2 — fluids & buoyancy.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== METHOD ============================================== -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Method</h2>
+
+      <div class="content has-text-justified">
+        <h3 class="title is-5">WMReward — surprise as a physics-plausibility reward</h3>
+        <p>
+          A latent world model encodes video into compact representations and learns a transition function
+          over them, yielding a representation that focuses on physically consistent dynamics rather than
+          pixel statistics. We use the cosine distance between predicted and observed future latents as
+          our reward:
+        </p>
+        <p class="has-text-centered formula">
+          <em>r</em>(<em>x</em>) = ⟨ 1 − cos( <em>ẑ</em><sub>future</sub>, <em>z</em><sub>future</sub> ) ⟩
+        </p>
+        <figure class="image">
+          <img src="static/figures/reward_diagram.png" alt="WMReward — VJEPA-2 surprise reward">
+        </figure>
+      </div>
+
+      <div class="content has-text-justified" style="margin-top: 2rem;">
+        <h3 class="title is-5">Three inference-time sampling schemes</h3>
+        <p>
+          We draw from a reward-tilted distribution with three complementary schemes — <strong>Best-of-N</strong>
+          samples <em>N</em> candidates and keeps the highest-reward video; <strong>Guidance (∇)</strong>
+          uses reward gradients during denoising via Tweedie's formula; and <strong>WMReward (∇+BoN)</strong>
+          combines both (default).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== HEADLINE NUMBERS ============================================== -->
+  <section class="section headline-stats">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Headline Results</h2>
+      <p class="has-text-centered subtitle is-6">
+        WMReward delivers consistent gains across model families on the PhysicsIQ benchmark.
+      </p>
+
+      <div class="columns is-centered" style="margin-top: 1.5rem;">
+        <div class="column is-3 stat-card">
+          <div class="stat-num">+5.68</div>
+          <div class="stat-label">on vLDM</div>
+        </div>
+        <div class="column is-3 stat-card">
+          <div class="stat-num">+4.13</div>
+          <div class="stat-label">on Sora&nbsp;2</div>
+        </div>
+        <div class="column is-3 stat-card">
+          <div class="stat-num">+6.78</div>
+          <div class="stat-label">on MAGI-1</div>
+        </div>
+        <div class="column is-3 stat-card">
+          <div class="stat-num">62.64%</div>
+          <div class="stat-label">final score — new SoTA on PhysicsIQ <br>(+7.42 over Sora&nbsp;2)</div>
+        </div>
+      </div>
+
+      <p class="has-text-centered" style="margin-top: 1rem; color: var(--muted); font-size: 0.95rem;">
+        See <a href="#video">5-minute walkthrough</a> for a guided tour of the method and results.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================== VIDEO ============================================== -->
+  <section class="section" id="video">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">5-Minute Presentation Video</h2>
+          <div class="publication-video">
+            <iframe src="https://www.youtube.com/embed/NQzKR3xqU10"
+                    title="WMReward — CVPR 2026 presentation"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== BIBTEX ============================================== -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{yuan2026inference,
+  title   = {Inference-time Physics Alignment of Video Generative Models with Latent World Models},
+  author  = {Yuan, Jianhao and Zhang, Xiaofeng and Friedrich, Felix and
+             Beltran-Velez, Nicolas and Hall, Melissa and Askari-Hemmat, Reyhane and
+             Han, Xiaochuang and Ballas, Nicolas and Drozdzal, Michal and
+             Romero-Soriano, Adriana},
+  journal = {arXiv preprint arXiv:2601.10553},
+  year    = {2026}
+}</code></pre>
+    </div>
+  </section>
+
+  <!-- ============================================== ACK ============================================== -->
+  <section class="section">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-4">Acknowledgements</h2>
+      <p>
+        We thank our collaborators and reviewers for valuable feedback. This project page template is
+        adapted from the
+        <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">
+          Academic Project Page Template</a> by Eliahu Horwitz.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================== FOOTER ============================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content has-text-centered">
+            <p>
+              Source available at
+              <a href="https://github.com/facebookresearch/WMReward" target="_blank" rel="noopener">
+                facebookresearch/WMReward</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.24/dist/js/bulma-carousel.min.js"></script>
+  <script src="static/js/script.js"></script>
+</body>
+</html>
