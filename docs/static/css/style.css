@@ -1,0 +1,286 @@
+/* =====================================================
+   Academic Project Page — style.css
+   Adapted from Eliahu Horwitz's Academic Project Page Template
+   ===================================================== */
+
+:root {
+  --accent: #3273dc;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --bg: #ffffff;
+  --bg-soft: #f8f9fb;
+}
+
+body {
+  font-family: 'Inter', 'Noto Sans', 'Google Sans', 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ---------- Hero ---------- */
+.publication-title {
+  font-family: 'Google Sans', 'Inter', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 1rem 0 1.25rem !important;
+}
+
+.publication-venue {
+  margin-bottom: 0.5rem;
+}
+
+.publication-authors {
+  font-family: 'Google Sans', 'Inter', sans-serif;
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+}
+
+.publication-authors a {
+  color: var(--accent);
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+  margin: 0 0.25rem;
+  white-space: nowrap;
+}
+
+.publication-affiliations {
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+}
+
+.publication-affiliations .aff {
+  display: inline-block;
+  margin: 0 0.6rem;
+  white-space: nowrap;
+}
+
+.publication-notes {
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.venue-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0.25rem;
+}
+
+
+.tldr {
+  margin: 1.75rem auto 0;
+  max-width: 720px;
+  background: #eef2ff;
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  padding: 0.9rem 1.1rem;
+  font-size: 1rem;
+  color: #1e293b;
+  text-align: left;
+  line-height: 1.55;
+}
+
+.teaser-img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  display: block;
+}
+
+.teaser-caption {
+  margin-top: 1rem !important;
+  color: var(--muted);
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  line-height: 1.55;
+  text-align: justify;
+  max-width: 900px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.sample-figure img {
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background: #000;
+}
+
+.sample-figure figcaption {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.formula {
+  background: #f8f9fb;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  display: inline-block;
+  margin: 0.5rem auto;
+}
+
+/* ---------- Headline stat cards ---------- */
+.stat-card {
+  text-align: center;
+  padding: 1.2rem 0.5rem;
+}
+
+.stat-num {
+  font-family: 'Google Sans', 'Inter', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.stat-label {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ---------- Link buttons ---------- */
+.publication-links {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.publication-links .button {
+  background-color: #1f2937;
+  color: #fff;
+  border: none;
+  transition: transform 0.12s ease, background-color 0.2s ease;
+}
+
+.publication-links .button:hover {
+  background-color: #374151;
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.external-link.button {
+  padding: 0 1rem;
+}
+
+/* ---------- Teaser ---------- */
+.hero.teaser {
+  background: var(--bg-soft);
+}
+
+.hero.teaser video {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.hero.teaser .subtitle {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+/* ---------- Sections ---------- */
+.section .title.is-3 {
+  font-family: 'Google Sans', 'Inter', sans-serif;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.content {
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.content p {
+  margin-bottom: 1rem;
+}
+
+/* ---------- Figures ---------- */
+figure.image img {
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* ---------- Carousel ---------- */
+.results-carousel {
+  overflow: hidden;
+  padding: 0 0.5rem;
+}
+
+.results-carousel .item {
+  margin: 0 0.5rem;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.results-carousel video {
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+}
+
+/* ---------- Video embed ---------- */
+.publication-video {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.publication-video iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: 0;
+}
+
+/* ---------- BibTeX ---------- */
+#BibTeX pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  font-size: 0.92rem;
+  overflow-x: auto;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  background: var(--bg-soft);
+  padding: 2rem 1.5rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.footer a {
+  color: var(--accent);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .publication-title { font-size: 1.75rem; }
+  .publication-links { gap: 0.35rem; }
+  .external-link.button { padding: 0 0.75rem; font-size: 0.9rem; }
+}
