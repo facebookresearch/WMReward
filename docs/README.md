@@ -1,6 +1,6 @@
 # Project Page — `docs/`
 
-This folder is the GitHub Pages source for the **WMReward** project page
+GitHub Pages source for the **WMReward** project page
 (*Inference-time Physics Alignment of Video Generative Models with Latent World Models*, CVPR 2026).
 
 ## Enable GitHub Pages
@@ -23,23 +23,15 @@ docs/
     ├── js/script.js
     ├── images/
     │   ├── favicon.svg
-    │   ├── method.png          ← TODO: add method diagram
-    │   └── quantitative.png    ← TODO: add results figure
-    └── videos/
-        ├── teaser.mp4          ← TODO: add hero teaser
-        ├── result1.mp4         ← TODO: carousel item 1
-        ├── result2.mp4         ← TODO: carousel item 2
-        ├── result3.mp4         ← TODO: carousel item 3
-        └── result4.mp4         ← TODO: carousel item 4
+    │   └── og.png
+    └── figures/
+        ├── teaser.png
+        ├── reward_diagram.png
+        ├── sampling_diagram.png
+        ├── poster_full.png
+        ├── qualitative_1.gif
+        └── qualitative_2.gif
 ```
-
-## Placeholders to fill before publishing
-
-- Author names, affiliations, and personal links in `index.html`
-- Paper / arXiv / supplementary / poster URLs (currently `href="#"`)
-- YouTube `VIDEO_ID` in the `<iframe>` once the CVPR video is uploaded
-- BibTeX (final author list, page numbers if/when available)
-- Replace `method.png`, `quantitative.png`, and all `.mp4` files in `static/`
 
 ## Credits
 
